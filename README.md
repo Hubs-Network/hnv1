@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Residencies by Hubs Network
 
-## Getting Started
+An open platform for mapping hub capabilities, needs and networks — the first layer of a broader residencies ecosystem connecting **Hubs**, **Pilgrims** and **Patrons**.
 
-First, run the development server:
+## Phase 1 — Hub Registry
+
+This phase implements:
+
+- **Public Homepage** with project overview and featured hubs
+- **Hub Registration** — a multi-step form with client/server validation
+- **Hub Directory** — browse, search and filter registered hubs
+- **Hub Detail Pages** — rich profile pages for each hub
+- **JSON-based storage** — all data stored as structured JSON files in the repo
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx            # Homepage
+│   ├── hubs/
+│   │   ├── page.tsx        # Hub directory
+│   │   └── [hubId]/page.tsx # Hub detail
+│   ├── register/hub/       # Registration form
+│   └── api/hubs/           # API routes
+├── components/
+│   ├── ui/                 # Reusable UI components
+│   ├── layout/             # Header, footer
+│   ├── hubs/               # Hub-specific components
+│   └── forms/              # Registration form steps
+├── lib/
+│   ├── schemas/            # Zod validation schemas
+│   ├── data/               # Data access layer
+│   ├── github/             # GitHub adapter (pluggable)
+│   └── utils/              # Utilities
+├── config/
+│   └── vocabularies.ts     # Controlled vocabularies
+└── types/
+    └── index.ts            # TypeScript types
 
-## Learn More
+data/
+└── hubs/                   # Hub JSON profiles
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Data Philosophy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- All hub data is stored as **JSON files** under `data/hubs/`
+- No external databases in this phase
+- Data is transparent and git-tracked
+- Can be browsed vertically (per hub) or horizontally (across hubs)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Hub Registration
 
-## Deploy on Vercel
+The registration form collects:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Basic Info** — name, tagline, description
+2. **Contact & Location** — contact person, location, languages
+3. **Identity** — vocation, mission, organization type, revenue
+4. **Spaces** — physical spaces with types and capacity
+5. **Accommodation** — hosting options
+6. **Assets** — tools, infrastructure, resources
+7. **Network** — partner organizations
+8. **Challenges** — current needs with impact scores
+9. **Review** — summary before submission
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Form progress is saved locally as a draft.
+
+## GitHub Integration
+
+The repository adapter (`lib/github/adapter.ts`) provides a pluggable interface for saving hub data. Currently uses local filesystem writes. To enable GitHub API integration:
+
+1. Set environment variables:
+   ```
+   GITHUB_TOKEN=your_token
+   GITHUB_OWNER=your_org
+   GITHUB_REPO=your_repo
+   GITHUB_BRANCH=main
+   ```
+2. Uncomment the `GitHubAPIAdapter` class in `lib/github/adapter.ts`
+3. Update `getAdapter()` to use it when env vars are present
+
+## Tech Stack
+
+- **Next.js 16** (App Router)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Zod** for validation
+- **Lucide React** for icons
+
+## Future Phases
+
+The codebase is prepared for:
+
+- `/pilgrims` — skilled contributors applying to work at hubs
+- `/patrons` — entities supporting residencies and resources
+- `/residencies` — matching, tracking and evaluating residency programs
+
+## License
+
+Open source. Data stored in this repository is open and transparent.
