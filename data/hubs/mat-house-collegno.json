@@ -1,0 +1,107 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "mat-house-collegno",
+  "name": "Mat House",
+  "tagline": "my house",
+  "description": "my house is a studio",
+  "website": "https://linktr.ee/matteotambussi",
+  "contact": {
+    "contact_name": "matteo",
+    "email": "matteo.tambussi@gmail.com",
+    "telegram": "@matlemad",
+    "preferred_contact": [
+      "email"
+    ]
+  },
+  "location": {
+    "city": "Collegno",
+    "region": "Piemonte",
+    "country": "Italy",
+    "timezone": "Rome"
+  },
+  "languages": [
+    "english"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "technology",
+      "art"
+    ],
+    "mission_keywords": [
+      "web3",
+      "music",
+      "economics"
+    ],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [
+      "donations",
+      "grants"
+    ]
+  },
+  "spaces": [
+    {
+      "name": "Studio room",
+      "space_types": [
+        "studio"
+      ],
+      "host_capacity_day": 2,
+      "notes": "a studio room"
+    }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": [
+      "single",
+      "shared_bathroom"
+    ],
+    "notes": "nothing to add"
+  },
+  "assets": [
+    {
+      "name": "studio equipment",
+      "category": "hardware",
+      "focus_areas": [
+        "art"
+      ],
+      "notes": "mics, preamps, effects, guitars and shit"
+    }
+  ],
+  "network": [
+    {
+      "name": "unito",
+      "scale": "local",
+      "scope": [
+        "education"
+      ],
+      "url": "https://unito.it"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "Install a Swarm node",
+      "problem_description": "I want a node but I have only thumbs and no index fingers to type",
+      "area": [
+        "experimentation",
+        "knowledge_transfer"
+      ],
+      "urgency": 3,
+      "difficulty": 4,
+      "impact_scores": {
+        "technological": 5,
+        "artistic": 0,
+        "financial": 1,
+        "production": 2,
+        "educational": 0,
+        "community": 0
+      },
+      "expected_solution": "I have a running SWARM node"
+    }
+  ],
+  "metadata": {
+    "submitted_at": "2026-04-09T14:06:08.283Z",
+    "updated_at": "2026-04-09T14:06:08.283Z",
+    "submitted_by": "matteo",
+    "language": "en"
+  }
+}
