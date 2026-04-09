@@ -106,6 +106,7 @@ const metadataSchema = z.object({
   submitted_at: z.string(),
   updated_at: z.string(),
   submitted_by: z.string().min(1),
+  creator_address: z.string().optional().default(""),
   language: z.string().default("en"),
 });
 
@@ -125,16 +126,18 @@ export const hubProfileSchema = z.object({
   assets: z.array(assetSchema).default([]),
   network: z.array(networkEntrySchema).default([]),
   challenges: z.array(challengeSchema).default([]),
+  admins: z.array(z.string()).default([]),
   metadata: metadataSchema,
 });
 
 /**
  * Schema for the registration form (excludes auto-generated fields).
- * hub_id and metadata are generated on submission.
+ * hub_id, admins, and metadata are generated on submission.
  */
 export const hubRegistrationSchema = hubProfileSchema.omit({
   schema_version: true,
   hub_id: true,
+  admins: true,
   metadata: true,
 });
 

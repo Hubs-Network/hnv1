@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "liminal-village-varese",
+  "name": "Liminal Village",
+  "tagline": "Regenerative living lab at the intersection of ecology, technology and community",
+  "description": "Liminal Village is a rural innovation hub near Varese, Italy, focused on regenerative agriculture, decentralized technologies, and communal living experiments. It hosts seasonal residencies for researchers, artists and builders working on sustainability challenges.",
+  "website": "https://liminalvillage.com",
+  "contact": {
+    "contact_name": "Marco Rossi",
+    "email": "info@liminalvillage.com",
+    "telegram": "@liminalvillage",
+    "preferred_contact": ["telegram", "email"]
+  },
+  "location": {
+    "city": "Varese",
+    "region": "Lombardy",
+    "country": "Italy",
+    "timezone": "Europe/Rome"
+  },
+  "languages": ["english", "italian"],
+  "identity": {
+    "vocation_tags": ["environment", "agriculture", "technology", "community_learning"],
+    "mission_keywords": ["regenerative agriculture", "communal living", "open source", "sustainability", "permaculture"],
+    "organizational_type": "nonprofit",
+    "stage": "incorporated",
+    "revenue_models": ["donations", "memberships_subscriptions", "food_and_beverage", "grants"]
+  },
+  "spaces": [
+    { "name": "The Barn", "space_types": ["event_space", "workshop_space", "classroom"], "host_capacity_day": 30, "notes": "Renovated barn with multimedia capabilities" },
+    { "name": "Permaculture Garden", "space_types": ["garden", "outdoor_space"], "host_capacity_day": 50, "notes": "1.5 hectare permaculture garden with demonstration zones" },
+    { "name": "Maker Shed", "space_types": ["maker_space", "studio"], "host_capacity_day": 8, "notes": "Woodworking, electronics and small-scale fabrication tools" },
+    { "name": "Community Kitchen", "space_types": ["kitchen"], "host_capacity_day": 15, "notes": "Professional-grade kitchen for communal cooking and food workshops" }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": ["single", "dormitory", "shared_bathroom", "private_bathroom"],
+    "notes": "Up to 18 residents at a time. Mix of private rooms and shared dormitories."
+  },
+  "assets": [
+    { "name": "Soil Testing Lab", "category": "hardware", "focus_areas": ["agriculture", "research", "education"], "notes": "Basic soil analysis equipment" },
+    { "name": "Solar Array", "category": "infrastructure", "focus_areas": ["operations", "economy", "research"], "notes": "12kW solar installation covering 80% of energy needs" },
+    { "name": "Open Source Farm Management", "category": "software", "focus_areas": ["agriculture", "data", "operations"], "notes": "Custom farmOS instance" }
+  ],
+  "network": [
+    { "name": "Politecnico di Milano", "scale": "regional", "scope": ["research", "education", "knowledge_transfer"], "url": "https://www.polimi.it" },
+    { "name": "European Permaculture Network", "scale": "international", "scope": ["knowledge_transfer", "events", "community_building"], "url": "https://permaculture-network.eu" },
+    { "name": "Varese Agricultural Cooperative", "scale": "local", "scope": ["asset_sharing", "production", "community_building"], "url": "" }
+  ],
+  "challenges": [
+    {
+      "title": "Scale food production for self-sufficiency",
+      "problem_description": "Current garden output covers about 40% of community food needs.",
+      "area": ["production_fabrication_agriculture", "operations"],
+      "urgency": 3, "difficulty": 4,
+      "impact_scores": { "technological": 2, "artistic": 0, "financial": 4, "production": 5, "educational": 3, "community": 4 },
+      "expected_solution": "Structured crop rotation plan, additional greenhouse capacity, and automated irrigation systems."
+    },
+    {
+      "title": "Develop onboarding program for new residents",
+      "problem_description": "New arrivals often lack context about community norms and project workflows.",
+      "area": ["onboarding", "community_growth", "education_programming"],
+      "urgency": 4, "difficulty": 2,
+      "impact_scores": { "technological": 1, "artistic": 1, "financial": 1, "production": 2, "educational": 5, "community": 5 },
+      "expected_solution": "A structured onboarding guide, mentor buddy system, and weekly orientation sessions."
+    }
+  ],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-04-03T14:30:00Z",
+    "updated_at": "2026-04-03T14:30:00Z",
+    "submitted_by": "Marco Rossi",
+    "creator_address": "",
+    "language": "en"
+  }
+}

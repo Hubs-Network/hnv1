@@ -21,6 +21,16 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    const creatorAddress: string = body._creator_address || "";
+    delete body._creator_address;
+
+    if (!creatorAddress) {
+      return NextResponse.json(
+        { error: "Universal Profile address is required" },
+        { status: 401 }
+      );
+    }
+
     const hubId = generateHubId(body.name || "", body.location?.city || "");
     if (!hubId) {
       return NextResponse.json(
@@ -34,10 +44,12 @@ export async function POST(request: NextRequest) {
       schema_version: "0.2",
       hub_id: hubId,
       ...body,
+      admins: [creatorAddress.toLowerCase()],
       metadata: {
         submitted_at: now,
         updated_at: now,
         submitted_by: body.contact?.contact_name || "Anonymous",
+        creator_address: creatorAddress.toLowerCase(),
         language: "en",
       },
     };

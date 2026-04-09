@@ -3,20 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useUP } from "@/context/up-context";
+import { ConnectButton } from "./connect-button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Hubs", href: "/hubs" },
-  { name: "Register", href: "/register/hub" },
-  { name: "Pilgrims", href: "/pilgrims", disabled: true },
-  { name: "Patrons", href: "/patrons", disabled: true },
-];
-
 export function Header() {
   const pathname = usePathname();
+  const { isConnected } = useUP();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navigation = [
+    { name: "Home", href: "/" },
+    { name: "Hubs", href: "/hubs" },
+    { name: "Register", href: "/register/hub" },
+    ...(isConnected ? [{ name: "My Hubs", href: "/my-hubs" }] : []),
+    { name: "Pilgrims", href: "/pilgrims", disabled: true },
+    { name: "Patrons", href: "/patrons", disabled: true },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-lg border-b border-border">
@@ -36,54 +40,65 @@ export function Header() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {navigation.map((item) => {
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
+          <div className="hidden md:flex items-center gap-1">
+            <nav className="flex items-center gap-1 mr-3">
+              {navigation.map((item) => {
+                const active =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href);
 
-              if (item.disabled) {
+                if ("disabled" in item && item.disabled) {
+                  return (
+                    <span
+                      key={item.name}
+                      className="px-3 py-2 text-sm text-muted-light cursor-default"
+                      title="Coming soon"
+                    >
+                      {item.name}
+                    </span>
+                  );
+                }
+
                 return (
-                  <span
+                  <Link
                     key={item.name}
-                    className="px-3 py-2 text-sm text-muted-light cursor-default"
-                    title="Coming soon"
+                    href={item.href}
+                    className={cn(
+                      "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      active
+                        ? "text-primary bg-primary-bg"
+                        : "text-muted hover:text-foreground hover:bg-stone-50"
+                    )}
                   >
                     {item.name}
-                  </span>
+                  </Link>
                 );
-              }
+              })}
+            </nav>
 
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                    active
-                      ? "text-primary bg-primary-bg"
-                      : "text-muted hover:text-foreground hover:bg-stone-50"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
+            <ConnectButton />
+          </div>
 
-          <button
-            className="md:hidden p-2 rounded-md text-muted hover:text-foreground"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ConnectButton />
+            <button
+              className="p-2 rounded-md text-muted hover:text-foreground"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {mobileOpen && (
           <nav className="md:hidden pb-4 border-t border-border-light pt-3 space-y-1">
             {navigation.map((item) => {
-              if (item.disabled) {
+              if ("disabled" in item && item.disabled) {
                 return (
                   <span
                     key={item.name}

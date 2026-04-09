@@ -106,6 +106,7 @@ export interface HubMetadata {
   submitted_at: string;
   updated_at: string;
   submitted_by: string;
+  creator_address?: string;
   language: string;
 }
 
@@ -125,6 +126,7 @@ export interface HubProfile {
   assets: HubAsset[];
   network: HubNetworkEntry[];
   challenges: HubChallenge[];
+  admins: string[];
   metadata: HubMetadata;
 }
 

@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "regen-commons-amsterdam",
+  "name": "Regen Commons",
+  "tagline": "Urban commons for regenerative economics and civic technology",
+  "description": "Regen Commons is an Amsterdam-based hub bridging civic technology, regenerative economics and community governance. It operates as a co-working and event space for DAOs, cooperatives, and grassroots civic initiatives.",
+  "website": "https://regencommons.nl",
+  "contact": {
+    "contact_name": "Anja van der Berg",
+    "email": "hello@regencommons.nl",
+    "telegram": "@regencommons",
+    "preferred_contact": ["email"]
+  },
+  "location": {
+    "city": "Amsterdam",
+    "region": "North Holland",
+    "country": "Netherlands",
+    "timezone": "Europe/Amsterdam"
+  },
+  "languages": ["english", "dutch"],
+  "identity": {
+    "vocation_tags": ["economics", "technology", "community_learning"],
+    "mission_keywords": ["regenerative economics", "civic technology", "cooperative governance", "commons", "web3"],
+    "organizational_type": "for_profit",
+    "stage": "incorporated",
+    "revenue_models": ["memberships_subscriptions", "space_or_asset_rental", "consulting_services", "ticketing"]
+  },
+  "spaces": [
+    { "name": "Commons Floor", "space_types": ["coworking", "office"], "host_capacity_day": 35, "notes": "Open-plan co-working area with hot desks and dedicated team corners" },
+    { "name": "Assembly Room", "space_types": ["event_space", "classroom"], "host_capacity_day": 60, "notes": "Modular event space for meetups, assemblies and workshops" },
+    { "name": "Studio Zero", "space_types": ["studio", "residency_space"], "host_capacity_day": 6, "notes": "Focused workspace for visiting researchers and resident fellows" }
+  ],
+  "accommodation": {
+    "type": "outsourced",
+    "formats": [],
+    "notes": "Partnership with two nearby hostels and a co-living house for visiting residents."
+  },
+  "assets": [
+    { "name": "DAO Tooling Stack", "category": "software", "focus_areas": ["governance", "economy", "community"], "notes": "Maintained suite of governance tools" },
+    { "name": "High-Speed Network", "category": "infrastructure", "focus_areas": ["operations", "data", "research"], "notes": "Dedicated 10Gbps fiber connection" },
+    { "name": "Recording Studio", "category": "hardware", "focus_areas": ["media", "education", "art"], "notes": "Podcast and video recording studio" }
+  ],
+  "network": [
+    { "name": "University of Amsterdam", "scale": "local", "scope": ["research", "education", "knowledge_transfer"], "url": "https://www.uva.nl" },
+    { "name": "Gitcoin", "scale": "international", "scope": ["funding", "governance", "community_building"], "url": "https://gitcoin.co" },
+    { "name": "Amsterdam Economic Board", "scale": "regional", "scope": ["visibility", "funding", "events"], "url": "https://amsterdameconomicboard.com" },
+    { "name": "Commons Network", "scale": "international", "scope": ["knowledge_transfer", "research", "governance"], "url": "https://commonsnetwork.org" }
+  ],
+  "challenges": [
+    {
+      "title": "Design a credit system for community contributions",
+      "problem_description": "Members contribute in different ways but there is no fair system to recognize and reward contributions.",
+      "area": ["governance", "software_development", "community_growth"],
+      "urgency": 4, "difficulty": 5,
+      "impact_scores": { "technological": 4, "artistic": 1, "financial": 4, "production": 2, "educational": 3, "community": 5 },
+      "expected_solution": "A token-based credit system that tracks contributions and enables peer recognition."
+    },
+    {
+      "title": "Strengthen partnerships with local government",
+      "problem_description": "Despite strong grassroots networks, the hub has limited connection with municipal policy-making processes.",
+      "area": ["partnerships", "communication", "governance"],
+      "urgency": 3, "difficulty": 3,
+      "impact_scores": { "technological": 1, "artistic": 0, "financial": 3, "production": 1, "educational": 2, "community": 4 },
+      "expected_solution": "Formalized collaboration with Amsterdam Smart City initiative."
+    }
+  ],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-04-05T09:15:00Z",
+    "updated_at": "2026-04-05T09:15:00Z",
+    "submitted_by": "Anja van der Berg",
+    "creator_address": "",
+    "language": "en"
+  }
+}

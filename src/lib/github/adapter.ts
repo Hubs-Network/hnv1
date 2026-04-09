@@ -12,6 +12,7 @@ import type { HubProfile, EntityType, SubmissionResult } from "@/types";
 
 interface RepoAdapter {
   writeFile(path: string, content: string, message: string): Promise<SubmissionResult>;
+  updateFile(path: string, content: string, message: string): Promise<SubmissionResult>;
   fileExists(path: string): Promise<boolean>;
 }
 
@@ -28,6 +29,14 @@ class GitHubAPIAdapter implements RepoAdapter {
     this.branch = process.env.GITHUB_BRANCH || "main";
   }
 
+  private get headers() {
+    return {
+      Authorization: `Bearer ${this.token}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    };
+  }
+
   async writeFile(path: string, content: string, message: string): Promise<SubmissionResult> {
     const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`;
     const body = {
@@ -38,17 +47,50 @@ class GitHubAPIAdapter implements RepoAdapter {
 
     const res = await fetch(url, {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "application/json",
-      },
+      headers: this.headers,
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
       const errorBody = await res.text();
-      console.error(`GitHub API error (${res.status}):`, errorBody);
+      console.error(`GitHub API write error (${res.status}):`, errorBody);
+      return { success: false, error: `GitHub API error: ${res.status}` };
+    }
+
+    return { success: true };
+  }
+
+  /**
+   * Update requires the current file SHA (GitHub Contents API constraint).
+   */
+  async updateFile(path: string, content: string, message: string): Promise<SubmissionResult> {
+    const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
+
+    const getRes = await fetch(url, { headers: this.headers });
+    if (!getRes.ok) {
+      return { success: false, error: "File not found on GitHub" };
+    }
+
+    const fileData = (await getRes.json()) as { sha: string };
+    const sha = fileData.sha;
+
+    const putUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`;
+    const body = {
+      message,
+      content: Buffer.from(content).toString("base64"),
+      sha,
+      branch: this.branch,
+    };
+
+    const res = await fetch(putUrl, {
+      method: "PUT",
+      headers: this.headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error(`GitHub API update error (${res.status}):`, errorBody);
       return { success: false, error: `GitHub API error: ${res.status}` };
     }
 
@@ -57,19 +99,11 @@ class GitHubAPIAdapter implements RepoAdapter {
 
   async fileExists(path: string): Promise<boolean> {
     const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+    const res = await fetch(url, { headers: this.headers });
     return res.ok;
   }
 }
 
-/**
- * Local filesystem fallback for development without GitHub credentials.
- */
 class LocalFSAdapter implements RepoAdapter {
   async writeFile(path: string, content: string, _message: string): Promise<SubmissionResult> {
     const fs = await import("fs");
@@ -85,6 +119,10 @@ class LocalFSAdapter implements RepoAdapter {
     return { success: true };
   }
 
+  async updateFile(path: string, content: string, message: string): Promise<SubmissionResult> {
+    return this.writeFile(path, content, message);
+  }
+
   async fileExists(path: string): Promise<boolean> {
     const fs = await import("fs");
     const pathMod = await import("path");
@@ -98,10 +136,6 @@ function getAdapter(): RepoAdapter {
     return new GitHubAPIAdapter();
   }
   return new LocalFSAdapter();
-}
-
-export function isGitHubMode(): boolean {
-  return !!(process.env.GITHUB_TOKEN && process.env.GITHUB_OWNER && process.env.GITHUB_REPO);
 }
 
 export function serializeProfile(profile: HubProfile): string {
@@ -132,13 +166,35 @@ export async function saveProfileToRepo(
     const commitMessage = `Register ${type}: ${profile.name} (${profile.hub_id})`;
     const result = await adapter.writeFile(filePath, content, commitMessage);
 
-    if (!result.success) {
-      return result;
-    }
+    if (!result.success) return result;
 
     return { success: true, id: profile.hub_id };
   } catch (err) {
     console.error(`Error saving ${type} profile:`, err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+export async function updateProfileInRepo(
+  type: EntityType,
+  profile: HubProfile
+): Promise<SubmissionResult> {
+  const adapter = getAdapter();
+  const filePath = entityDataPath(type, profile.hub_id);
+  const content = serializeProfile(profile);
+
+  try {
+    const commitMessage = `Update ${type}: ${profile.name} (${profile.hub_id})`;
+    const result = await adapter.updateFile(filePath, content, commitMessage);
+
+    if (!result.success) return result;
+
+    return { success: true, id: profile.hub_id };
+  } catch (err) {
+    console.error(`Error updating ${type} profile:`, err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",
