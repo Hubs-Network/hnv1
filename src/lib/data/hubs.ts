@@ -4,14 +4,17 @@ import type { HubProfile, HubFilters } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data", "hubs");
 
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+function dataDirExists(): boolean {
+  try {
+    return fs.existsSync(DATA_DIR) && fs.statSync(DATA_DIR).isDirectory();
+  } catch {
+    return false;
   }
 }
 
 export async function getAllHubs(): Promise<HubProfile[]> {
-  ensureDataDir();
+  if (!dataDirExists()) return [];
+
   const files = fs.readdirSync(DATA_DIR).filter((f) => f.endsWith(".json"));
   const hubs: HubProfile[] = [];
 
@@ -32,7 +35,8 @@ export async function getAllHubs(): Promise<HubProfile[]> {
 }
 
 export async function getHubById(hubId: string): Promise<HubProfile | null> {
-  ensureDataDir();
+  if (!dataDirExists()) return null;
+
   const filePath = path.join(DATA_DIR, `${hubId}.json`);
 
   if (!fs.existsSync(filePath)) return null;
@@ -43,17 +47,6 @@ export async function getHubById(hubId: string): Promise<HubProfile | null> {
   } catch {
     return null;
   }
-}
-
-export async function saveHub(hub: HubProfile): Promise<void> {
-  ensureDataDir();
-  const filePath = path.join(DATA_DIR, `${hub.hub_id}.json`);
-  fs.writeFileSync(filePath, JSON.stringify(hub, null, 2), "utf-8");
-}
-
-export async function hubExists(hubId: string): Promise<boolean> {
-  ensureDataDir();
-  return fs.existsSync(path.join(DATA_DIR, `${hubId}.json`));
 }
 
 export function filterHubs(

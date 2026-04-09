@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllHubs } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
-import { saveProfileToRepo, serializeProfile } from "@/lib/github/adapter";
+import { saveProfileToRepo } from "@/lib/github/adapter";
 import { generateHubId } from "@/lib/utils";
 import type { HubProfile } from "@/types";
 

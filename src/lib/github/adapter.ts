@@ -1,81 +1,107 @@
 /**
  * GitHub repository adapter for persisting entity data.
  *
- * This module provides an abstraction layer over repository write operations.
- * Currently implements a local filesystem adapter. To enable actual GitHub
- * integration, implement the GitHubAdapter class and set the appropriate
- * environment variables.
+ * Uses the GitHub Contents API to read/write JSON files directly in the repo.
+ * Falls back to local filesystem when GITHUB_TOKEN is not configured (local dev).
  *
- * Required env vars for GitHub mode:
- *   GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH (optional)
+ * Required env vars for production:
+ *   GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH (optional, defaults to "main")
  */
 
 import type { HubProfile, EntityType, SubmissionResult } from "@/types";
-import { saveHub, hubExists } from "@/lib/data/hubs";
 
 interface RepoAdapter {
-  writeFile(path: string, content: string): Promise<SubmissionResult>;
+  writeFile(path: string, content: string, message: string): Promise<SubmissionResult>;
   fileExists(path: string): Promise<boolean>;
 }
 
-class LocalFSAdapter implements RepoAdapter {
-  async writeFile(_path: string, _content: string): Promise<SubmissionResult> {
+class GitHubAPIAdapter implements RepoAdapter {
+  private token: string;
+  private owner: string;
+  private repo: string;
+  private branch: string;
+
+  constructor() {
+    this.token = process.env.GITHUB_TOKEN!;
+    this.owner = process.env.GITHUB_OWNER!;
+    this.repo = process.env.GITHUB_REPO!;
+    this.branch = process.env.GITHUB_BRANCH || "main";
+  }
+
+  async writeFile(path: string, content: string, message: string): Promise<SubmissionResult> {
+    const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`;
+    const body = {
+      message,
+      content: Buffer.from(content).toString("base64"),
+      branch: this.branch,
+    };
+
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error(`GitHub API error (${res.status}):`, errorBody);
+      return { success: false, error: `GitHub API error: ${res.status}` };
+    }
+
     return { success: true };
   }
 
-  async fileExists(_path: string): Promise<boolean> {
-    return false;
+  async fileExists(path: string): Promise<boolean> {
+    const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+    return res.ok;
   }
 }
 
 /**
- * Placeholder for actual GitHub Contents API integration.
- * Uncomment and implement when ready to write directly to GitHub.
+ * Local filesystem fallback for development without GitHub credentials.
  */
-// class GitHubAPIAdapter implements RepoAdapter {
-//   private token: string;
-//   private owner: string;
-//   private repo: string;
-//   private branch: string;
-//
-//   constructor() {
-//     this.token = process.env.GITHUB_TOKEN!;
-//     this.owner = process.env.GITHUB_OWNER!;
-//     this.repo = process.env.GITHUB_REPO!;
-//     this.branch = process.env.GITHUB_BRANCH || "main";
-//   }
-//
-//   async writeFile(path: string, content: string): Promise<SubmissionResult> {
-//     const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`;
-//     const body = {
-//       message: `Add ${path}`,
-//       content: Buffer.from(content).toString("base64"),
-//       branch: this.branch,
-//     };
-//     const res = await fetch(url, {
-//       method: "PUT",
-//       headers: {
-//         Authorization: `Bearer ${this.token}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(body),
-//     });
-//     if (!res.ok) return { success: false, error: await res.text() };
-//     return { success: true };
-//   }
-//
-//   async fileExists(path: string): Promise<boolean> {
-//     const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`;
-//     const res = await fetch(url, {
-//       headers: { Authorization: `Bearer ${this.token}` },
-//     });
-//     return res.ok;
-//   }
-// }
+class LocalFSAdapter implements RepoAdapter {
+  async writeFile(path: string, content: string, _message: string): Promise<SubmissionResult> {
+    const fs = await import("fs");
+    const pathMod = await import("path");
+    const fullPath = pathMod.join(process.cwd(), path);
+    const dir = pathMod.dirname(fullPath);
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    fs.writeFileSync(fullPath, content, "utf-8");
+    return { success: true };
+  }
+
+  async fileExists(path: string): Promise<boolean> {
+    const fs = await import("fs");
+    const pathMod = await import("path");
+    const fullPath = pathMod.join(process.cwd(), path);
+    return fs.existsSync(fullPath);
+  }
+}
 
 function getAdapter(): RepoAdapter {
-  // Swap to GitHubAPIAdapter when GITHUB_TOKEN is configured
+  if (process.env.GITHUB_TOKEN && process.env.GITHUB_OWNER && process.env.GITHUB_REPO) {
+    return new GitHubAPIAdapter();
+  }
   return new LocalFSAdapter();
+}
+
+export function isGitHubMode(): boolean {
+  return !!(process.env.GITHUB_TOKEN && process.env.GITHUB_OWNER && process.env.GITHUB_REPO);
 }
 
 export function serializeProfile(profile: HubProfile): string {
@@ -95,20 +121,24 @@ export async function saveProfileToRepo(
   const content = serializeProfile(profile);
 
   try {
-    if (type === "hub") {
-      const exists = await hubExists(profile.hub_id);
-      if (exists) {
-        return {
-          success: false,
-          error: `A hub with ID "${profile.hub_id}" already exists`,
-        };
-      }
-      await saveHub(profile);
+    const exists = await adapter.fileExists(filePath);
+    if (exists) {
+      return {
+        success: false,
+        error: `A ${type} with ID "${profile.hub_id}" already exists`,
+      };
     }
 
-    await adapter.writeFile(filePath, content);
+    const commitMessage = `Register ${type}: ${profile.name} (${profile.hub_id})`;
+    const result = await adapter.writeFile(filePath, content, commitMessage);
+
+    if (!result.success) {
+      return result;
+    }
+
     return { success: true, id: profile.hub_id };
   } catch (err) {
+    console.error(`Error saving ${type} profile:`, err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",
