@@ -29,7 +29,7 @@ const initialData: FormData = {
     contact_name: "",
     email: "",
     telegram: "",
-    preferred_contact: [],
+    preferred_contact: [] as never[],
   },
   location: {
     city: "",
@@ -44,6 +44,7 @@ const initialData: FormData = {
     organizational_type: "nonprofit",
     stage: "informal",
     revenue_models: [],
+    revenue_notes: "",
   },
   spaces: [
     {
@@ -280,9 +281,9 @@ export function HubRegistrationForm() {
         {step === 2 && <IdentityStep {...stepProps} />}
         {step === 3 && <SpacesStep {...stepProps} />}
         {step === 4 && <AccommodationStep {...stepProps} />}
-        {step === 5 && <AssetsStep {...stepProps} />}
-        {step === 6 && <NetworkStep {...stepProps} />}
-        {step === 7 && <ChallengesStep {...stepProps} />}
+        {step === 5 && <ChallengesStep {...stepProps} />}
+        {step === 6 && <AssetsStep {...stepProps} />}
+        {step === 7 && <NetworkStep {...stepProps} />}
         {step === 8 && <ReviewStep {...stepProps} />}
       </div>
 

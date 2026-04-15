@@ -36,9 +36,9 @@ export type Language = (typeof LANGUAGES)[number];
 
 export interface HubContact {
   contact_name: string;
-  email: string;
+  email?: string;
   telegram?: string;
-  preferred_contact: PreferredContact[];
+  preferred_contact?: PreferredContact[];
 }
 
 export interface HubLocation {
@@ -54,6 +54,7 @@ export interface HubIdentity {
   organizational_type: OrganizationalType;
   stage: Stage;
   revenue_models: RevenueModel[];
+  revenue_notes?: string;
 }
 
 export interface HubSpace {

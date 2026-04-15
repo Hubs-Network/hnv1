@@ -48,14 +48,6 @@ export function ReviewStep({ data }: StepProps) {
 
       <Section title="Contact & Location">
         <Field label="Contact" value={data.contact.contact_name} />
-        <Field label="Email" value={data.contact.email} />
-        <Field label="Telegram" value={data.contact.telegram} />
-        <Field
-          label="Preferred"
-          value={data.contact.preferred_contact
-            .map(formatLabel)
-            .join(", ")}
-        />
         <Field
           label="Location"
           value={`${data.location.city}, ${data.location.country}`}
@@ -104,6 +96,7 @@ export function ReviewStep({ data }: StepProps) {
             </div>
           }
         />
+        <Field label="Revenue Notes" value={data.identity.revenue_notes} />
       </Section>
 
       <Section title={`Spaces (${data.spaces.length})`}>
@@ -117,7 +110,7 @@ export function ReviewStep({ data }: StepProps) {
             </div>
             {s.host_capacity_day && (
               <p className="text-xs text-muted mt-1">
-                Capacity: {s.host_capacity_day}/day
+                Capacity: {s.host_capacity_day}
               </p>
             )}
           </div>

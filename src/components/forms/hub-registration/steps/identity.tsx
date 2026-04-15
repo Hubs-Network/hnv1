@@ -5,6 +5,7 @@ import type { StepProps } from "../types";
 import { Select } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -160,6 +161,23 @@ export function IdentityStep({ data, updateData, errors }: StepProps) {
         }
         error={errors["identity.revenue_models"]}
         placeholder="How does your hub generate revenue?"
+      />
+
+      <Textarea
+        label="Revenue Notes"
+        name="revenue_notes"
+        placeholder="Brief notes on your revenue model"
+        value={data.identity.revenue_notes || ""}
+        onChange={(e) =>
+          updateData({
+            identity: {
+              ...data.identity,
+              revenue_notes: e.target.value,
+            },
+          })
+        }
+        rows={2}
+        hint="Optional"
       />
     </div>
   );

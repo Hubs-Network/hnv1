@@ -3,11 +3,8 @@
 import type { StepProps } from "../types";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
-import {
-  PREFERRED_CONTACT_METHODS,
-  LANGUAGES,
-} from "@/config/vocabularies";
-import type { PreferredContact, Language } from "@/types";
+import { LANGUAGES } from "@/config/vocabularies";
+import type { Language } from "@/types";
 
 export function ContactLocationStep({ data, updateData, errors }: StepProps) {
   return (
@@ -26,48 +23,6 @@ export function ContactLocationStep({ data, updateData, errors }: StepProps) {
               })
             }
             error={errors["contact.contact_name"]}
-          />
-
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="hello@yourhub.org"
-            value={data.contact.email}
-            onChange={(e) =>
-              updateData({
-                contact: { ...data.contact, email: e.target.value },
-              })
-            }
-            error={errors["contact.email"]}
-          />
-
-          <Input
-            label="Telegram"
-            name="telegram"
-            placeholder="@yourhub"
-            value={data.contact.telegram || ""}
-            onChange={(e) =>
-              updateData({
-                contact: { ...data.contact, telegram: e.target.value },
-              })
-            }
-            hint="Optional"
-          />
-
-          <MultiSelect
-            label="Preferred Contact Methods"
-            options={PREFERRED_CONTACT_METHODS}
-            value={data.contact.preferred_contact}
-            onChange={(val) =>
-              updateData({
-                contact: {
-                  ...data.contact,
-                  preferred_contact: val as PreferredContact[],
-                },
-              })
-            }
-            error={errors["contact.preferred_contact"]}
           />
         </div>
       </div>

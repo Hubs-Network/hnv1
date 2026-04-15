@@ -41,6 +41,11 @@ export const FORM_STEPS: FormStep[] = [
     description: "Hosting and accommodation options",
   },
   {
+    id: "challenges",
+    title: "Challenges",
+    description: "Current challenges and needs",
+  },
+  {
     id: "assets",
     title: "Assets",
     description: "Tools, infrastructure and resources",
@@ -49,11 +54,6 @@ export const FORM_STEPS: FormStep[] = [
     id: "network",
     title: "Network",
     description: "Partner organizations and connections",
-  },
-  {
-    id: "challenges",
-    title: "Challenges",
-    description: "Current challenges and needs",
   },
   {
     id: "review",

@@ -80,7 +80,7 @@ export function SpacesStep({ data, updateData, errors }: StepProps) {
           />
 
           <Input
-            label="Day Capacity"
+            label="Capacity"
             name={`space-${i}-capacity`}
             type="number"
             min={0}
@@ -93,7 +93,7 @@ export function SpacesStep({ data, updateData, errors }: StepProps) {
                   : undefined,
               })
             }
-            hint="Optional — maximum people per day"
+            hint="Optional — maximum number of people"
           />
 
           <Textarea

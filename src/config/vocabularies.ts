@@ -29,6 +29,7 @@ export const REVENUE_MODELS = [
   "grants",
   "product_sales",
   "consulting_services",
+  "services",
   "ticketing",
   "food_and_beverage",
   "venture_funding",

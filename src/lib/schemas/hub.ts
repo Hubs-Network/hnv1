@@ -20,11 +20,12 @@ const scoreRange = z.number().int().min(0).max(5);
 
 const contactSchema = z.object({
   contact_name: z.string().min(1, "Contact name is required"),
-  email: z.email("Valid email is required"),
+  email: z.string().optional().default(""),
   telegram: z.string().optional().default(""),
   preferred_contact: z
     .array(z.enum(PREFERRED_CONTACT_METHODS))
-    .min(1, "Select at least one contact method"),
+    .optional()
+    .default([]),
 });
 
 const locationSchema = z.object({
@@ -46,6 +47,7 @@ const identitySchema = z.object({
   revenue_models: z
     .array(z.enum(REVENUE_MODELS))
     .min(1, "Select at least one revenue model"),
+  revenue_notes: z.string().optional().default(""),
 });
 
 const spaceSchema = z.object({

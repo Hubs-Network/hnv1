@@ -293,20 +293,24 @@ export default async function HubDetailPage({ params }: PageProps) {
             </h3>
             <div className="space-y-2 text-sm">
               <p className="text-foreground">{hub.contact.contact_name}</p>
-              <a
-                href={`mailto:${hub.contact.email}`}
-                className="text-primary hover:underline block"
-              >
-                {hub.contact.email}
-              </a>
+              {hub.contact.email && (
+                <a
+                  href={`mailto:${hub.contact.email}`}
+                  className="text-primary hover:underline block"
+                >
+                  {hub.contact.email}
+                </a>
+              )}
               {hub.contact.telegram && (
                 <p className="text-muted">Telegram: {hub.contact.telegram}</p>
               )}
-              <div className="flex flex-wrap gap-1 pt-1">
-                {hub.contact.preferred_contact.map((m) => (
-                  <Badge key={m} label={m} size="sm" variant="outline" />
-                ))}
-              </div>
+              {hub.contact.preferred_contact && hub.contact.preferred_contact.length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {hub.contact.preferred_contact.map((m) => (
+                    <Badge key={m} label={m} size="sm" variant="outline" />
+                  ))}
+                </div>
+              )}
             </div>
           </Card>
 
