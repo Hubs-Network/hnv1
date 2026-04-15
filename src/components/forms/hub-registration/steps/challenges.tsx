@@ -150,29 +150,23 @@ export function ChallengesStep({ data, updateData, errors }: StepProps) {
               <label className="block text-sm font-medium text-foreground">
                 Urgency (1–5)
               </label>
-              <div className="flex items-end gap-1">
+              <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((n) => (
-                  <div key={n} className="flex flex-col items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => updateChallenge(i, { urgency: n })}
-                      className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                        n <= challenge.urgency
-                          ? "bg-amber-500 text-white"
-                          : "bg-stone-100 text-stone-400 hover:bg-stone-200"
-                      }`}
-                    >
-                      {n}
-                    </button>
-                    {n === 1 && (
-                      <span className="text-[10px] text-muted-light whitespace-nowrap">&gt; 1 year</span>
-                    )}
-                    {n === 5 && (
-                      <span className="text-[10px] text-muted-light whitespace-nowrap">1 month</span>
-                    )}
-                  </div>
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => updateChallenge(i, { urgency: n })}
+                    className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
+                      n <= challenge.urgency
+                        ? "bg-amber-500 text-white"
+                        : "bg-stone-100 text-stone-400 hover:bg-stone-200"
+                    }`}
+                  >
+                    {n}
+                  </button>
                 ))}
               </div>
+              <p className="text-[10px] text-muted-light">1 = more than a year · 5 = one month</p>
             </div>
 
             <div className="space-y-1.5">
