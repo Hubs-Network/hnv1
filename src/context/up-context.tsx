@@ -31,6 +31,13 @@ const UPContext = createContext<UPContextValue>({
 
 const STORAGE_KEY = "hn_up_address";
 
+function getProvider(): LuksoProvider | null {
+  if (typeof window === "undefined") return null;
+  if (window.lukso) return window.lukso;
+  if (window.ethereum) return window.ethereum as unknown as LuksoProvider;
+  return null;
+}
+
 export function UPProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -38,10 +45,10 @@ export function UPProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const ext = typeof window !== "undefined" && !!window.lukso;
-    setHasExtension(ext);
+    const provider = getProvider();
+    setHasExtension(!!provider);
 
-    if (ext) {
+    if (provider) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         setAddress(saved);
@@ -50,7 +57,8 @@ export function UPProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!hasExtension || !window.lukso) return;
+    const provider = getProvider();
+    if (!provider) return;
 
     const handleAccountsChanged = (accounts: unknown) => {
       const accs = accounts as string[];
@@ -64,16 +72,18 @@ export function UPProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    window.lukso.on("accountsChanged", handleAccountsChanged);
+    provider.on("accountsChanged", handleAccountsChanged);
     return () => {
-      window.lukso?.removeListener("accountsChanged", handleAccountsChanged);
+      provider.removeListener("accountsChanged", handleAccountsChanged);
     };
   }, [hasExtension]);
 
   const connect = useCallback(async (): Promise<string | null> => {
-    if (!window.lukso) {
+    const provider = getProvider();
+
+    if (!provider) {
       setError(
-        "Universal Profile Browser Extension not found. Please install it from universalprofile.cloud"
+        "No wallet extension found. Install the Universal Profile Browser Extension."
       );
       return null;
     }
@@ -82,7 +92,7 @@ export function UPProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const accounts = (await window.lukso.request({
+      const accounts = (await provider.request({
         method: "eth_requestAccounts",
       })) as string[];
 
@@ -97,7 +107,7 @@ export function UPProvider({ children }: { children: ReactNode }) {
       return null;
     } catch (err) {
       const msg =
-        err instanceof Error ? err.message : "Failed to connect to Universal Profile";
+        err instanceof Error ? err.message : "Failed to connect to wallet";
       setError(msg);
       return null;
     } finally {

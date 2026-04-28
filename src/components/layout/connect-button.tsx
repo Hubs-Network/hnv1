@@ -3,7 +3,7 @@
 import { useUP } from "@/context/up-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Loader2, LogOut, UserCircle } from "lucide-react";
+import { Loader2, LogOut, UserCircle, AlertCircle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 function shortenAddress(address: string): string {
@@ -75,13 +75,12 @@ export function ConnectButton() {
   }
 
   return (
-    <div>
+    <div className="relative" ref={ref}>
       <Button
         variant="primary"
         size="sm"
         onClick={connect}
         disabled={isConnecting}
-        title={error || undefined}
       >
         {isConnecting ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -89,6 +88,15 @@ export function ConnectButton() {
           "Connect UP"
         )}
       </Button>
+
+      {error && (
+        <div className="absolute right-0 mt-2 w-72 p-3 rounded-lg border border-danger/20 bg-danger-bg shadow-lg z-50">
+          <div className="flex gap-2">
+            <AlertCircle className="w-4 h-4 text-danger shrink-0 mt-0.5" />
+            <p className="text-xs text-danger leading-relaxed">{error}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

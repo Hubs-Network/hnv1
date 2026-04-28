@@ -1,6 +1,6 @@
 /**
- * Type declarations for the LUKSO Universal Profile Browser Extension.
- * The extension injects a provider at window.lukso (similar to MetaMask's window.ethereum).
+ * Type declarations for wallet browser extensions.
+ * Supports LUKSO UP extension (window.lukso) and standard EIP-1193 (window.ethereum).
  */
 
 interface LuksoProvider {
@@ -12,4 +12,5 @@ interface LuksoProvider {
 
 interface Window {
   lukso?: LuksoProvider;
+  ethereum?: LuksoProvider;
 }
