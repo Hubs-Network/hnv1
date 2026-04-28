@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -6,13 +7,14 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-                <span className="text-white font-bold text-xs">HN</span>
-              </div>
-              <span className="text-sm font-semibold text-foreground">
-                Hubs Network
-              </span>
+            <div className="mb-3">
+              <Image
+                src="/HubNetwork_full.png"
+                alt="Hubs Network"
+                width={160}
+                height={40}
+                className="h-10 w-auto"
+              />
             </div>
             <p className="text-sm text-muted leading-relaxed max-w-xs">
               Mapping and connecting hubs, pilgrims and patrons for a

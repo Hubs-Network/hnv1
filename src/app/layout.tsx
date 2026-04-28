@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   },
   description:
     "An open platform for mapping hub capabilities, needs and networks. Browse registered hubs, register your own, and explore the residencies ecosystem.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

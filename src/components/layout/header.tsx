@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUP } from "@/context/up-context";
@@ -27,9 +28,13 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-white font-bold text-sm">HN</span>
-            </div>
+            <Image
+              src="/HN-magent.png"
+              alt="Hubs Network"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-lg"
+            />
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-foreground leading-tight">
                 Hubs Network
