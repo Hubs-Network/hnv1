@@ -1,0 +1,235 @@
+// ============================================================================
+// HUB PROFILE TEMPLATE — Residencies by Hubs Network
+// ============================================================================
+//
+// Fill in this template to register your hub on the Hubs Network platform.
+// All data will be PUBLIC and stored as open JSON in the project repository.
+//
+// INSTRUCTIONS:
+// 1. Fill in every field marked REQUIRED. Optional fields can be left empty ("") or removed.
+// 2. For fields with allowed values, pick ONLY from the listed options.
+// 3. Arrays marked "repeatable" can contain multiple items — copy the object structure.
+// 4. When done, rename this file to "<your-hub-id>.json" (use lowercase, hyphens, no spaces)
+//    and remove all comments (// lines) to produce valid JSON.
+// 5. Submit the file via PR to the repository, or hand it to a platform admin.
+//
+// ============================================================================
+{
+  "schema_version": "0.2",
+
+  // A unique slug for your hub (lowercase, hyphens only, e.g. "casa-sol-barcelona").
+  // REQUIRED
+  "hub_id": "",
+
+  // The display name of your hub.
+  // REQUIRED — minimum 2 characters.
+  "name": "",
+
+  // A short one-liner that captures your hub's essence.
+  // REQUIRED — minimum 5 characters.
+  "tagline": "",
+
+  // A longer description of your hub, its mission and what it offers.
+  // REQUIRED — minimum 20 characters.
+  "description": "",
+
+  // Your hub's website URL. Optional.
+  "website": "",
+
+  // ─── CONTACT ────────────────────────────────────────────────────────
+  "contact": {
+    // Full name of the primary contact person.
+    // REQUIRED
+    "contact_name": ""
+  },
+
+  // ─── LOCATION ───────────────────────────────────────────────────────
+  "location": {
+    // REQUIRED
+    "city": "",
+    // REQUIRED
+    "country": "",
+    // Optional
+    "region": "",
+    // Optional — IANA timezone, e.g. "Europe/Madrid"
+    "timezone": ""
+  },
+
+  // ─── LANGUAGES ──────────────────────────────────────────────────────
+  // REQUIRED — at least one.
+  // Allowed values: "english", "spanish", "french", "german", "italian",
+  //   "portuguese", "dutch", "catalan", "arabic", "mandarin", "japanese",
+  //   "korean", "hindi", "russian", "turkish", "greek", "polish", "czech",
+  //   "swedish", "norwegian", "danish", "finnish"
+  "languages": [],
+
+  // ─── IDENTITY ───────────────────────────────────────────────────────
+  "identity": {
+    // REQUIRED — at least one.
+    // Allowed values: "technology", "art", "environment", "economics",
+    //   "community_learning", "health_wellbeing", "agriculture"
+    "vocation_tags": [],
+
+    // REQUIRED — at least one free-text keyword describing your mission.
+    // e.g. ["regenerative culture", "open source", "local food systems"]
+    "mission_keywords": [],
+
+    // REQUIRED — pick one.
+    // Allowed values: "nonprofit", "for_profit", "affiliated_research_centre"
+    "organizational_type": "",
+
+    // REQUIRED — pick one.
+    // Allowed values: "informal", "incorporated"
+    "stage": "",
+
+    // REQUIRED — at least one.
+    // Allowed values: "donations", "memberships_subscriptions", "space_or_asset_rental",
+    //   "grants", "product_sales", "consulting_services", "services",
+    //   "ticketing", "food_and_beverage", "venture_funding"
+    "revenue_models": [],
+
+    // Optional — brief notes on your revenue model.
+    "revenue_notes": ""
+  },
+
+  // ─── SPACES ─────────────────────────────────────────────────────────
+  // REQUIRED — at least one space.
+  // REPEATABLE: add more objects to describe additional spaces.
+  "spaces": [
+    {
+      // REQUIRED — name of the space, e.g. "Main Hall", "Rooftop Garden"
+      "name": "",
+
+      // REQUIRED — at least one.
+      // Allowed values: "coworking", "event_space", "workshop_space", "studio",
+      //   "maker_space", "residency_space", "garden", "kitchen", "classroom",
+      //   "office", "outdoor_space", "gallery"
+      "space_types": [],
+
+      // Optional — maximum number of people this space can host.
+      "host_capacity_day": null,
+
+      // Optional — any additional details about this space.
+      "notes": ""
+    }
+  ],
+
+  // ─── ACCOMMODATION ──────────────────────────────────────────────────
+  "accommodation": {
+    // REQUIRED — pick one.
+    // Allowed values: "in_house", "outsourced", "none"
+    "type": "none",
+
+    // Optional — relevant only if type is "in_house" or "outsourced".
+    // Allowed values: "single", "dormitory", "shared_bathroom", "private_bathroom"
+    "formats": [],
+
+    // Optional
+    "notes": ""
+  },
+
+  // ─── CHALLENGES ─────────────────────────────────────────────────────
+  // Optional but highly valuable — helps match pilgrims with relevant skills.
+  // REPEATABLE: add more objects to describe additional challenges.
+  "challenges": [
+    {
+      // REQUIRED — short title, e.g. "Improve documentation workflow"
+      "title": "",
+
+      // REQUIRED — minimum 10 characters. Describe the problem in detail.
+      "problem_description": "",
+
+      // REQUIRED — at least one.
+      // Allowed values: "funding_revenue", "documentation", "onboarding",
+      //   "communication", "events", "software_development",
+      //   "production_fabrication_agriculture", "knowledge_transfer",
+      //   "experimentation", "governance", "space_design", "partnerships",
+      //   "community_growth", "education_programming", "operations"
+      "area": [],
+
+      // REQUIRED — integer 1 to 5.
+      // 1 = more than a year, 5 = one month
+      "urgency": 3,
+
+      // REQUIRED — integer 1 to 5 (1 = easy, 5 = very hard).
+      "difficulty": 3,
+
+      // REQUIRED — rate each dimension from 0 to 5.
+      "impact_scores": {
+        "technological": 0,
+        "artistic": 0,
+        "financial": 0,
+        "production": 0,
+        "educational": 0,
+        "community": 0
+      },
+
+      // REQUIRED — minimum 10 characters. What would a good solution look like?
+      "expected_solution": ""
+    }
+  ],
+
+  // ─── ASSETS ─────────────────────────────────────────────────────────
+  // Optional. Tools, infrastructure and resources available at your hub.
+  // REPEATABLE: add more objects to describe additional assets.
+  "assets": [
+    {
+      // REQUIRED — e.g. "3D Printer", "Recording Studio", "Solar Panel Array"
+      "name": "",
+
+      // REQUIRED — pick one.
+      // Allowed values: "hardware", "software", "infrastructure"
+      "category": "hardware",
+
+      // REQUIRED — at least one.
+      // Allowed values: "community", "education", "research", "data", "media",
+      //   "production", "fabrication", "art", "economy", "governance",
+      //   "agriculture", "health_wellbeing", "operations"
+      "focus_areas": [],
+
+      // Optional
+      "notes": ""
+    }
+  ],
+
+  // ─── NETWORK ────────────────────────────────────────────────────────
+  // Optional. Partner organizations and connections.
+  // REPEATABLE: add more objects to describe additional network entries.
+  "network": [
+    {
+      // REQUIRED — name of the partner or network, e.g. "European Creative Hubs Network"
+      "name": "",
+
+      // REQUIRED — pick one.
+      // Allowed values: "local", "regional", "international"
+      "scale": "local",
+
+      // REQUIRED — at least one.
+      // Allowed values: "funding", "events", "education", "knowledge_transfer",
+      //   "asset_sharing", "visibility", "research", "governance",
+      //   "production", "community_building"
+      "scope": [],
+
+      // Optional — URL of the partner/network.
+      "url": ""
+    }
+  ],
+
+  // ─── ADMINISTRATORS ─────────────────────────────────────────────────
+  // Array of LUKSO Universal Profile addresses (0x...) that can edit this hub.
+  // The creator's address should be the first entry.
+  "admins": [],
+
+  // ─── METADATA ───────────────────────────────────────────────────────
+  // Auto-generated by the platform. Fill in submitted_by with your name/org.
+  "metadata": {
+    "submitted_at": "",
+    "updated_at": "",
+    // REQUIRED — who is submitting this profile
+    "submitted_by": "",
+    // Optional — the LUKSO Universal Profile address of the creator
+    "creator_address": "",
+    // Language code, default "en"
+    "language": "en"
+  }
+}
