@@ -29,7 +29,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5">
             <Image
-              src="/HN-magent.png"
+              src="/HN-blu.svg"
               alt="Hubs Network"
               width={32}
               height={32}
