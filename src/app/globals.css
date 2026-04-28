@@ -8,10 +8,10 @@
   --color-border-light: #F5F5F4;
   --color-muted: #78716C;
   --color-muted-light: #A8A29E;
-  --color-primary: #2D6A4F;
-  --color-primary-light: #40916C;
-  --color-primary-lighter: #52B788;
-  --color-primary-bg: #F0FDF4;
+  --color-primary: #C40A59;
+  --color-primary-light: #D93B7A;
+  --color-primary-lighter: #E8699A;
+  --color-primary-bg: #FDF0F5;
   --color-accent: #D4A373;
   --color-accent-bg: #FFFBEB;
   --color-danger: #DC2626;
@@ -33,5 +33,5 @@ body {
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+  box-shadow: 0 0 0 3px rgba(196, 10, 89, 0.1);
 }
