@@ -33,8 +33,16 @@ const STORAGE_KEY = "hn_up_address";
 
 function getProvider(): LuksoProvider | null {
   if (typeof window === "undefined") return null;
+  // Prefer the dedicated LUKSO UP extension provider
   if (window.lukso) return window.lukso;
-  if (window.ethereum) return window.ethereum as unknown as LuksoProvider;
+  // Fallback: check if window.ethereum is actually the UP extension
+  if (
+    window.ethereum &&
+    (window.ethereum as LuksoProvider & { isUniversalProfileExtension?: boolean })
+      .isUniversalProfileExtension
+  ) {
+    return window.ethereum as unknown as LuksoProvider;
+  }
   return null;
 }
 
@@ -83,7 +91,7 @@ export function UPProvider({ children }: { children: ReactNode }) {
 
     if (!provider) {
       setError(
-        "No wallet extension found. Install the Universal Profile Browser Extension."
+        "Universal Profile Browser Extension not found. Please install it from universalprofile.cloud"
       );
       return null;
     }
@@ -96,7 +104,7 @@ export function UPProvider({ children }: { children: ReactNode }) {
         method: "eth_requestAccounts",
       })) as string[];
 
-      if (accounts.length > 0) {
+      if (accounts && accounts.length > 0) {
         const addr = accounts[0];
         setAddress(addr);
         localStorage.setItem(STORAGE_KEY, addr);
@@ -105,9 +113,16 @@ export function UPProvider({ children }: { children: ReactNode }) {
 
       setError("No accounts returned from the extension.");
       return null;
-    } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : "Failed to connect to wallet";
+    } catch (err: unknown) {
+      console.error("UP connect error:", err);
+      let msg = "Connection failed. Make sure the UP extension is unlocked.";
+      if (err instanceof Error) {
+        msg = err.message;
+      } else if (typeof err === "object" && err !== null && "message" in err) {
+        msg = String((err as Record<string, unknown>).message);
+      } else if (typeof err === "string") {
+        msg = err;
+      }
       setError(msg);
       return null;
     } finally {
