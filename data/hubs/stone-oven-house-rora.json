@@ -215,11 +215,12 @@
     }
   ],
   "admins": [
-    "0x45b13d860c56cd3be43a776433b3b7564461b70a"
+    "0x45b13d860c56cd3be43a776433b3b7564461b70a",
+    "0xaf125ae4e046eed6f8c8e9945aedabf0bc1230f9"
   ],
   "metadata": {
     "submitted_at": "2026-05-18T13:29:12.039Z",
-    "updated_at": "2026-05-18T13:29:12.039Z",
+    "updated_at": "2026-05-25T09:06:48.520Z",
     "submitted_by": "Sergei",
     "creator_address": "0x45b13d860c56cd3be43a776433b3b7564461b70a",
     "language": "en"
