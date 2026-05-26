@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { ScoreBar } from "@/components/ui/score-bar";
 import { Button } from "@/components/ui/button";
 import { formatLabel, formatDate } from "@/lib/utils";
-import { HubAdminBar } from "@/components/hubs/hub-admin-bar";
 import {
   MapPin,
   Globe,
@@ -80,8 +79,6 @@ export default async function HubDetailPage({ params }: PageProps) {
         <ArrowLeft className="w-4 h-4" />
         Back to directory
       </Link>
-
-      <HubAdminBar hubId={hub.hub_id} admins={hub.admins || []} />
 
       {/* Header */}
       <div className="mb-10">

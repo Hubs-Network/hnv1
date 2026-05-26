@@ -1,13 +1,9 @@
 "use client";
 
-import { useUP } from "@/context/up-context";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import type { HubProfile } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { FormData } from "@/components/forms/hub-registration/types";
 import { BasicInfoStep } from "@/components/forms/hub-registration/steps/basic-info";
@@ -23,10 +19,6 @@ import {
   Check,
   ArrowLeft,
   ArrowRight,
-  UserCircle,
-  ShieldCheck,
-  Plus,
-  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -39,7 +31,6 @@ const EDIT_STEPS = [
   { id: "challenges", title: "Challenges", description: "Current challenges and needs" },
   { id: "assets", title: "Assets", description: "Tools, infrastructure and resources" },
   { id: "network", title: "Network", description: "Partner organizations and connections" },
-  { id: "admins", title: "Administrators", description: "Manage who can edit this hub" },
 ];
 
 function hubToFormData(hub: HubProfile): FormData {
@@ -84,7 +75,6 @@ function hubToFormData(hub: HubProfile): FormData {
 }
 
 export function EditHubClient() {
-  const { address, isConnected, connect, isConnecting } = useUP();
   const params = useParams();
   const router = useRouter();
   const hubId = params.hubId as string;
@@ -94,14 +84,10 @@ export function EditHubClient() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [admins, setAdmins] = useState<string[]>([]);
-  const [newAdmin, setNewAdmin] = useState("");
 
   const loadHub = useCallback(async () => {
     setLoading(true);
@@ -114,18 +100,12 @@ export function EditHubClient() {
       const hubData: HubProfile = await res.json();
       setHub(hubData);
       setData(hubToFormData(hubData));
-      setAdmins(hubData.admins || []);
-
-      if (address) {
-        const hubAdmins = (hubData.admins || []).map((a) => a.toLowerCase());
-        setIsAdmin(hubAdmins.includes(address.toLowerCase()));
-      }
     } catch {
       setError("Failed to load hub");
     } finally {
       setLoading(false);
     }
-  }, [hubId, address]);
+  }, [hubId]);
 
   useEffect(() => {
     loadHub();
@@ -136,19 +116,6 @@ export function EditHubClient() {
     setErrors({});
     setError(null);
   }, []);
-
-  function addAdmin() {
-    const addr = newAdmin.trim().toLowerCase();
-    if (!addr || !addr.startsWith("0x") || addr.length < 10) return;
-    if (admins.map((a) => a.toLowerCase()).includes(addr)) return;
-    setAdmins([...admins, addr]);
-    setNewAdmin("");
-  }
-
-  function removeAdmin(addr: string) {
-    if (hub?.metadata.creator_address?.toLowerCase() === addr.toLowerCase()) return;
-    setAdmins(admins.filter((a) => a.toLowerCase() !== addr.toLowerCase()));
-  }
 
   const currentStep = EDIT_STEPS[step];
   const isFirst = step === 0;
@@ -169,7 +136,7 @@ export function EditHubClient() {
   }
 
   async function handleSave() {
-    if (!address || !hub || !data) return;
+    if (!hub || !data) return;
 
     setSaving(true);
     setError(null);
@@ -179,11 +146,7 @@ export function EditHubClient() {
       const res = await fetch(`/api/hubs/${hubId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          admins,
-          _caller_address: address,
-        }),
+        body: JSON.stringify(data),
       });
 
       const result = await res.json();
@@ -212,27 +175,6 @@ export function EditHubClient() {
     }
   }
 
-  if (!isConnected) {
-    return (
-      <Card padding="lg" className="max-w-lg mx-auto text-center">
-        <UserCircle className="w-12 h-12 text-muted-light mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-foreground mb-2">
-          Connect your Universal Profile
-        </h2>
-        <p className="text-sm text-muted mb-6">
-          You need to connect your UP to edit this hub.
-        </p>
-        <Button onClick={connect} disabled={isConnecting}>
-          {isConnecting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            "Connect Universal Profile"
-          )}
-        </Button>
-      </Card>
-    );
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -245,27 +187,10 @@ export function EditHubClient() {
     return (
       <div className="text-center py-20">
         <p className="text-muted">Hub not found.</p>
-        <Link href="/my-hubs" className="text-primary hover:underline text-sm mt-2 inline-block">
-          Back to My Hubs
+        <Link href="/hubs" className="text-primary hover:underline text-sm mt-2 inline-block">
+          Back to Hubs
         </Link>
       </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <Card padding="lg" className="max-w-lg mx-auto text-center">
-        <ShieldCheck className="w-12 h-12 text-muted-light mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-foreground mb-2">
-          Access Denied
-        </h2>
-        <p className="text-sm text-muted mb-6">
-          Your Universal Profile is not listed as an admin of this hub.
-        </p>
-        <Link href={`/hubs/${hubId}`}>
-          <Button variant="secondary">View hub profile</Button>
-        </Link>
-      </Card>
     );
   }
 
@@ -335,60 +260,6 @@ export function EditHubClient() {
         {step === 5 && <ChallengesStep {...stepProps} />}
         {step === 6 && <AssetsStep {...stepProps} />}
         {step === 7 && <NetworkStep {...stepProps} />}
-        {step === 8 && (
-          <div className="space-y-5">
-            <p className="text-sm text-muted">
-              Administrators can edit this hub&apos;s profile. The creator address cannot be removed.
-            </p>
-
-            <div className="space-y-2">
-              {admins.map((admin) => {
-                const isCreator =
-                  hub.metadata.creator_address?.toLowerCase() === admin.toLowerCase();
-                return (
-                  <div
-                    key={admin}
-                    className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-stone-50"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-mono text-foreground truncate">
-                        {admin}
-                      </span>
-                      {isCreator && (
-                        <Badge label="Creator" raw variant="primary" size="sm" />
-                      )}
-                    </div>
-                    {!isCreator && (
-                      <button
-                        onClick={() => removeAdmin(admin)}
-                        className="text-muted-light hover:text-danger transition-colors shrink-0"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex gap-2">
-              <Input
-                placeholder="0x… Universal Profile address"
-                value={newAdmin}
-                onChange={(e) => setNewAdmin(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addAdmin();
-                  }
-                }}
-              />
-              <Button type="button" variant="secondary" onClick={addAdmin}>
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Error / success */}

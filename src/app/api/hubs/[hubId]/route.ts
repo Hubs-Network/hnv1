@@ -36,28 +36,9 @@ export async function PUT(
     const { hubId } = await params;
     const body = await request.json();
 
-    const callerAddress: string = (body._caller_address || "").toLowerCase();
-    delete body._caller_address;
-
-    if (!callerAddress) {
-      return NextResponse.json(
-        { error: "Universal Profile address is required" },
-        { status: 401 }
-      );
-    }
-
-    // Load existing hub to verify admin access
     const existing = await getHubById(hubId);
     if (!existing) {
       return NextResponse.json({ error: "Hub not found" }, { status: 404 });
-    }
-
-    const admins = (existing.admins || []).map((a) => a.toLowerCase());
-    if (!admins.includes(callerAddress)) {
-      return NextResponse.json(
-        { error: "You are not an admin of this hub" },
-        { status: 403 }
-      );
     }
 
     const now = new Date().toISOString();
@@ -66,9 +47,7 @@ export async function PUT(
       ...body,
       schema_version: existing.schema_version,
       hub_id: existing.hub_id,
-      admins: body.admins
-        ? (body.admins as string[]).map((a: string) => a.toLowerCase())
-        : existing.admins,
+      admins: existing.admins,
       metadata: {
         ...existing.metadata,
         updated_at: now,

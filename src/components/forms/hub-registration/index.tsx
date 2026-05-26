@@ -2,9 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useUP } from "@/context/up-context";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FORM_STEPS, type FormData } from "./types";
 import { BasicInfoStep } from "./steps/basic-info";
@@ -16,7 +14,7 @@ import { AssetsStep } from "./steps/assets";
 import { NetworkStep } from "./steps/network";
 import { ChallengesStep } from "./steps/challenges";
 import { ReviewStep } from "./steps/review";
-import { ArrowLeft, ArrowRight, Check, Loader2, UserCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 
 const DRAFT_KEY = "hn_hub_registration_draft";
 
@@ -66,7 +64,6 @@ const initialData: FormData = {
 
 export function HubRegistrationForm() {
   const router = useRouter();
-  const { address, isConnected, connect, isConnecting } = useUP();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -116,8 +113,6 @@ export function HubRegistrationForm() {
   }
 
   async function handleSubmit() {
-    if (!address) return;
-
     setSubmitting(true);
     setSubmitError(null);
 
@@ -125,10 +120,7 @@ export function HubRegistrationForm() {
       const res = await fetch("/api/hubs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          _creator_address: address,
-        }),
+        body: JSON.stringify(data),
       });
 
       const result = await res.json();
@@ -160,40 +152,6 @@ export function HubRegistrationForm() {
     }
   }
 
-  // Gate: require UP connection
-  if (!isConnected) {
-    return (
-      <Card padding="lg" className="max-w-lg mx-auto text-center">
-        <UserCircle className="w-12 h-12 text-muted-light mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-foreground mb-2">
-          Connect your Universal Profile
-        </h2>
-        <p className="text-sm text-muted mb-6 leading-relaxed">
-          To register a hub you need to connect your LUKSO Universal Profile.
-          Your UP address will be linked as the hub creator and administrator.
-        </p>
-        <Button onClick={connect} disabled={isConnecting}>
-          {isConnecting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            "Connect Universal Profile"
-          )}
-        </Button>
-        <p className="text-xs text-muted-light mt-4">
-          Don&apos;t have one?{" "}
-          <a
-            href="https://my.universalprofile.cloud"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            Create a Universal Profile
-          </a>
-        </p>
-      </Card>
-    );
-  }
-
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
@@ -205,7 +163,6 @@ export function HubRegistrationForm() {
         </h2>
         <p className="text-muted mb-8">
           Your hub profile has been saved and is now visible in the directory.
-          Your Universal Profile is registered as the hub administrator.
         </p>
         <div className="flex gap-3 justify-center">
           {submittedHubId && (
@@ -213,8 +170,8 @@ export function HubRegistrationForm() {
               View your hub
             </Button>
           )}
-          <Button variant="secondary" onClick={() => router.push("/my-hubs")}>
-            My Hubs
+          <Button variant="secondary" onClick={() => router.push("/hubs")}>
+            Browse Hubs
           </Button>
         </div>
       </div>
@@ -225,12 +182,6 @@ export function HubRegistrationForm() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Connected indicator */}
-      <div className="mb-6 flex items-center gap-2 text-xs text-muted">
-        <span className="w-2 h-2 rounded-full bg-primary-lighter" />
-        Connected as <span className="font-mono">{address?.slice(0, 8)}…{address?.slice(-6)}</span>
-      </div>
-
       {/* Step indicator */}
       <div className="mb-8">
         <div className="flex items-center gap-1 overflow-x-auto pb-2">

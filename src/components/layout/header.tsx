@@ -4,21 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUP } from "@/context/up-context";
-import { ConnectButton } from "./connect-button";
+import { AuthButton } from "@/components/auth/auth-button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
   const pathname = usePathname();
-  const { isConnected } = useUP();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Hubs", href: "/hubs" },
     { name: "Register", href: "/register/hub" },
-    ...(isConnected ? [{ name: "My Hubs", href: "/my-hubs" }] : []),
     { name: "Pilgrims", href: "/pilgrims", disabled: true },
     { name: "Patrons", href: "/patrons", disabled: true },
   ];
@@ -82,11 +79,11 @@ export function Header() {
               })}
             </nav>
 
-            <ConnectButton />
+            <AuthButton />
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <ConnectButton />
+            <AuthButton />
             <button
               className="p-2 rounded-md text-muted hover:text-foreground"
               onClick={() => setMobileOpen(!mobileOpen)}
