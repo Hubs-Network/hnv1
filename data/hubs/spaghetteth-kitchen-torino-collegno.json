@@ -1,0 +1,170 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "spaghetteth-kitchen-torino-collegno",
+  "name": "SpaghettETH Kitchen - Torino",
+  "tagline": "Art & tech residency dedicated to decentralized music & video stack and Community building",
+  "description": "A fully furnished studio room at the home of SpaghettETH’s co-founders, focused on exploring independent and self-sovereign models for organizing and monetizing music production, musicians’ livelihoods, and livestreaming. The space also serves as a hub for brainstorming and bootstrapping community initiatives and educational formats for the emerging tokenized world, with a focus on civic tech, public administration innovation, and decentralized democratic institutions.\n",
+  "website": "https://spaghett-eth.com",
+  "contact": {
+    "contact_name": "Mat",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Collegno",
+    "region": "TO",
+    "country": "Italy",
+    "timezone": "Rome"
+  },
+  "languages": [
+    "english",
+    "french",
+    "italian"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "technology",
+      "art",
+      "economics",
+      "community_learning",
+      "health_wellbeing"
+    ],
+    "mission_keywords": [
+      "p2p music",
+      "civic tech",
+      "AI for PA"
+    ],
+    "organizational_type": "nonprofit",
+    "stage": "incorporated",
+    "revenue_models": [
+      "donations",
+      "grants"
+    ],
+    "revenue_notes": ""
+  },
+  "spaces": [
+    {
+      "name": "Studio Room",
+      "space_types": [
+        "maker_space",
+        "studio"
+      ],
+      "host_capacity_day": 3,
+      "notes": "fully furnished A/V and music production studio + Software development"
+    },
+    {
+      "name": "Kitchen",
+      "space_types": [
+        "coworking",
+        "kitchen"
+      ],
+      "host_capacity_day": 3,
+      "notes": ""
+    }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": [
+      "single",
+      "shared_bathroom"
+    ],
+    "notes": ""
+  },
+  "assets": [
+    {
+      "name": "Music Production tools",
+      "category": "hardware",
+      "focus_areas": [
+        "media",
+        "art",
+        "production"
+      ],
+      "notes": "guitars, amps, keyboards, mics, synths & a Logic X DAW"
+    },
+    {
+      "name": "Raspberry Pi4",
+      "category": "hardware",
+      "focus_areas": [
+        "data",
+        "media"
+      ],
+      "notes": "a raspberry Pi is a always a good piece of tech to have :)"
+    }
+  ],
+  "network": [
+    {
+      "name": "Stone Oven House",
+      "scale": "local",
+      "scope": [
+        "funding",
+        "events",
+        "education",
+        "asset_sharing"
+      ],
+      "url": "https://stoneovenhouse.com"
+    },
+    {
+      "name": "Hubs Network",
+      "scale": "international",
+      "scope": [
+        "knowledge_transfer",
+        "research",
+        "community_building"
+      ],
+      "url": "https://hubsnetwork.org"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "SpaghettETH vertical help - funding and campaigns",
+      "problem_description": "SpaghettETH runs events and educational formats on a yearly basis, we need someone to help us brainstorm new ideas regarding funding and new events formulas",
+      "area": [
+        "operations",
+        "community_growth",
+        "partnerships"
+      ],
+      "urgency": 2,
+      "difficulty": 2,
+      "impact_scores": {
+        "technological": 2,
+        "artistic": 1,
+        "financial": 3,
+        "production": 2,
+        "educational": 3,
+        "community": 4
+      },
+      "expected_solution": "new verticals that can provide funding streams for SpaghettETH Impact non profit"
+    },
+    {
+      "title": "Web3radio.it - stage 2 ",
+      "problem_description": "SpaghettETH developed this concept of a decentralized webradio. We would like to move it to a V2, but we constantly lack the headspace and time to do so. We would be happy to welcome someone able to work with us to bring this project to a maturity beyond the PoC stage",
+      "area": [
+        "software_development",
+        "experimentation",
+        "partnerships"
+      ],
+      "urgency": 3,
+      "difficulty": 5,
+      "impact_scores": {
+        "technological": 4,
+        "artistic": 3,
+        "financial": 2,
+        "production": 0,
+        "educational": 0,
+        "community": 3
+      },
+      "expected_solution": "ideally, Web3radio v2 will be a new social stack laying the foundations for a Twitch-style, decentralized, audio-only social media managed by communities instead of individuals"
+    }
+  ],
+  "admins": [
+    "0x45b13d860c56cd3be43a776433b3b7564461b70a"
+  ],
+  "metadata": {
+    "submitted_at": "2026-05-18T14:20:09.013Z",
+    "updated_at": "2026-05-18T14:20:09.013Z",
+    "submitted_by": "Mat",
+    "creator_address": "0x45b13d860c56cd3be43a776433b3b7564461b70a",
+    "language": "en"
+  }
+}
