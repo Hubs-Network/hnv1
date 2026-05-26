@@ -3,6 +3,7 @@ import { getAllHubs } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { saveProfileToRepo } from "@/lib/github/adapter";
 import { generateHubId } from "@/lib/utils";
+import { getDb } from "@/lib/db";
 import type { HubProfile } from "@/types";
 
 export async function GET() {
@@ -24,6 +25,16 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    const walletAddress: string = (body._wallet_address || "").toLowerCase();
+    delete body._wallet_address;
+
+    if (!walletAddress) {
+      return NextResponse.json(
+        { error: "Authentication required. Connect your wallet to register a hub." },
+        { status: 401 }
+      );
+    }
 
     const hubId = generateHubId(body.name || "", body.location?.city || "");
     if (!hubId) {
@@ -66,6 +77,19 @@ export async function POST(request: NextRequest) {
         { error: result.error },
         { status: 409 }
       );
+    }
+
+    // Register creator as owner in private admin registry
+    try {
+      const sql = getDb();
+      await sql`
+        INSERT INTO profile_admins (profile_id, profile_type, wallet_address, role)
+        VALUES (${hubId}, 'hub', ${walletAddress}, 'owner')
+        ON CONFLICT (profile_id, profile_type, wallet_address)
+        DO UPDATE SET role = 'owner'
+      `;
+    } catch (dbErr) {
+      console.error("Failed to register admin in Neon:", dbErr);
     }
 
     return NextResponse.json(

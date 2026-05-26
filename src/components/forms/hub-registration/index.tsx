@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FORM_STEPS, type FormData } from "./types";
 import { BasicInfoStep } from "./steps/basic-info";
@@ -14,7 +16,8 @@ import { AssetsStep } from "./steps/assets";
 import { NetworkStep } from "./steps/network";
 import { ChallengesStep } from "./steps/challenges";
 import { ReviewStep } from "./steps/review";
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, UserCircle } from "lucide-react";
+import { LoginPanel } from "@/components/auth/login-panel";
 
 const DRAFT_KEY = "hn_hub_registration_draft";
 
@@ -64,6 +67,7 @@ const initialData: FormData = {
 
 export function HubRegistrationForm() {
   const router = useRouter();
+  const { address, isAuthenticated, isLoading: authLoading } = useAuth();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -113,6 +117,7 @@ export function HubRegistrationForm() {
   }
 
   async function handleSubmit() {
+    if (!address) return;
     setSubmitting(true);
     setSubmitError(null);
 
@@ -120,7 +125,7 @@ export function HubRegistrationForm() {
       const res = await fetch("/api/hubs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, _wallet_address: address }),
       });
 
       const result = await res.json();
@@ -150,6 +155,30 @@ export function HubRegistrationForm() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="w-6 h-6 animate-spin text-muted" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto py-12">
+        <Card className="p-8 text-center">
+          <UserCircle className="w-12 h-12 text-muted mx-auto mb-4" />
+          <h2 className="text-lg font-semibold mb-2">Login required</h2>
+          <p className="text-sm text-muted mb-6">
+            Connect your wallet or sign in with email to register a hub.
+            Your wallet address will be set as the hub owner.
+          </p>
+          <LoginPanel />
+        </Card>
+      </div>
+    );
   }
 
   if (submitted) {
