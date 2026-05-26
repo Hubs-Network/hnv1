@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Clock,
 } from "lucide-react";
+import { HubEditButton } from "@/components/hubs/edit-button";
 
 interface PageProps {
   params: Promise<{ hubId: string }>;
@@ -92,6 +93,7 @@ export default async function HubDetailPage({ params }: PageProps) {
             size="md"
           />
           <Badge label={hub.identity.stage} variant="primary" size="md" />
+          <HubEditButton hubId={hub.hub_id} />
         </div>
 
         <p className="text-lg text-muted leading-relaxed max-w-3xl">

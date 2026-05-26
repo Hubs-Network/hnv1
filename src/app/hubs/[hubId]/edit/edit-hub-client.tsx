@@ -2,8 +2,10 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "@/context/auth-context";
 import type { HubProfile } from "@/types";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { FormData } from "@/components/forms/hub-registration/types";
 import { BasicInfoStep } from "@/components/forms/hub-registration/steps/basic-info";
@@ -19,6 +21,8 @@ import {
   Check,
   ArrowLeft,
   ArrowRight,
+  ShieldX,
+  UserCircle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -78,16 +82,40 @@ export function EditHubClient() {
   const params = useParams();
   const router = useRouter();
   const hubId = params.hubId as string;
+  const { address, isAuthenticated } = useAuth();
 
   const [hub, setHub] = useState<HubProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const checkAdmin = useCallback(async () => {
+    if (!isAuthenticated || !address) {
+      setAuthorized(false);
+      return;
+    }
+    try {
+      const res = await fetch("/api/profile-admin/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile_id: hubId,
+          profile_type: "hub",
+          wallet_address: address,
+        }),
+      });
+      const result = await res.json();
+      setAuthorized(result.is_admin === true);
+    } catch {
+      setAuthorized(false);
+    }
+  }, [hubId, isAuthenticated, address]);
 
   const loadHub = useCallback(async () => {
     setLoading(true);
@@ -110,6 +138,12 @@ export function EditHubClient() {
   useEffect(() => {
     loadHub();
   }, [loadHub]);
+
+  useEffect(() => {
+    if (!loading && hub) {
+      checkAdmin();
+    }
+  }, [loading, hub, checkAdmin]);
 
   const updateData = useCallback((patch: Partial<FormData>) => {
     setData((prev) => (prev ? { ...prev, ...patch } : prev));
@@ -136,7 +170,7 @@ export function EditHubClient() {
   }
 
   async function handleSave() {
-    if (!hub || !data) return;
+    if (!hub || !data || !address) return;
 
     setSaving(true);
     setError(null);
@@ -146,7 +180,7 @@ export function EditHubClient() {
       const res = await fetch(`/api/hubs/${hubId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, _wallet_address: address }),
       });
 
       const result = await res.json();
@@ -190,6 +224,44 @@ export function EditHubClient() {
         <Link href="/hubs" className="text-primary hover:underline text-sm mt-2 inline-block">
           Back to Hubs
         </Link>
+      </div>
+    );
+  }
+
+  if (authorized === null) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-muted" />
+        <span className="ml-2 text-sm text-muted">Checking permissions...</span>
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    return (
+      <div className="max-w-md mx-auto text-center py-20">
+        <Card className="p-8">
+          {!isAuthenticated ? (
+            <>
+              <UserCircle className="w-12 h-12 text-muted mx-auto mb-4" />
+              <h2 className="text-lg font-semibold mb-2">Login required</h2>
+              <p className="text-sm text-muted mb-4">
+                Connect your wallet to edit this hub profile.
+              </p>
+            </>
+          ) : (
+            <>
+              <ShieldX className="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <h2 className="text-lg font-semibold mb-2">Access denied</h2>
+              <p className="text-sm text-muted mb-4">
+                Your wallet is not authorized to edit this hub.
+              </p>
+            </>
+          )}
+          <Link href={`/hubs/${hubId}`} className="text-primary hover:underline text-sm">
+            Back to {hub.name}
+          </Link>
+        </Card>
       </div>
     );
   }

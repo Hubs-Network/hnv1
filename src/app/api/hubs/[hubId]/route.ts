@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getHubById } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { updateProfileInRepo } from "@/lib/github/adapter";
+import { isProfileAdmin } from "@/lib/admin";
 import type { HubProfile } from "@/types";
 
 export async function GET(
@@ -19,7 +20,12 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(hub);
+    // Strip admins array from public response
+    const { admins: _admins, ...publicHub } = hub;
+    return NextResponse.json({
+      ...publicHub,
+      admin_policy: { type: "private_registry" },
+    });
   } catch {
     return NextResponse.json(
       { error: "Failed to load hub" },
@@ -35,6 +41,30 @@ export async function PUT(
   try {
     const { hubId } = await params;
     const body = await request.json();
+
+    const walletAddress: string = (body._wallet_address || "").toLowerCase();
+    delete body._wallet_address;
+
+    if (!walletAddress) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Server-side admin check via Neon
+    const adminCheck = await isProfileAdmin({
+      profileId: hubId,
+      profileType: "hub",
+      walletAddress,
+    });
+
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: "You are not authorized to edit this hub" },
+        { status: 403 }
+      );
+    }
 
     const existing = await getHubById(hubId);
     if (!existing) {

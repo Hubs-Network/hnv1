@@ -8,7 +8,11 @@ import type { HubProfile } from "@/types";
 export async function GET() {
   try {
     const hubs = await getAllHubs();
-    return NextResponse.json(hubs);
+    const publicHubs = hubs.map(({ admins: _admins, ...hub }) => ({
+      ...hub,
+      admin_policy: { type: "private_registry" },
+    }));
+    return NextResponse.json(publicHubs);
   } catch {
     return NextResponse.json(
       { error: "Failed to load hubs" },
