@@ -35,25 +35,25 @@ export type Language = (typeof LANGUAGES)[number];
 // ─── Hub Profile ─────────────────────────────────────────────────────
 
 export interface HubContact {
-  contact_name: string;
+  contact_name?: string;
   email?: string;
   telegram?: string;
   preferred_contact?: PreferredContact[];
 }
 
 export interface HubLocation {
-  city: string;
+  city?: string;
   region?: string;
-  country: string;
+  country?: string;
   timezone?: string;
 }
 
 export interface HubIdentity {
-  vocation_tags: VocationTag[];
-  mission_keywords: string[];
-  organizational_type: OrganizationalType;
-  stage: Stage;
-  revenue_models: RevenueModel[];
+  vocation_tags?: VocationTag[];
+  mission_keywords?: string[];
+  organizational_type?: OrganizationalType;
+  stage?: Stage;
+  revenue_models?: RevenueModel[];
   revenue_notes?: string;
 }
 
@@ -118,16 +118,16 @@ export interface HubProfile {
   tagline: string;
   description: string;
   website?: string;
-  contact: HubContact;
-  location: HubLocation;
-  languages: Language[];
-  identity: HubIdentity;
-  spaces: HubSpace[];
-  accommodation: HubAccommodation;
-  assets: HubAsset[];
-  network: HubNetworkEntry[];
-  challenges: HubChallenge[];
-  admins: string[];
+  contact?: HubContact;
+  location?: HubLocation;
+  languages?: Language[];
+  identity?: HubIdentity;
+  spaces?: HubSpace[];
+  accommodation?: HubAccommodation;
+  assets?: HubAsset[];
+  network?: HubNetworkEntry[];
+  challenges?: HubChallenge[];
+  admins?: string[];
   metadata: HubMetadata;
 }
 

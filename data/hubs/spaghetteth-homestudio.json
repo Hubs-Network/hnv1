@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "spaghetteth-homestudio",
+  "name": "SpaghettETH homestudio",
+  "tagline": "ethereum for creative industries",
+  "description": "we work at the intersection of ethereum and media, with focus on music",
+  "website": "https://spaghett-eth.com",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [
+    {
+      "name": "Studio Room",
+      "space_types": [],
+      "notes": ""
+    }
+  ],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-05-26T16:32:24.546Z",
+    "updated_at": "2026-05-26T16:40:57.549Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "",
+    "language": "en"
+  }
+}

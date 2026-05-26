@@ -3,7 +3,7 @@ import { getAllHubs } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { saveProfileToRepo } from "@/lib/github/adapter";
 import { generateHubId } from "@/lib/utils";
-import { getDb } from "@/lib/db";
+import { addAdmin } from "@/lib/admin";
 import type { HubProfile } from "@/types";
 
 export async function GET() {
@@ -81,13 +81,12 @@ export async function POST(request: NextRequest) {
 
     // Register creator as owner in private admin registry
     try {
-      const sql = getDb();
-      await sql`
-        INSERT INTO profile_admins (profile_id, profile_type, wallet_address, role)
-        VALUES (${hubId}, 'hub', ${walletAddress}, 'owner')
-        ON CONFLICT (profile_id, profile_type, wallet_address)
-        DO UPDATE SET role = 'owner'
-      `;
+      await addAdmin({
+        profileId: hubId,
+        profileType: "hub",
+        walletAddress,
+        role: "owner",
+      });
     } catch (dbErr) {
       console.error("Failed to register admin in Neon:", dbErr);
     }

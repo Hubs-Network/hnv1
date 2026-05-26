@@ -18,47 +18,53 @@ export function HubCard({ hub }: HubCardProps) {
             <h3 className="text-base font-semibold text-foreground leading-snug">
               {hub.name}
             </h3>
-            <div className="flex items-center gap-1.5 mt-1 text-muted">
-              <MapPin className="w-3.5 h-3.5 shrink-0" />
-              <span className="text-sm">
-                {hub.location.city}, {hub.location.country}
-              </span>
-            </div>
+            {hub.location?.city && (
+              <div className="flex items-center gap-1.5 mt-1 text-muted">
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+                <span className="text-sm">
+                  {hub.location.city}{hub.location.country ? `, ${hub.location.country}` : ""}
+                </span>
+              </div>
+            )}
           </div>
-          <Badge
-            label={hub.identity.organizational_type}
-            variant="outline"
-            size="sm"
-          />
+          {hub.identity?.organizational_type && (
+            <Badge
+              label={hub.identity.organizational_type}
+              variant="outline"
+              size="sm"
+            />
+          )}
         </div>
 
         <p className="text-sm text-muted leading-relaxed mb-4">
           {truncate(hub.tagline, 120)}
         </p>
 
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {hub.identity.vocation_tags.slice(0, 4).map((tag) => (
-            <Badge key={tag} label={tag} variant="primary" size="sm" />
-          ))}
-        </div>
+        {hub.identity?.vocation_tags && hub.identity.vocation_tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {hub.identity.vocation_tags.slice(0, 4).map((tag) => (
+              <Badge key={tag} label={tag} variant="primary" size="sm" />
+            ))}
+          </div>
+        )}
 
         <div className="mt-auto pt-4 border-t border-border-light">
           <div className="grid grid-cols-3 gap-2 text-xs text-muted">
             <div className="flex items-center gap-1.5">
               <Building2 className="w-3.5 h-3.5" />
               <span>
-                {hub.spaces.length} {hub.spaces.length === 1 ? "space" : "spaces"}
+                {(hub.spaces || []).length} {(hub.spaces || []).length === 1 ? "space" : "spaces"}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <Bed className="w-3.5 h-3.5" />
-              <span>{formatLabel(hub.accommodation.type)}</span>
+              <span>{formatLabel(hub.accommodation?.type || "none")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" />
               <span>
-                {hub.network.length}{" "}
-                {hub.network.length === 1 ? "partner" : "partners"}
+                {(hub.network || []).length}{" "}
+                {(hub.network || []).length === 1 ? "partner" : "partners"}
               </span>
             </div>
           </div>

@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.2",
+  "hub_id": "sanr3mo",
+  "name": "Sanr3mo",
+  "tagline": "music is by the S34!",
+  "description": "we work with festival di Sanremo to provide web3 to instagram masses",
+  "website": "https://sanr3mo.it",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-05-26T16:42:18.678Z",
+    "updated_at": "2026-05-26T16:42:18.678Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "",
+    "language": "en"
+  }
+}

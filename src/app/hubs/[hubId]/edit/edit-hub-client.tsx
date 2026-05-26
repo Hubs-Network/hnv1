@@ -25,6 +25,7 @@ import {
   UserCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { AdminPanel } from "@/components/hubs/admin-panel";
 
 const EDIT_STEPS = [
   { id: "basic", title: "Basic Info", description: "Name, tagline and description" },
@@ -44,33 +45,33 @@ function hubToFormData(hub: HubProfile): FormData {
     description: hub.description,
     website: hub.website || "",
     contact: {
-      contact_name: hub.contact.contact_name,
-      email: hub.contact.email || "",
-      telegram: hub.contact.telegram || "",
-      preferred_contact: hub.contact.preferred_contact || ([] as never[]),
+      contact_name: hub.contact?.contact_name || "",
+      email: hub.contact?.email || "",
+      telegram: hub.contact?.telegram || "",
+      preferred_contact: hub.contact?.preferred_contact || ([] as never[]),
     },
     location: {
-      city: hub.location.city,
-      region: hub.location.region || "",
-      country: hub.location.country,
-      timezone: hub.location.timezone || "",
+      city: hub.location?.city || "",
+      region: hub.location?.region || "",
+      country: hub.location?.country || "",
+      timezone: hub.location?.timezone || "",
     },
-    languages: hub.languages,
+    languages: hub.languages || [],
     identity: {
-      vocation_tags: hub.identity.vocation_tags,
-      mission_keywords: hub.identity.mission_keywords,
-      organizational_type: hub.identity.organizational_type,
-      stage: hub.identity.stage,
-      revenue_models: hub.identity.revenue_models,
-      revenue_notes: hub.identity.revenue_notes || "",
+      vocation_tags: hub.identity?.vocation_tags || [],
+      mission_keywords: hub.identity?.mission_keywords || [],
+      organizational_type: hub.identity?.organizational_type || "nonprofit",
+      stage: hub.identity?.stage || "informal",
+      revenue_models: hub.identity?.revenue_models || [],
+      revenue_notes: hub.identity?.revenue_notes || "",
     },
-    spaces: hub.spaces.length > 0
+    spaces: (hub.spaces && hub.spaces.length > 0)
       ? hub.spaces.map((s) => ({ ...s, notes: s.notes || "" }))
-      : [{ name: "", space_types: [], host_capacity_day: undefined, notes: "" }],
+      : [],
     accommodation: {
-      type: hub.accommodation.type,
-      formats: hub.accommodation.formats || [],
-      notes: hub.accommodation.notes || "",
+      type: hub.accommodation?.type || "none",
+      formats: hub.accommodation?.formats || [],
+      notes: hub.accommodation?.notes || "",
     },
     assets: (hub.assets || []).map((a) => ({ ...a, notes: a.notes || "" })),
     network: (hub.network || []).map((n) => ({ ...n, url: n.url || "" })),
@@ -101,7 +102,7 @@ export function EditHubClient() {
       return;
     }
     try {
-      const res = await fetch("/api/profile-admin/check", {
+      const res = await fetch("/api/admins/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -384,6 +385,11 @@ export function EditHubClient() {
             </Button>
           )}
         </div>
+      </div>
+
+      {/* Admin management (visible to all admins, editable by owner) */}
+      <div className="mt-12">
+        <AdminPanel hubId={hubId} />
       </div>
     </div>
   );

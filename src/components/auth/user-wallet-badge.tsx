@@ -1,9 +1,10 @@
 "use client";
 
 import { useAuth } from "@/context/auth-context";
-import { LogOut, Wallet, Sparkles } from "lucide-react";
+import { LogOut, Wallet, Sparkles, Building2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
@@ -64,7 +65,15 @@ export function UserWalletBadge() {
               {providerLabel}
             </p>
           </div>
-          <div className="p-1">
+          <div className="p-1 space-y-0.5">
+            <Link
+              href="/my-hubs"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-stone-50 rounded-md transition-colors w-full"
+            >
+              <Building2 className="w-4 h-4" />
+              My Hubs
+            </Link>
             <button
               onClick={() => {
                 logout();

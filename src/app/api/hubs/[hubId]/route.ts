@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getHubById } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { updateProfileInRepo } from "@/lib/github/adapter";
-import { isProfileAdmin } from "@/lib/admin";
+import { checkAdmin } from "@/lib/admin";
 import type { HubProfile } from "@/types";
 
 export async function GET(
@@ -53,7 +53,7 @@ export async function PUT(
     }
 
     // Server-side admin check via Neon
-    const adminCheck = await isProfileAdmin({
+    const adminCheck = await checkAdmin({
       profileId: hubId,
       profileType: "hub",
       walletAddress,

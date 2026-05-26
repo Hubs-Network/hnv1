@@ -19,7 +19,7 @@ import {
 const scoreRange = z.number().int().min(0).max(5);
 
 const contactSchema = z.object({
-  contact_name: z.string().min(1, "Contact name is required"),
+  contact_name: z.string().optional().default(""),
   email: z.string().optional().default(""),
   telegram: z.string().optional().default(""),
   preferred_contact: z
@@ -29,24 +29,27 @@ const contactSchema = z.object({
 });
 
 const locationSchema = z.object({
-  city: z.string().min(1, "City is required"),
+  city: z.string().optional().default(""),
   region: z.string().optional().default(""),
-  country: z.string().min(1, "Country is required"),
+  country: z.string().optional().default(""),
   timezone: z.string().optional().default(""),
 });
 
 const identitySchema = z.object({
   vocation_tags: z
     .array(z.enum(VOCATION_TAGS))
-    .min(1, "Select at least one vocation tag"),
+    .optional()
+    .default([]),
   mission_keywords: z
     .array(z.string().min(1))
-    .min(1, "Add at least one mission keyword"),
-  organizational_type: z.enum(ORGANIZATIONAL_TYPES),
-  stage: z.enum(STAGES),
+    .optional()
+    .default([]),
+  organizational_type: z.enum(ORGANIZATIONAL_TYPES).optional().default("nonprofit"),
+  stage: z.enum(STAGES).optional().default("informal"),
   revenue_models: z
     .array(z.enum(REVENUE_MODELS))
-    .min(1, "Select at least one revenue model"),
+    .optional()
+    .default([]),
   revenue_notes: z.string().optional().default(""),
 });
 
@@ -54,7 +57,8 @@ const spaceSchema = z.object({
   name: z.string().min(1, "Space name is required"),
   space_types: z
     .array(z.enum(SPACE_TYPES))
-    .min(1, "Select at least one space type"),
+    .optional()
+    .default([]),
   host_capacity_day: z.number().int().min(0).optional(),
   notes: z.string().optional().default(""),
 });
@@ -119,12 +123,12 @@ export const hubProfileSchema = z.object({
   tagline: z.string().min(5, "Tagline is required (min 5 chars)"),
   description: z.string().min(20, "Description is required (min 20 chars)"),
   website: z.string().url().optional().or(z.literal("")),
-  contact: contactSchema,
-  location: locationSchema,
-  languages: z.array(z.enum(LANGUAGES)).min(1, "Select at least one language"),
-  identity: identitySchema,
-  spaces: z.array(spaceSchema).min(1, "Add at least one space"),
-  accommodation: accommodationSchema,
+  contact: contactSchema.optional().default(() => ({ contact_name: "", email: "", telegram: "", preferred_contact: [] })),
+  location: locationSchema.optional().default(() => ({ city: "", region: "", country: "", timezone: "" })),
+  languages: z.array(z.enum(LANGUAGES)).optional().default([]),
+  identity: identitySchema.optional().default(() => ({ vocation_tags: [], mission_keywords: [], organizational_type: "nonprofit" as const, stage: "informal" as const, revenue_models: [], revenue_notes: "" })),
+  spaces: z.array(spaceSchema).optional().default([]),
+  accommodation: accommodationSchema.optional().default(() => ({ type: "none" as const, formats: [], notes: "" })),
   assets: z.array(assetSchema).default([]),
   network: z.array(networkEntrySchema).default([]),
   challenges: z.array(challengeSchema).default([]),

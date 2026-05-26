@@ -24,7 +24,7 @@ export function HubEditButton({ hubId }: EditButtonProps) {
 
     async function check() {
       try {
-        const res = await fetch("/api/profile-admin/check", {
+        const res = await fetch("/api/admins/check", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

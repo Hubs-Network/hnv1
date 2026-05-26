@@ -50,7 +50,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   const resolveEns = useCallback(async (addr: string) => {
     try {
       const mainnetProvider = new ethers.JsonRpcProvider(
-        "https://eth.llamarpc.com"
+        "https://cloudflare-eth.com"
       );
       const name = await mainnetProvider.lookupAddress(addr);
       setEnsName(name);

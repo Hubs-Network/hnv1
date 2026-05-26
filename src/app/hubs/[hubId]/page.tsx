@@ -87,12 +87,16 @@ export default async function HubDetailPage({ params }: PageProps) {
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
             {hub.name}
           </h1>
-          <Badge
-            label={hub.identity.organizational_type}
-            variant="outline"
-            size="md"
-          />
-          <Badge label={hub.identity.stage} variant="primary" size="md" />
+          {hub.identity?.organizational_type && (
+            <Badge
+              label={hub.identity.organizational_type}
+              variant="outline"
+              size="md"
+            />
+          )}
+          {hub.identity?.stage && (
+            <Badge label={hub.identity.stage} variant="primary" size="md" />
+          )}
           <HubEditButton hubId={hub.hub_id} />
         </div>
 
@@ -101,13 +105,15 @@ export default async function HubDetailPage({ params }: PageProps) {
         </p>
 
         <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted">
-          <span className="flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" />
-            {hub.location.city}
-            {hub.location.region && `, ${hub.location.region}`},{" "}
-            {hub.location.country}
-          </span>
-          {hub.location.timezone && (
+          {hub.location?.city && (
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-4 h-4" />
+              {hub.location.city}
+              {hub.location.region && `, ${hub.location.region}`},{" "}
+              {hub.location.country}
+            </span>
+          )}
+          {hub.location?.timezone && (
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
               {hub.location.timezone}
@@ -139,81 +145,91 @@ export default async function HubDetailPage({ params }: PageProps) {
           </section>
 
           {/* Vocation & Identity */}
-          <Section icon={Building2} title="Identity">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
-                  Vocation
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {hub.identity.vocation_tags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      label={tag}
-                      variant="primary"
-                      size="md"
-                    />
-                  ))}
-                </div>
-              </div>
+          {hub.identity && (hub.identity.vocation_tags?.length || hub.identity.mission_keywords?.length || hub.identity.revenue_models?.length) ? (
+            <Section icon={Building2} title="Identity">
+              <div className="space-y-4">
+                {hub.identity.vocation_tags && hub.identity.vocation_tags.length > 0 && (
+                  <div>
+                    <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
+                      Vocation
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {hub.identity.vocation_tags.map((tag) => (
+                        <Badge
+                          key={tag}
+                          label={tag}
+                          variant="primary"
+                          size="md"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <div>
-                <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
-                  Mission Keywords
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {hub.identity.mission_keywords.map((kw) => (
-                    <Badge key={kw} label={kw} raw size="sm" />
-                  ))}
-                </div>
-              </div>
+                {hub.identity.mission_keywords && hub.identity.mission_keywords.length > 0 && (
+                  <div>
+                    <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
+                      Mission Keywords
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {hub.identity.mission_keywords.map((kw) => (
+                        <Badge key={kw} label={kw} raw size="sm" />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <div>
-                <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
-                  Revenue Models
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {hub.identity.revenue_models.map((r) => (
-                    <Badge key={r} label={r} variant="accent" size="sm" />
-                  ))}
-                </div>
+                {hub.identity.revenue_models && hub.identity.revenue_models.length > 0 && (
+                  <div>
+                    <h3 className="text-xs text-muted uppercase tracking-wider mb-2">
+                      Revenue Models
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {hub.identity.revenue_models.map((r) => (
+                        <Badge key={r} label={r} variant="accent" size="sm" />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          </Section>
+            </Section>
+          ) : null}
 
           {/* Spaces */}
-          <Section icon={Building2} title="Spaces">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {hub.spaces.map((space, i) => (
-                <Card key={i} padding="sm">
-                  <h3 className="font-medium text-foreground mb-2">
-                    {space.name}
-                  </h3>
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {space.space_types.map((t) => (
-                      <Badge
-                        key={t}
-                        label={t}
-                        variant="outline"
-                        size="sm"
-                      />
-                    ))}
-                  </div>
-                  {space.host_capacity_day && (
-                    <p className="text-xs text-muted">
-                      Capacity: {space.host_capacity_day} people/day
-                    </p>
-                  )}
-                  {space.notes && (
-                    <p className="text-xs text-muted mt-1">{space.notes}</p>
-                  )}
-                </Card>
-              ))}
-            </div>
-          </Section>
+          {hub.spaces && hub.spaces.length > 0 && (
+            <Section icon={Building2} title="Spaces">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {hub.spaces.map((space, i) => (
+                  <Card key={i} padding="sm">
+                    <h3 className="font-medium text-foreground mb-2">
+                      {space.name}
+                    </h3>
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {space.space_types.map((t) => (
+                        <Badge
+                          key={t}
+                          label={t}
+                          variant="outline"
+                          size="sm"
+                        />
+                      ))}
+                    </div>
+                    {space.host_capacity_day && (
+                      <p className="text-xs text-muted">
+                        Capacity: {space.host_capacity_day} people/day
+                      </p>
+                    )}
+                    {space.notes && (
+                      <p className="text-xs text-muted mt-1">{space.notes}</p>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          )}
 
           {/* Challenges */}
-          {hub.challenges.length > 0 && (
+          {hub.challenges && hub.challenges.length > 0 && (
             <Section icon={AlertTriangle} title="Challenges">
               <div className="space-y-4">
                 {hub.challenges.map((challenge, i) => (
@@ -285,72 +301,80 @@ export default async function HubDetailPage({ params }: PageProps) {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Contact */}
-          <Card padding="md">
-            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-primary" />
-              Contact
-            </h3>
-            <div className="space-y-2 text-sm">
-              <p className="text-foreground">{hub.contact.contact_name}</p>
-              {hub.contact.email && (
-                <a
-                  href={`mailto:${hub.contact.email}`}
-                  className="text-primary hover:underline block"
-                >
-                  {hub.contact.email}
-                </a>
-              )}
-              {hub.contact.telegram && (
-                <p className="text-muted">Telegram: {hub.contact.telegram}</p>
-              )}
-              {hub.contact.preferred_contact && hub.contact.preferred_contact.length > 0 && (
-                <div className="flex flex-wrap gap-1 pt-1">
-                  {hub.contact.preferred_contact.map((m) => (
-                    <Badge key={m} label={m} size="sm" variant="outline" />
-                  ))}
-                </div>
-              )}
-            </div>
-          </Card>
+          {hub.contact && (hub.contact.contact_name || hub.contact.email || hub.contact.telegram) && (
+            <Card padding="md">
+              <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary" />
+                Contact
+              </h3>
+              <div className="space-y-2 text-sm">
+                {hub.contact.contact_name && (
+                  <p className="text-foreground">{hub.contact.contact_name}</p>
+                )}
+                {hub.contact.email && (
+                  <a
+                    href={`mailto:${hub.contact.email}`}
+                    className="text-primary hover:underline block"
+                  >
+                    {hub.contact.email}
+                  </a>
+                )}
+                {hub.contact.telegram && (
+                  <p className="text-muted">Telegram: {hub.contact.telegram}</p>
+                )}
+                {hub.contact.preferred_contact && hub.contact.preferred_contact.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {hub.contact.preferred_contact.map((m) => (
+                      <Badge key={m} label={m} size="sm" variant="outline" />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
 
           {/* Languages */}
-          <Card padding="md">
-            <h3 className="font-semibold text-foreground mb-3">Languages</h3>
-            <div className="flex flex-wrap gap-1.5">
-              {hub.languages.map((l) => (
-                <Badge key={l} label={l} size="sm" />
-              ))}
-            </div>
-          </Card>
+          {hub.languages && hub.languages.length > 0 && (
+            <Card padding="md">
+              <h3 className="font-semibold text-foreground mb-3">Languages</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {hub.languages.map((l) => (
+                  <Badge key={l} label={l} size="sm" />
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* Accommodation */}
-          <Card padding="md">
-            <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Bed className="w-4 h-4 text-primary" />
-              Accommodation
-            </h3>
-            <Badge
-              label={hub.accommodation.type}
-              variant="primary"
-              size="md"
-            />
-            {hub.accommodation.formats &&
-              hub.accommodation.formats.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {hub.accommodation.formats.map((f) => (
-                    <Badge key={f} label={f} size="sm" variant="outline" />
-                  ))}
-                </div>
+          {hub.accommodation && hub.accommodation.type !== "none" && (
+            <Card padding="md">
+              <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Bed className="w-4 h-4 text-primary" />
+                Accommodation
+              </h3>
+              <Badge
+                label={hub.accommodation.type}
+                variant="primary"
+                size="md"
+              />
+              {hub.accommodation.formats &&
+                hub.accommodation.formats.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {hub.accommodation.formats.map((f) => (
+                      <Badge key={f} label={f} size="sm" variant="outline" />
+                    ))}
+                  </div>
+                )}
+              {hub.accommodation.notes && (
+                <p className="text-xs text-muted mt-2">
+                  {hub.accommodation.notes}
+                </p>
               )}
-            {hub.accommodation.notes && (
-              <p className="text-xs text-muted mt-2">
-                {hub.accommodation.notes}
-              </p>
-            )}
-          </Card>
+            </Card>
+          )}
 
           {/* Assets */}
-          {hub.assets.length > 0 && (
+          {hub.assets && hub.assets.length > 0 && (
             <Card padding="md">
               <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-primary" />
@@ -384,7 +408,7 @@ export default async function HubDetailPage({ params }: PageProps) {
           )}
 
           {/* Network */}
-          {hub.network.length > 0 && (
+          {hub.network && hub.network.length > 0 && (
             <Card padding="md">
               <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Users className="w-4 h-4 text-primary" />

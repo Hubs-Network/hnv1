@@ -47,14 +47,7 @@ const initialData: FormData = {
     revenue_models: [],
     revenue_notes: "",
   },
-  spaces: [
-    {
-      name: "",
-      space_types: [],
-      host_capacity_day: undefined,
-      notes: "",
-    },
-  ],
+  spaces: [],
   accommodation: {
     type: "none",
     formats: [],
