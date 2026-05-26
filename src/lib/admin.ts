@@ -107,5 +107,21 @@ export async function listAdmins({
   return rows;
 }
 
+/** Delete all admin entries for a profile */
+export async function deleteAdminsForProfile({
+  profileId,
+  profileType,
+}: {
+  profileId: string;
+  profileType: ProfileType;
+}) {
+  const sql = getDb();
+  await sql`
+    DELETE FROM profile_admins
+    WHERE profile_id = ${profileId}
+      AND profile_type = ${profileType}
+  `;
+}
+
 /** Convenience alias kept for backward compat */
 export const isProfileAdmin = checkAdmin;

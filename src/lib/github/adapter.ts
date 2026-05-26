@@ -13,6 +13,7 @@ import type { HubProfile, EntityType, SubmissionResult } from "@/types";
 interface RepoAdapter {
   writeFile(path: string, content: string, message: string): Promise<SubmissionResult>;
   updateFile(path: string, content: string, message: string): Promise<SubmissionResult>;
+  deleteFile(path: string, message: string): Promise<SubmissionResult>;
   fileExists(path: string): Promise<boolean>;
 }
 
@@ -97,6 +98,38 @@ class GitHubAPIAdapter implements RepoAdapter {
     return { success: true };
   }
 
+  async deleteFile(path: string, message: string): Promise<SubmissionResult> {
+    const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
+
+    const getRes = await fetch(url, { headers: this.headers });
+    if (!getRes.ok) {
+      return { success: false, error: "File not found on GitHub" };
+    }
+
+    const fileData = (await getRes.json()) as { sha: string };
+
+    const deleteRes = await fetch(
+      `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`,
+      {
+        method: "DELETE",
+        headers: this.headers,
+        body: JSON.stringify({
+          message,
+          sha: fileData.sha,
+          branch: this.branch,
+        }),
+      }
+    );
+
+    if (!deleteRes.ok) {
+      const errorBody = await deleteRes.text();
+      console.error(`GitHub API delete error (${deleteRes.status}):`, errorBody);
+      return { success: false, error: `GitHub API error: ${deleteRes.status}` };
+    }
+
+    return { success: true };
+  }
+
   async fileExists(path: string): Promise<boolean> {
     const url = `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}`;
     const res = await fetch(url, { headers: this.headers });
@@ -121,6 +154,16 @@ class LocalFSAdapter implements RepoAdapter {
 
   async updateFile(path: string, content: string, message: string): Promise<SubmissionResult> {
     return this.writeFile(path, content, message);
+  }
+
+  async deleteFile(path: string, _message: string): Promise<SubmissionResult> {
+    const fs = await import("fs");
+    const pathMod = await import("path");
+    const fullPath = pathMod.join(process.cwd(), path);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+    return { success: true };
   }
 
   async fileExists(path: string): Promise<boolean> {
@@ -195,6 +238,30 @@ export async function updateProfileInRepo(
     return { success: true, id: profile.hub_id };
   } catch (err) {
     console.error(`Error updating ${type} profile:`, err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+export async function deleteProfileFromRepo(
+  type: EntityType,
+  id: string
+): Promise<SubmissionResult> {
+  const adapter = getAdapter();
+  const filePath = entityDataPath(type, id);
+
+  try {
+    const exists = await adapter.fileExists(filePath);
+    if (!exists) {
+      return { success: false, error: `Profile "${id}" not found` };
+    }
+
+    const commitMessage = `Delete ${type}: ${id}`;
+    return await adapter.deleteFile(filePath, commitMessage);
+  } catch (err) {
+    console.error(`Error deleting ${type} profile:`, err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",

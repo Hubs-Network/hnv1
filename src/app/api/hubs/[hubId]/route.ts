@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getHubById } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
-import { updateProfileInRepo } from "@/lib/github/adapter";
-import { checkAdmin } from "@/lib/admin";
+import { updateProfileInRepo, deleteProfileFromRepo } from "@/lib/github/adapter";
+import { checkAdmin, deleteAdminsForProfile } from "@/lib/admin";
 import type { HubProfile } from "@/types";
 
 export async function GET(
@@ -108,6 +108,54 @@ export async function PUT(
     });
   } catch (err) {
     console.error("Hub update error:", err);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ hubId: string }> }
+) {
+  try {
+    const { hubId } = await params;
+    const body = await request.json();
+
+    const walletAddress: string = (body._wallet_address || "").toLowerCase();
+
+    if (!walletAddress) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    const adminCheck = await checkAdmin({
+      profileId: hubId,
+      profileType: "hub",
+      walletAddress,
+    });
+
+    if (!adminCheck.isAdmin || adminCheck.role !== "owner") {
+      return NextResponse.json(
+        { error: "Only the owner can delete this hub" },
+        { status: 403 }
+      );
+    }
+
+    const result = await deleteProfileFromRepo("hub", hubId);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 500 });
+    }
+
+    await deleteAdminsForProfile({ profileId: hubId, profileType: "hub" });
+
+    return NextResponse.json({
+      success: true,
+      message: "Hub deleted successfully",
+    });
+  } catch (err) {
+    console.error("Hub delete error:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

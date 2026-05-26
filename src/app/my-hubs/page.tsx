@@ -5,7 +5,7 @@ import { useAuth } from "@/context/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2, Crown, Shield, Building2, Plus } from "lucide-react";
+import { Loader2, Crown, Shield, Building2, Plus, Trash2 } from "lucide-react";
 
 interface MyHub {
   profile_id: string;
@@ -16,6 +16,7 @@ export default function MyHubsPage() {
   const { address, isAuthenticated, isLoading: authLoading } = useAuth();
   const [hubs, setHubs] = useState<MyHub[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated || !address) {
@@ -41,6 +42,31 @@ export default function MyHubsPage() {
 
     load();
   }, [isAuthenticated, address]);
+
+  async function handleDelete(hubId: string) {
+    if (!address) return;
+    if (!confirm(`Are you sure you want to permanently delete "${hubId}"? This cannot be undone.`)) return;
+
+    setDeleting(hubId);
+    try {
+      const res = await fetch(`/api/hubs/${hubId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _wallet_address: address }),
+      });
+
+      if (res.ok) {
+        setHubs((prev) => prev.filter((h) => h.profile_id !== hubId));
+      } else {
+        const data = await res.json();
+        alert(data.error || "Failed to delete hub");
+      }
+    } catch {
+      alert("Network error");
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   if (authLoading || loading) {
     return (
@@ -92,28 +118,45 @@ export default function MyHubsPage() {
       ) : (
         <div className="space-y-3">
           {hubs.map((hub) => (
-            <Link key={hub.profile_id} href={`/hubs/${hub.profile_id}`}>
-              <Card className="p-4 hover:border-primary/30 transition-colors cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {hub.role === "owner" ? (
-                      <Crown className="w-5 h-5 text-amber-500" />
-                    ) : (
-                      <Shield className="w-5 h-5 text-primary" />
-                    )}
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        {hub.profile_id}
-                      </p>
-                      <p className="text-xs text-muted capitalize">{hub.role}</p>
-                    </div>
+            <Card key={hub.profile_id} className="p-4">
+              <div className="flex items-center justify-between">
+                <Link href={`/hubs/${hub.profile_id}`} className="flex items-center gap-3 flex-1">
+                  {hub.role === "owner" ? (
+                    <Crown className="w-5 h-5 text-amber-500" />
+                  ) : (
+                    <Shield className="w-5 h-5 text-primary" />
+                  )}
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      {hub.profile_id}
+                    </p>
+                    <p className="text-xs text-muted capitalize">{hub.role}</p>
                   </div>
-                  <Button variant="ghost" size="sm">
-                    View →
-                  </Button>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <Link href={`/hubs/${hub.profile_id}`}>
+                    <Button variant="ghost" size="sm">
+                      View →
+                    </Button>
+                  </Link>
+                  {hub.role === "owner" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(hub.profile_id)}
+                      disabled={deleting === hub.profile_id}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      {deleting === hub.profile_id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </Button>
+                  )}
                 </div>
-              </Card>
-            </Link>
+              </div>
+            </Card>
           ))}
         </div>
       )}
