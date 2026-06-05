@@ -26,6 +26,10 @@ interface PageProps {
   params: Promise<{ hubId: string }>;
 }
 
+// Allow pages for hubs created after build time
+export const dynamicParams = true;
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export async function generateStaticParams() {
   const hubs = await getAllHubs();
   return hubs.map((hub) => ({ hubId: hub.hub_id }));
