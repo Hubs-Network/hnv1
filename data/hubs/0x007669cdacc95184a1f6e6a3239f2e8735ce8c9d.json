@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x007669cdacc95184a1f6e6a3239f2e8735ce8c9d",
+  "name": "Test Hub X",
+  "tagline": "the future is uncoded",
+  "description": "hackathon space outside of Turin, Italy.",
+  "website": "",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-05T21:04:04.863Z",
+    "updated_at": "2026-06-05T21:04:04.863Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0x007669cdacc95184a1f6e6a3239f2e8735ce8c9d",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
