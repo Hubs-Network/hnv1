@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x0524ccbf82d9db9f95626f5f057ed2f9920acdbe",
+  "name": "Sanr3mo",
+  "tagline": "music is by the S34!",
+  "description": "sailing web3 from the italian riviera",
+  "website": "https://sanr3mo.it",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-05T07:37:27.940Z",
+    "updated_at": "2026-06-05T07:37:27.940Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+    "language": "en"
+  },
+  "safeAddress": "0x0524ccbf82d9db9f95626f5f057ed2f9920acdbe",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}

@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@magic-ext/smart-account": "^1.1.1",
+    "@safe-global/api-kit": "^4.2.0",
+    "@safe-global/protocol-kit": "^7.2.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "ethers": "^6.16.0",
@@ -19,6 +22,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "slugify": "^1.6.9",
+    "viem": "^2.52.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {

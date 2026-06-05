@@ -3,7 +3,7 @@ import { getAllHubs } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { saveProfileToRepo } from "@/lib/github/adapter";
 import { generateHubId } from "@/lib/utils";
-import { addAdmin } from "@/lib/admin";
+import { isHubAdmin } from "@/lib/safe";
 import type { HubProfile } from "@/types";
 
 export async function GET() {
@@ -11,7 +11,9 @@ export async function GET() {
     const hubs = await getAllHubs();
     const publicHubs = hubs.map(({ admins: _admins, ...hub }) => ({
       ...hub,
-      admin_policy: { type: "private_registry" },
+      admin_policy: hub.safeAddress
+        ? { type: "safe_multisig", safe_address: hub.safeAddress, chain_id: 11155111 }
+        : { type: "private_registry" },
     }));
     return NextResponse.json(publicHubs);
   } catch {
@@ -27,7 +29,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     const walletAddress: string = (body._wallet_address || "").toLowerCase();
+    const safeAddress: string | undefined = body._safe_address;
     delete body._wallet_address;
+    delete body._safe_address;
 
     if (!walletAddress) {
       return NextResponse.json(
@@ -36,17 +40,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const hubId = generateHubId(body.name || "", body.location?.city || "");
-    if (!hubId) {
-      return NextResponse.json(
-        { error: "Could not generate hub ID from name and city" },
-        { status: 400 }
-      );
+    let hubId: string;
+
+    if (safeAddress && /^0x[a-fA-F0-9]{40}$/.test(safeAddress)) {
+      // Safe-based hub: verify the caller is actually an owner of this Safe
+      const isOwner = await isHubAdmin(safeAddress, walletAddress);
+      if (!isOwner) {
+        return NextResponse.json(
+          { error: "You are not an owner of the provided Safe address." },
+          { status: 403 }
+        );
+      }
+      hubId = safeAddress.toLowerCase();
+    } else {
+      // Legacy flow: generate slug-based ID
+      hubId = generateHubId(body.name || "", body.location?.city || "");
+      if (!hubId) {
+        return NextResponse.json(
+          { error: "Could not generate hub ID from name and city" },
+          { status: 400 }
+        );
+      }
     }
 
     const now = new Date().toISOString();
     const profileData: HubProfile = {
-      schema_version: "0.2",
+      schema_version: "0.3",
       hub_id: hubId,
       ...body,
       admins: [],
@@ -54,9 +73,16 @@ export async function POST(request: NextRequest) {
         submitted_at: now,
         updated_at: now,
         submitted_by: body.contact?.contact_name || "Anonymous",
-        creator_address: "",
+        creator_address: walletAddress,
         language: "en",
       },
+      ...(safeAddress
+        ? {
+            safeAddress: safeAddress.toLowerCase(),
+            chainId: 11155111,
+            network_id: "sepolia",
+          }
+        : {}),
     };
 
     const validation = hubProfileSchema.safeParse(profileData);
@@ -79,22 +105,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Register creator as owner in private admin registry
-    try {
-      await addAdmin({
-        profileId: hubId,
-        profileType: "hub",
-        walletAddress,
-        role: "owner",
-      });
-    } catch (dbErr) {
-      console.error("Failed to register admin in Neon:", dbErr);
+    // For legacy hubs (no Safe), register in Neon if available
+    if (!safeAddress) {
+      try {
+        const { addAdmin } = await import("@/lib/admin");
+        await addAdmin({
+          profileId: hubId,
+          profileType: "hub",
+          walletAddress,
+          role: "owner",
+        });
+      } catch (dbErr) {
+        console.error("Failed to register admin in Neon:", dbErr);
+      }
     }
 
     return NextResponse.json(
       {
         success: true,
         hub_id: hubId,
+        safe_address: safeAddress || null,
         message: "Hub registered successfully",
       },
       { status: 201 }

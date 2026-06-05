@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkAdmin, addAdmin, removeAdmin, listAdmins } from "@/lib/admin";
+import { checkHubAdmin, listHubAdmins, isSafeBasedHub } from "@/lib/hub-admin";
+import { getHubById } from "@/lib/data/hubs";
 
 export async function GET(
   request: NextRequest,
@@ -13,19 +14,23 @@ export async function GET(
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
-    const caller = await checkAdmin({
-      profileId: hubId,
-      profileType: "hub",
-      walletAddress,
-    });
+    const hub = await getHubById(hubId);
+    const safeAddress = (hub as any)?.safeAddress;
+
+    const caller = await checkHubAdmin({ hubId, walletAddress, safeAddress });
 
     if (!caller.isAdmin) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
-    const entries = await listAdmins({ profileId: hubId, profileType: "hub" });
+    const entries = await listHubAdmins({ hubId, safeAddress });
 
-    return NextResponse.json({ admins: entries, caller_role: caller.role });
+    return NextResponse.json({
+      admins: entries,
+      caller_role: caller.role,
+      safe_based: isSafeBasedHub(safeAddress || hubId),
+      safe_info: caller.safeInfo || null,
+    });
   } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -52,6 +57,24 @@ export async function POST(
         { status: 400 }
       );
     }
+
+    const hub = await getHubById(hubId);
+    const safeAddress = (hub as any)?.safeAddress;
+
+    // For Safe-based hubs, owner addition happens on-chain (client-side).
+    // This endpoint remains for legacy Neon-based hubs only.
+    if (isSafeBasedHub(safeAddress || hubId)) {
+      return NextResponse.json(
+        {
+          error: "This hub uses on-chain Safe. Add owners via the Safe admin panel.",
+          safe_address: safeAddress || hubId,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Legacy Neon flow
+    const { checkAdmin, addAdmin } = await import("@/lib/admin");
 
     const caller = await checkAdmin({
       profileId: hubId,
@@ -93,6 +116,23 @@ export async function DELETE(
     if (!callerAddress) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
+
+    const hub = await getHubById(hubId);
+    const safeAddress = (hub as any)?.safeAddress;
+
+    // For Safe-based hubs, owner removal happens on-chain (client-side)
+    if (isSafeBasedHub(safeAddress || hubId)) {
+      return NextResponse.json(
+        {
+          error: "This hub uses on-chain Safe. Remove owners via the Safe admin panel.",
+          safe_address: safeAddress || hubId,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Legacy Neon flow
+    const { checkAdmin, removeAdmin } = await import("@/lib/admin");
 
     const caller = await checkAdmin({
       profileId: hubId,

@@ -112,7 +112,11 @@ export default function AdminDevPage() {
       <div className="max-w-md mx-auto py-20 px-4">
         <Card className="p-8 text-center">
           <Lock className="w-10 h-10 text-muted mx-auto mb-4" />
-          <h1 className="text-lg font-semibold mb-2">Admin Dev Tool</h1>
+          <h1 className="text-lg font-semibold mb-2">Admin Dev Tool (Legacy)</h1>
+          <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded mb-4">
+            ⚠️ Legacy Neon admin registry. New hubs use on-chain Safe multisig.
+            Use /admin/sponsored-tx-test for Safe testing.
+          </p>
           <p className="text-sm text-muted mb-6">
             Enter the admin management secret to continue.
           </p>

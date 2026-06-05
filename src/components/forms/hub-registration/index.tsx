@@ -16,8 +16,9 @@ import { AssetsStep } from "./steps/assets";
 import { NetworkStep } from "./steps/network";
 import { ChallengesStep } from "./steps/challenges";
 import { ReviewStep } from "./steps/review";
-import { ArrowLeft, ArrowRight, Check, Loader2, UserCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, UserCircle, Shield } from "lucide-react";
 import { LoginPanel } from "@/components/auth/login-panel";
+import { deploySafeForHub } from "@/lib/safe-client";
 
 const DRAFT_KEY = "hn_hub_registration_draft";
 
@@ -109,16 +110,36 @@ export function HubRegistrationForm() {
     }
   }
 
+  const [deployingStatus, setDeployingStatus] = useState<string | null>(null);
+
   async function handleSubmit() {
     if (!address) return;
     setSubmitting(true);
     setSubmitError(null);
 
     try {
+      // Step 1: Deploy a Safe on Sepolia (gas-sponsored)
+      setDeployingStatus("Deploying your Hub Safe on Sepolia...");
+      let safeAddress: string;
+      try {
+        safeAddress = await deploySafeForHub(address);
+      } catch (err) {
+        setSubmitError(
+          `Safe deployment failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`
+        );
+        return;
+      }
+
+      // Step 2: Submit hub profile with Safe address
+      setDeployingStatus("Saving hub profile...");
       const res = await fetch("/api/hubs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, _wallet_address: address }),
+        body: JSON.stringify({
+          ...data,
+          _wallet_address: address,
+          _safe_address: safeAddress,
+        }),
       });
 
       const result = await res.json();
@@ -147,6 +168,7 @@ export function HubRegistrationForm() {
       setSubmitError("Network error. Please try again.");
     } finally {
       setSubmitting(false);
+      setDeployingStatus(null);
     }
   }
 
@@ -284,12 +306,12 @@ export function HubRegistrationForm() {
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Submitting…
+                {deployingStatus || "Submitting…"}
               </>
             ) : (
               <>
-                Submit Registration
-                <Check className="w-4 h-4" />
+                <Shield className="w-4 h-4" />
+                Deploy Safe & Register
               </>
             )}
           </Button>

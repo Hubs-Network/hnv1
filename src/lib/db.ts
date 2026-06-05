@@ -1,3 +1,8 @@
+/**
+ * @deprecated LEGACY — Neon Postgres connection for legacy admin registry.
+ * New hubs use on-chain Safe multisig. This is only needed for
+ * legacy hubs without a Safe address.
+ */
 import postgres from "postgres";
 
 let sql: ReturnType<typeof postgres> | null = null;

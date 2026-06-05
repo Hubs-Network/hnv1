@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getHubById } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { updateProfileInRepo, deleteProfileFromRepo } from "@/lib/github/adapter";
-import { checkAdmin, deleteAdminsForProfile } from "@/lib/admin";
+import { checkHubAdmin } from "@/lib/hub-admin";
 import type { HubProfile } from "@/types";
 
 export async function GET(
@@ -24,7 +24,9 @@ export async function GET(
     const { admins: _admins, ...publicHub } = hub;
     return NextResponse.json({
       ...publicHub,
-      admin_policy: { type: "private_registry" },
+      admin_policy: hub.safeAddress
+        ? { type: "safe_multisig", safe_address: hub.safeAddress, chain_id: 11155111 }
+        : { type: "private_registry" },
     });
   } catch {
     return NextResponse.json(
@@ -52,11 +54,16 @@ export async function PUT(
       );
     }
 
-    // Server-side admin check via Neon
-    const adminCheck = await checkAdmin({
-      profileId: hubId,
-      profileType: "hub",
+    const existing = await getHubById(hubId);
+    if (!existing) {
+      return NextResponse.json({ error: "Hub not found" }, { status: 404 });
+    }
+
+    // Server-side admin check (Safe on-chain or legacy Neon)
+    const adminCheck = await checkHubAdmin({
+      hubId,
       walletAddress,
+      safeAddress: (existing as any).safeAddress,
     });
 
     if (!adminCheck.isAdmin) {
@@ -64,11 +71,6 @@ export async function PUT(
         { error: "You are not authorized to edit this hub" },
         { status: 403 }
       );
-    }
-
-    const existing = await getHubById(hubId);
-    if (!existing) {
-      return NextResponse.json({ error: "Hub not found" }, { status: 404 });
     }
 
     const now = new Date().toISOString();
@@ -129,10 +131,11 @@ export async function DELETE(
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
-    const adminCheck = await checkAdmin({
-      profileId: hubId,
-      profileType: "hub",
+    const hub = await getHubById(hubId);
+    const adminCheck = await checkHubAdmin({
+      hubId,
       walletAddress,
+      safeAddress: (hub as any)?.safeAddress,
     });
 
     if (!adminCheck.isAdmin || adminCheck.role !== "owner") {
@@ -148,7 +151,11 @@ export async function DELETE(
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    await deleteAdminsForProfile({ profileId: hubId, profileType: "hub" });
+    // Clean up legacy Neon admin entries if they exist
+    try {
+      const { deleteAdminsForProfile } = await import("@/lib/admin");
+      await deleteAdminsForProfile({ profileId: hubId, profileType: "hub" });
+    } catch { /* Neon may not be configured */ }
 
     return NextResponse.json({
       success: true,

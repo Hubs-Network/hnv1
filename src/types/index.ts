@@ -129,6 +129,10 @@ export interface HubProfile {
   challenges?: HubChallenge[];
   admins?: string[];
   metadata: HubMetadata;
+  // On-chain Safe multisig fields (Sepolia)
+  safeAddress?: string;
+  chainId?: number;
+  network_id?: string;
 }
 
 // ─── Filter & Query Types ────────────────────────────────────────────

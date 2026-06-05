@@ -1,3 +1,14 @@
+/**
+ * @deprecated LEGACY — Neon Postgres admin registry.
+ *
+ * This module is kept as a fallback for legacy hubs that don't have
+ * an on-chain Safe multisig. New hubs use Safe on Sepolia.
+ *
+ * For Safe-based hubs, see:
+ * - src/lib/safe.ts (server-side)
+ * - src/lib/safe-client.ts (client-side)
+ * - src/lib/hub-admin.ts (unified interface)
+ */
 import { getDb } from "./db";
 
 // ─── Future Holons integration type scaffolding ─────────────────────

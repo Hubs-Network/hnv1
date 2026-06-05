@@ -69,10 +69,12 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       try {
         if (savedProvider === "magic") {
           const magic = getMagic();
-          const isLoggedIn = await magic.user.isLoggedIn();
+          const isLoggedIn = await (magic as any).user.isLoggedIn();
           if (isLoggedIn) {
-            const info = await magic.user.getInfo();
-            const ethAddress = info.wallets?.ethereum?.publicAddress;
+            const info = await (magic as any).user.getInfo();
+            const ethAddress =
+              info?.publicAddress ||
+              info?.wallets?.ethereum?.publicAddress;
             if (ethAddress) {
               setAddress(ethAddress);
               setAuthProvider("magic");
@@ -112,9 +114,11 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
     try {
       const magic = getMagic();
-      await magic.auth.loginWithEmailOTP({ email });
-      const info = await magic.user.getInfo();
-      const ethAddress = info.wallets?.ethereum?.publicAddress;
+      await (magic as any).auth.loginWithEmailOTP({ email });
+      const info = await (magic as any).user.getInfo();
+      const ethAddress =
+        info?.publicAddress ||
+        info?.wallets?.ethereum?.publicAddress;
 
       if (ethAddress) {
         setAddress(ethAddress);
@@ -170,7 +174,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     try {
       if (authProvider === "magic") {
         const magic = getMagic();
-        await magic.user.logout();
+        await (magic as any).user.logout();
       }
     } catch {}
 

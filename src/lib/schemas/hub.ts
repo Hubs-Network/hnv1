@@ -134,6 +134,10 @@ export const hubProfileSchema = z.object({
   challenges: z.array(challengeSchema).default([]),
   admins: z.array(z.string()).default([]),
   metadata: metadataSchema,
+  // On-chain Safe multisig fields (Sepolia)
+  safeAddress: z.string().optional(),
+  chainId: z.number().optional(),
+  network_id: z.string().optional(),
 });
 
 /**
@@ -145,6 +149,9 @@ export const hubRegistrationSchema = hubProfileSchema.omit({
   hub_id: true,
   admins: true,
   metadata: true,
+  safeAddress: true,
+  chainId: true,
+  network_id: true,
 });
 
 export type HubProfileInput = z.infer<typeof hubProfileSchema>;

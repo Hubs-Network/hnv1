@@ -10,6 +10,7 @@ import { Loader2, Crown, Shield, Building2, Plus, Trash2 } from "lucide-react";
 interface MyHub {
   profile_id: string;
   role: string;
+  name?: string;
 }
 
 export default function MyHubsPage() {
@@ -128,7 +129,7 @@ export default function MyHubsPage() {
                   )}
                   <div>
                     <p className="text-sm font-semibold text-foreground">
-                      {hub.profile_id}
+                      {hub.name || hub.profile_id}
                     </p>
                     <p className="text-xs text-muted capitalize">{hub.role}</p>
                   </div>

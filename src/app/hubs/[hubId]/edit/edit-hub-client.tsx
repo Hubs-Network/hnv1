@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { AdminPanel } from "@/components/hubs/admin-panel";
+import { PendingTransactions } from "@/components/hubs/pending-transactions";
 
 const EDIT_STEPS = [
   { id: "basic", title: "Basic Info", description: "Name, tagline and description" },
@@ -109,6 +110,7 @@ export function EditHubClient() {
           profile_id: hubId,
           profile_type: "hub",
           wallet_address: address,
+          safe_address: hub?.safeAddress,
         }),
       });
       const result = await res.json();
@@ -116,7 +118,7 @@ export function EditHubClient() {
     } catch {
       setAuthorized(false);
     }
-  }, [hubId, isAuthenticated, address]);
+  }, [hubId, isAuthenticated, address, hub?.safeAddress]);
 
   const loadHub = useCallback(async () => {
     setLoading(true);
@@ -388,8 +390,15 @@ export function EditHubClient() {
       </div>
 
       {/* Admin management (visible to all admins, editable by owner) */}
-      <div className="mt-12">
-        <AdminPanel hubId={hubId} />
+      <div className="mt-12 space-y-4">
+        <AdminPanel hubId={hubId} safeAddress={hub?.safeAddress} />
+        {(hub?.safeAddress || /^0x[a-fA-F0-9]{40}$/.test(hubId)) && (
+          <PendingTransactions
+            safeAddress={hub?.safeAddress || hubId}
+            threshold={1}
+            owners={[]}
+          />
+        )}
       </div>
     </div>
   );
