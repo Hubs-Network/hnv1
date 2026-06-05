@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x74f06139bfd0eeb1e7e33d8d05f1699e52270863",
+  "name": "Sanr3mo",
+  "tagline": "music is by the S34!",
+  "description": "a studio retreat for hacking on music tech and web3, while at the sea",
+  "website": "",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-05T20:38:49.848Z",
+    "updated_at": "2026-06-05T20:38:49.848Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0x74f06139bfd0eeb1e7e33d8d05f1699e52270863",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
