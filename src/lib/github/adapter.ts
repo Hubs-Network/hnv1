@@ -185,6 +185,93 @@ export function serializeProfile(profile: HubProfile): string {
   return JSON.stringify(profile, null, 2);
 }
 
+/**
+ * Whether GitHub-backed storage is configured (production).
+ */
+export function isGitHubConfigured(): boolean {
+  return !!(process.env.GITHUB_OWNER && process.env.GITHUB_REPO);
+}
+
+function githubReadHeaders() {
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github.raw+json",
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
+/**
+ * Read a single profile JSON from GitHub via the Contents API (fresh, no CDN delay).
+ * Returns null if not found.
+ */
+export async function readProfileFromGitHub(
+  type: EntityType,
+  id: string
+): Promise<HubProfile | null> {
+  const owner = process.env.GITHUB_OWNER!;
+  const repo = process.env.GITHUB_REPO!;
+  const branch = process.env.GITHUB_BRANCH || "main";
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/data/${type}s/${id}.json?ref=${branch}`;
+
+  try {
+    const res = await fetch(url, {
+      headers: githubReadHeaders(),
+      next: { revalidate: 30 },
+    });
+    if (!res.ok) return null;
+    const text = await res.text();
+    return JSON.parse(text) as HubProfile;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * List all profiles of a given type from GitHub.
+ */
+export async function listProfilesFromGitHub(
+  type: EntityType
+): Promise<HubProfile[]> {
+  const owner = process.env.GITHUB_OWNER!;
+  const repo = process.env.GITHUB_REPO!;
+  const branch = process.env.GITHUB_BRANCH || "main";
+  const dirUrl = `https://api.github.com/repos/${owner}/${repo}/contents/data/${type}s?ref=${branch}`;
+
+  try {
+    const token = process.env.GITHUB_TOKEN;
+    const listHeaders: Record<string, string> = {
+      Accept: "application/vnd.github+json",
+    };
+    if (token) listHeaders.Authorization = `Bearer ${token}`;
+
+    const res = await fetch(dirUrl, {
+      headers: listHeaders,
+      next: { revalidate: 30 },
+    });
+    if (!res.ok) return [];
+
+    const items = (await res.json()) as { name: string; download_url: string | null }[];
+    const jsonFiles = items.filter((i) => i.name.endsWith(".json") && i.download_url);
+
+    const profiles = await Promise.all(
+      jsonFiles.map(async (file) => {
+        try {
+          const r = await fetch(file.download_url!, { next: { revalidate: 30 } });
+          if (!r.ok) return null;
+          return JSON.parse(await r.text()) as HubProfile;
+        } catch {
+          return null;
+        }
+      })
+    );
+
+    return profiles.filter((p): p is HubProfile => p !== null);
+  } catch {
+    return [];
+  }
+}
+
 function entityDataPath(type: EntityType, id: string): string {
   return `data/${type}s/${id}.json`;
 }

@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
 import type { HubProfile, HubFilters } from "@/types";
+import {
+  isGitHubConfigured,
+  readProfileFromGitHub,
+  listProfilesFromGitHub,
+} from "@/lib/github/adapter";
 
 const DATA_DIR = path.join(process.cwd(), "data", "hubs");
 
@@ -12,7 +17,22 @@ function dataDirExists(): boolean {
   }
 }
 
+function sortHubs(hubs: HubProfile[]): HubProfile[] {
+  return hubs.sort(
+    (a, b) =>
+      new Date(b.metadata.submitted_at).getTime() -
+      new Date(a.metadata.submitted_at).getTime()
+  );
+}
+
 export async function getAllHubs(): Promise<HubProfile[]> {
+  // Production: read from GitHub (consistent with writes, no rebuild needed)
+  if (isGitHubConfigured()) {
+    const hubs = await listProfilesFromGitHub("hub");
+    return sortHubs(hubs);
+  }
+
+  // Local dev: read from filesystem
   if (!dataDirExists()) return [];
 
   const files = fs.readdirSync(DATA_DIR).filter((f) => f.endsWith(".json"));
@@ -27,14 +47,16 @@ export async function getAllHubs(): Promise<HubProfile[]> {
     }
   }
 
-  return hubs.sort(
-    (a, b) =>
-      new Date(b.metadata.submitted_at).getTime() -
-      new Date(a.metadata.submitted_at).getTime()
-  );
+  return sortHubs(hubs);
 }
 
 export async function getHubById(hubId: string): Promise<HubProfile | null> {
+  // Production: read from GitHub
+  if (isGitHubConfigured()) {
+    return await readProfileFromGitHub("hub", hubId);
+  }
+
+  // Local dev: read from filesystem
   if (!dataDirExists()) return null;
 
   const filePath = path.join(DATA_DIR, `${hubId}.json`);
