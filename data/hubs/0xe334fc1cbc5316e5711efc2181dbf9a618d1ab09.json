@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xe334fc1cbc5316e5711efc2181dbf9a618d1ab09",
+  "name": "Casa Macedonia",
+  "tagline": "Music Tech Studio in Turin",
+  "description": "combining music, software development and hardware hack.",
+  "website": "",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-05T20:47:37.680Z",
+    "updated_at": "2026-06-05T20:47:37.680Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+    "language": "en"
+  },
+  "safeAddress": "0xe334fc1cbc5316e5711efc2181dbf9a618d1ab09",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
