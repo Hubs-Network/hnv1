@@ -61,7 +61,7 @@ const initialData: FormData = {
 
 export function HubRegistrationForm() {
   const router = useRouter();
-  const { address, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { address, isAuthenticated, isLoading: authLoading, authProvider } = useAuth();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -122,7 +122,7 @@ export function HubRegistrationForm() {
       setDeployingStatus("Deploying your Hub Safe on Sepolia...");
       let safeAddress: string;
       try {
-        safeAddress = await deploySafeForHub(address);
+        safeAddress = await deploySafeForHub(address, authProvider);
       } catch (err) {
         setSubmitError(
           `Safe deployment failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`
