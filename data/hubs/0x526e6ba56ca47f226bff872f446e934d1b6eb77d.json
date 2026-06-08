@@ -6,39 +6,106 @@
   "description": "a place in the middle of middle earth countering the black wave of bad tech coming from Mordor with solar punk technology.",
   "website": "https://wtefarm.xyz",
   "contact": {
-    "contact_name": "",
+    "contact_name": "Maria",
     "email": "",
     "telegram": "",
     "preferred_contact": []
   },
   "location": {
-    "city": "",
+    "city": "Parma",
     "region": "",
-    "country": "",
+    "country": "Italy",
     "timezone": ""
   },
-  "languages": [],
+  "languages": [
+    "portuguese",
+    "italian"
+  ],
   "identity": {
-    "vocation_tags": [],
+    "vocation_tags": [
+      "agriculture",
+      "environment",
+      "technology"
+    ],
     "mission_keywords": [],
     "organizational_type": "nonprofit",
     "stage": "informal",
-    "revenue_models": [],
+    "revenue_models": [
+      "product_sales",
+      "memberships_subscriptions",
+      "food_and_beverage",
+      "consulting_services"
+    ],
     "revenue_notes": ""
   },
-  "spaces": [],
+  "spaces": [
+    {
+      "name": "Barrack",
+      "space_types": [
+        "coworking",
+        "event_space",
+        "workshop_space",
+        "maker_space",
+        "residency_space"
+      ],
+      "host_capacity_day": 100,
+      "notes": "our main premise for workshops, residencies and events"
+    }
+  ],
   "accommodation": {
-    "type": "none",
-    "formats": [],
-    "notes": ""
+    "type": "in_house",
+    "formats": [
+      "dormitory",
+      "shared_bathroom"
+    ],
+    "notes": "either this, or camping."
   },
-  "assets": [],
-  "network": [],
-  "challenges": [],
+  "assets": [
+    {
+      "name": "Shovel",
+      "category": "hardware",
+      "focus_areas": [
+        "production",
+        "agriculture"
+      ],
+      "notes": "it's called Jack, bring it back!"
+    }
+  ],
+  "network": [
+    {
+      "name": "Local School",
+      "scale": "local",
+      "scope": [
+        "education"
+      ],
+      "url": ""
+    }
+  ],
+  "challenges": [
+    {
+      "title": "Sewer system upgrade",
+      "problem_description": "we need to upgrade our sewer system and connect it to the main public pipeline",
+      "area": [
+        "production_fabrication_agriculture",
+        "operations"
+      ],
+      "urgency": 3,
+      "difficulty": 3,
+      "impact_scores": {
+        "technological": 2,
+        "artistic": 0,
+        "financial": 3,
+        "production": 3,
+        "educational": 1,
+        "community": 3
+      },
+      "expected_solution": "biowaste doesn't clog anymore and flows away, far far away."
+    }
+  ],
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-08T08:41:30.359Z",
-    "updated_at": "2026-06-08T08:41:30.359Z",
+    "updated_at": "2026-06-08T09:46:58.957Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
