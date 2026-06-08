@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x526e6ba56ca47f226bff872f446e934d1b6eb77d",
+  "name": "The TechFarm Whatsoever",
+  "tagline": "we do whatsoever tech related to sustainable farming",
+  "description": "a place in the middle of middle earth countering the black wave of bad tech coming from Mordor with solar punk technology.",
+  "website": "https://wtefarm.xyz",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-08T08:41:30.359Z",
+    "updated_at": "2026-06-08T08:41:30.359Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+    "language": "en"
+  },
+  "safeAddress": "0x526e6ba56ca47f226bff872f446e934d1b6eb77d",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
