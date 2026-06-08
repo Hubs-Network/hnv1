@@ -73,7 +73,7 @@
   ],
   "network": [
     {
-      "name": "Local School",
+      "name": "Local Elementary School",
       "scale": "local",
       "scope": [
         "education"
@@ -105,7 +105,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-08T08:41:30.359Z",
-    "updated_at": "2026-06-08T09:46:58.957Z",
+    "updated_at": "2026-06-08T09:48:07.343Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
