@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x13c12bf9c78ccf3edb16c64d26e111da02bd8e48",
+  "name": "Test Hub Y",
+  "tagline": "this is a test Hub called Y",
+  "description": "at Hub Y we do research on DAOs and local goverance for communities",
+  "website": "https://testhuby.xyz",
+  "contact": {
+    "contact_name": "",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "",
+    "region": "",
+    "country": "",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-08T08:38:52.096Z",
+    "updated_at": "2026-06-08T08:38:52.096Z",
+    "submitted_by": "Anonymous",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0x13c12bf9c78ccf3edb16c64d26e111da02bd8e48",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
