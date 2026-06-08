@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { AdminPanel } from "@/components/hubs/admin-panel";
 import { PendingTransactions } from "@/components/hubs/pending-transactions";
+import { describeIssues, type ValidationIssue } from "@/components/forms/hub-registration/validation-issues";
 
 const EDIT_STEPS = [
   { id: "basic", title: "Basic Info", description: "Name, tagline and description" },
@@ -38,6 +39,7 @@ const EDIT_STEPS = [
   { id: "assets", title: "Assets", description: "Tools, infrastructure and resources" },
   { id: "network", title: "Network", description: "Partner organizations and connections" },
 ];
+
 
 function hubToFormData(hub: HubProfile): FormData {
   return {
@@ -96,6 +98,7 @@ export function EditHubClient() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [issueList, setIssueList] = useState<ValidationIssue[]>([]);
 
   const checkAdmin = useCallback(async () => {
     if (!isAuthenticated || !address) {
@@ -152,6 +155,7 @@ export function EditHubClient() {
     setData((prev) => (prev ? { ...prev, ...patch } : prev));
     setErrors({});
     setError(null);
+    setIssueList([]);
   }, []);
 
   const currentStep = EDIT_STEPS[step];
@@ -178,6 +182,7 @@ export function EditHubClient() {
     setSaving(true);
     setError(null);
     setSaved(false);
+    setIssueList([]);
 
     try {
       const res = await fetch(`/api/hubs/${hubId}`, {
@@ -196,7 +201,8 @@ export function EditHubClient() {
             fieldErrors[path] = issue.message;
           }
           setErrors(fieldErrors);
-          setError("Please fix the validation errors and try again.");
+          setIssueList(describeIssues(result.issues));
+          setError("Some fields need attention before saving:");
         } else {
           setError(result.error || "Update failed");
         }
@@ -340,7 +346,30 @@ export function EditHubClient() {
       {/* Error / success */}
       {error && (
         <div className="mb-4 p-4 rounded-lg bg-danger-bg border border-danger/20">
-          <p className="text-sm text-danger">{error}</p>
+          <p className="text-sm text-danger font-medium">{error}</p>
+          {issueList.length > 0 && (
+            <ul className="mt-3 space-y-1.5">
+              {issueList.map((issue, i) => (
+                <li key={i} className="text-sm text-danger flex items-start gap-2">
+                  <span className="mt-1.5 w-1 h-1 rounded-full bg-danger shrink-0" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep(issue.step);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="text-left hover:underline"
+                  >
+                    <span className="font-medium">{issue.section}</span>
+                    {issue.label && (
+                      <span className="text-danger/80"> · {issue.label}</span>
+                    )}
+                    <span className="text-danger/70"> — {issue.message}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

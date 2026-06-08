@@ -3,22 +3,7 @@
 import type { StepProps } from "../types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-function MinCharsHint({ value, min }: { value: string; min: number }) {
-  const current = value.trim().length;
-  const met = current >= min;
-  return (
-    <p
-      className={`text-xs mt-1 transition-colors ${
-        met ? "text-green-600" : "text-red-500"
-      }`}
-    >
-      {met
-        ? `Minimum reached (${current}/${min} characters)`
-        : `Minimum ${min} characters (${current}/${min})`}
-    </p>
-  );
-}
+import { MinCharsHint } from "../min-chars-hint";
 
 export function BasicInfoStep({ data, updateData, errors }: StepProps) {
   return (

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FORM_STEPS, type FormData } from "./types";
+import { describeIssues, type ValidationIssue } from "./validation-issues";
 import { BasicInfoStep } from "./steps/basic-info";
 import { ContactLocationStep } from "./steps/contact-location";
 import { IdentityStep } from "./steps/identity";
@@ -69,6 +70,7 @@ export function HubRegistrationForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submittedHubId, setSubmittedHubId] = useState<string | null>(null);
+  const [issueList, setIssueList] = useState<ValidationIssue[]>([]);
 
   useEffect(() => {
     try {
@@ -90,6 +92,7 @@ export function HubRegistrationForm() {
     setData((prev) => ({ ...prev, ...patch }));
     setErrors({});
     setSubmitError(null);
+    setIssueList([]);
   }, []);
 
   const currentStep = FORM_STEPS[step];
@@ -152,9 +155,8 @@ export function HubRegistrationForm() {
             fieldErrors[path] = issue.message;
           }
           setErrors(fieldErrors);
-          setSubmitError(
-            "Please fix the validation errors and try again."
-          );
+          setIssueList(describeIssues(result.issues));
+          setSubmitError("Some fields need attention before submitting:");
         } else {
           setSubmitError(result.error || "Submission failed");
         }
@@ -285,7 +287,30 @@ export function HubRegistrationForm() {
       {/* Error message */}
       {submitError && (
         <div className="mb-4 p-4 rounded-lg bg-danger-bg border border-danger/20">
-          <p className="text-sm text-danger">{submitError}</p>
+          <p className="text-sm text-danger font-medium">{submitError}</p>
+          {issueList.length > 0 && (
+            <ul className="mt-3 space-y-1.5">
+              {issueList.map((issue, i) => (
+                <li key={i} className="text-sm text-danger flex items-start gap-2">
+                  <span className="mt-1.5 w-1 h-1 rounded-full bg-danger shrink-0" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep(issue.step);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="text-left hover:underline"
+                  >
+                    <span className="font-medium">{issue.section}</span>
+                    {issue.label && (
+                      <span className="text-danger/80"> · {issue.label}</span>
+                    )}
+                    <span className="text-danger/70"> — {issue.message}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

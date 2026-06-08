@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { CHALLENGE_AREAS } from "@/config/vocabularies";
 import { Plus, Trash2 } from "lucide-react";
 import { formatLabel } from "@/lib/utils";
+import { MinCharsHint } from "../min-chars-hint";
 
 const defaultImpact: ImpactScores = {
   technological: 0,
@@ -123,17 +124,20 @@ export function ChallengesStep({ data, updateData, errors }: StepProps) {
             error={errors[`challenges.${i}.title`]}
           />
 
-          <Textarea
-            label="Problem Description"
-            name={`challenge-${i}-desc`}
-            placeholder="Describe the challenge in detail"
-            value={challenge.problem_description}
-            onChange={(e) =>
-              updateChallenge(i, { problem_description: e.target.value })
-            }
-            error={errors[`challenges.${i}.problem_description`]}
-            rows={3}
-          />
+          <div>
+            <Textarea
+              label="Problem Description"
+              name={`challenge-${i}-desc`}
+              placeholder="Describe the challenge in detail"
+              value={challenge.problem_description}
+              onChange={(e) =>
+                updateChallenge(i, { problem_description: e.target.value })
+              }
+              error={errors[`challenges.${i}.problem_description`]}
+              rows={3}
+            />
+            <MinCharsHint value={challenge.problem_description} min={10} />
+          </div>
 
           <MultiSelect
             label="Challenge Areas"
@@ -210,17 +214,20 @@ export function ChallengesStep({ data, updateData, errors }: StepProps) {
             </div>
           </div>
 
-          <Textarea
-            label="Expected Solution"
-            name={`challenge-${i}-solution`}
-            placeholder="Describe what a good solution would look like"
-            value={challenge.expected_solution}
-            onChange={(e) =>
-              updateChallenge(i, { expected_solution: e.target.value })
-            }
-            error={errors[`challenges.${i}.expected_solution`]}
-            rows={3}
-          />
+          <div>
+            <Textarea
+              label="Expected Solution"
+              name={`challenge-${i}-solution`}
+              placeholder="Describe what a good solution would look like"
+              value={challenge.expected_solution}
+              onChange={(e) =>
+                updateChallenge(i, { expected_solution: e.target.value })
+              }
+              error={errors[`challenges.${i}.expected_solution`]}
+              rows={3}
+            />
+            <MinCharsHint value={challenge.expected_solution} min={10} />
+          </div>
         </Card>
       ))}
 
