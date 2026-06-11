@@ -19,6 +19,7 @@ import {
   ArrowLeft,
   ExternalLink,
   Clock,
+  Award,
 } from "lucide-react";
 import { HubEditButton } from "@/components/hubs/edit-button";
 
@@ -100,6 +101,19 @@ export default async function HubDetailPage({ params }: PageProps) {
           )}
           {hub.identity?.stage && (
             <Badge label={hub.identity.stage} variant="primary" size="md" />
+          )}
+          {hub.hnBadgeStatus === "approved" && (
+            <span
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary-bg text-primary border border-primary/20"
+              title={
+                hub.hnBadgeTokenId
+                  ? `Token #${hub.hnBadgeTokenId}`
+                  : "Hubs Network Badge"
+              }
+            >
+              <Award className="w-3.5 h-3.5" />
+              Hubs Network Badge
+            </span>
           )}
           <HubEditButton hubId={hub.hub_id} />
         </div>
@@ -461,6 +475,26 @@ export default async function HubDetailPage({ params }: PageProps) {
               </p>
               <p>Schema: v{hub.schema_version}</p>
               <p>ID: {hub.hub_id}</p>
+              {hub.hnBadgeStatus === "approved" && (
+                <>
+                  {hub.hnBadgeTokenId && (
+                    <p>HN Badge token: #{hub.hnBadgeTokenId}</p>
+                  )}
+                  {hub.hnBadgeTxHash && (
+                    <p className="break-all">
+                      Mint tx:{" "}
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${hub.hnBadgeTxHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {hub.hnBadgeTxHash.slice(0, 10)}…
+                      </a>
+                    </p>
+                  )}
+                </>
+              )}
             </div>
           </Card>
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getAllHubs, extractCountries } from "@/lib/data/hubs";
+import { getApprovedHubs, extractCountries } from "@/lib/data/hubs";
 import { HubDirectoryClient } from "./hub-directory-client";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function HubsDirectoryPage() {
-  const hubs = await getAllHubs();
+  const hubs = await getApprovedHubs();
   const countries = extractCountries(hubs);
 
   return (

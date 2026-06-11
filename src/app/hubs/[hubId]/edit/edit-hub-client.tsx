@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { AdminPanel } from "@/components/hubs/admin-panel";
 import { PendingTransactions } from "@/components/hubs/pending-transactions";
+import { HNBadgeCard } from "@/components/hubs/hn-badge-card";
 import { describeIssues, type ValidationIssue } from "@/components/forms/hub-registration/validation-issues";
 
 const EDIT_STEPS = [
@@ -333,7 +334,18 @@ export function EditHubClient() {
 
       {/* Step content */}
       <div className="mb-8">
-        {step === 0 && <BasicInfoStep {...stepProps} />}
+        {step === 0 && (
+          <>
+            <BasicInfoStep {...stepProps} />
+            <div className="mt-8">
+              <HNBadgeCard
+                hubId={hubId}
+                status={hub.hnBadgeStatus || "none"}
+                onApplied={loadHub}
+              />
+            </div>
+          </>
+        )}
         {step === 1 && <ContactLocationStep {...stepProps} />}
         {step === 2 && <IdentityStep {...stepProps} />}
         {step === 3 && <SpacesStep {...stepProps} />}

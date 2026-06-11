@@ -138,6 +138,23 @@ export const hubProfileSchema = z.object({
   safeAddress: z.string().optional(),
   chainId: z.number().optional(),
   network_id: z.string().optional(),
+  // Hubs Network Badge application (optional; legacy hubs default to "none")
+  hnBadgeStatus: z.enum(["none", "pending", "approved", "rejected"]).optional(),
+  hnBadgeApplication: z
+    .object({
+      submittedAt: z.string(),
+      manifestoAccepted: z.literal(true),
+      manifestoUrl: z.literal("https://www.hubsnetwork.org/manifesto"),
+      applicantAddress: z.string().optional(),
+    })
+    .optional(),
+  // Hubs Network Badge SBT (set on approval / rejection)
+  hnBadgeTokenId: z.string().optional(),
+  hnBadgeApprovedAt: z.string().optional(),
+  hnBadgeApprovedBy: z.string().optional(),
+  hnBadgeTxHash: z.string().optional(),
+  hnBadgeRejectedAt: z.string().optional(),
+  hnBadgeRejectedBy: z.string().optional(),
 });
 
 /**
@@ -152,6 +169,14 @@ export const hubRegistrationSchema = hubProfileSchema.omit({
   safeAddress: true,
   chainId: true,
   network_id: true,
+  hnBadgeStatus: true,
+  hnBadgeApplication: true,
+  hnBadgeTokenId: true,
+  hnBadgeApprovedAt: true,
+  hnBadgeApprovedBy: true,
+  hnBadgeTxHash: true,
+  hnBadgeRejectedAt: true,
+  hnBadgeRejectedBy: true,
 });
 
 export type HubProfileInput = z.infer<typeof hubProfileSchema>;

@@ -50,6 +50,39 @@ export async function getAllHubs(): Promise<HubProfile[]> {
   return sortHubs(hubs);
 }
 
+/**
+ * Public directory hubs: only those approved for the Hubs Network Badge.
+ *
+ * The JSON `hnBadgeStatus === "approved"` flag is the cache. We then reconcile
+ * against the on-chain `isApprovedHub()` via a single cached multicall (1 RPC
+ * round-trip, 60s TTL) so a hub only shows publicly if it truly holds the SBT.
+ * If the RPC is unavailable, we fall back to the JSON flag.
+ */
+export async function getApprovedHubs(): Promise<HubProfile[]> {
+  const hubs = await getAllHubs();
+  const jsonApproved = hubs.filter((h) => h.hnBadgeStatus === "approved");
+  if (jsonApproved.length === 0) return [];
+
+  try {
+    const { getCachedOnChainApprovedSet } = await import("@/lib/hn-badge-sbt");
+    const addresses = jsonApproved
+      .map((h) => (h.safeAddress || h.hub_id || "").toLowerCase())
+      .filter(Boolean);
+    const onChain = await getCachedOnChainApprovedSet(addresses);
+
+    // null => RPC failed: fall back to JSON cache rather than hiding everything.
+    if (onChain) {
+      return jsonApproved.filter((h) =>
+        onChain.has((h.safeAddress || h.hub_id || "").toLowerCase())
+      );
+    }
+  } catch {
+    // fall through to JSON-only
+  }
+
+  return jsonApproved;
+}
+
 export async function getHubById(hubId: string): Promise<HubProfile | null> {
   // Production: read from GitHub
   if (isGitHubConfigured()) {

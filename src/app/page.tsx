@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getAllHubs } from "@/lib/data/hubs";
+import { getApprovedHubs } from "@/lib/data/hubs";
 import { HubCard } from "@/components/hubs/hub-card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Globe, Database, Users, Layers } from "lucide-react";
 
 export default async function HomePage() {
-  const hubs = await getAllHubs();
+  const hubs = await getApprovedHubs();
   const featured = hubs.slice(0, 3);
 
   return (

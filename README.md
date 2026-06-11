@@ -6,8 +6,8 @@ An open platform for mapping hub capabilities, needs and networks — the first 
 
 - **Public Homepage** with project overview and featured hubs
 - **Hub Registration** — multi-step form (only Basic Info required, rest optional)
-- **Hub Directory** — browse, search and filter registered hubs
-- **Hub Detail Pages** — rich profile pages for each hub
+- **Hub Directory** — browse, search and filter **official** Hubs Network hubs (badge-approved only)
+- **Hub Detail Pages** — rich profile pages for each hub (direct URL works for any registered hub)
 - **Authentication** — Magic email login + injected wallets (MetaMask/Rabby)
 - **On-chain Safe Multisig Admin** — each hub is governed by a Safe on Sepolia
 - **Gas-sponsored transactions** — users never pay gas (Magic via Alchemy, injected via relay)
@@ -15,6 +15,12 @@ An open platform for mapping hub capabilities, needs and networks — the first 
 - **My Hubs** — personal dashboard of hubs you own or administer
 - **Hub deletion** — owners can permanently delete hubs
 - **JSON-based storage** — public profile data stored as JSON on GitHub
+- **Hubs Network Badge** — application flow, HN admin review, on-chain SBT minting
+- **HN Admin Panel** — Directors Safe owners review pending badge applications
+
+### Registered hub ≠ official hub
+
+Any wallet can register a hub and deploy a Safe. Only hubs that **apply**, are **approved** by Hubs Network admins, and receive the **SBT** on-chain appear in the public `/hubs` directory. Unapproved hubs remain editable by their owners and accessible via direct URL.
 
 ---
 
@@ -36,7 +42,9 @@ An open platform for mapping hub capabilities, needs and networks — the first 
                         │
               ┌─────────▼──────────┐
               │  Sepolia Blockchain │
-              │  Safe Multisig      │
+              │  - Safe Multisig    │
+              │  - HN Badge SBT     │
+              │  - HN Directors Safe│
               └────────────────────┘
                         │
               ┌─────────▼──────────┐
@@ -77,7 +85,12 @@ Open [http://localhost:3001](http://localhost:3001).
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | Yes | Client | Sepolia RPC URL (e.g. `https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY`) |
 | `NEXT_PUBLIC_SAFE_TX_SERVICE_URL` | Optional | Client | Safe Transaction Service URL (default: `https://safe-transaction-sepolia.safe.global`) |
 | `NEXT_PUBLIC_CHAIN_ID` | Optional | Client | Chain ID (default: `11155111` for Sepolia) |
-| `SEPOLIA_RPC_URL` | Yes | Server | Sepolia RPC for server-side reads |
+| `NEXT_PUBLIC_HN_DIRECTORS_SAFE_ADDRESS` | Optional | Client | HN Directors Safe — owners are HN admins (default: `0xc770755f793197C34Fd5b8F86b50d73D943C98a3`) |
+| `HN_DIRECTORS_SAFE_ADDRESS` | Optional | Server | Same as above, server-side mirror |
+| `NEXT_PUBLIC_HN_CHAIN_ID` | Optional | Client | HN network chain ID (default: `11155111`) |
+| `HUBS_NETWORK_BADGE_SBT_ADDRESS` | Yes | Server | `HubsNetworkBadgeSBT` contract on Sepolia (relayer mints on approval) |
+| `NEXT_PUBLIC_HUBS_NETWORK_BADGE_SBT_ADDRESS` | Optional | Client | Same contract address for display/links |
+| `SEPOLIA_RPC_URL` | Yes | Server | Sepolia RPC for server-side reads and SBT mint |
 | `RELAYER_PRIVATE_KEY` | Yes | Server | Private key of the funded relayer wallet (pays gas for injected wallet users) |
 | `DATABASE_URL` | Yes | Server | Neon Postgres connection string |
 | `MAGIC_SECRET_KEY` | Optional | Server | Magic secret key (for future server-side verification) |
@@ -99,6 +112,15 @@ Open [http://localhost:3001](http://localhost:3001).
 | **GitHub** | Public hub profile JSON storage | [github.com/Hubs-Network/hnv1](https://github.com/Hubs-Network/hnv1) |
 | **Vercel** | Hosting & deployment | [vercel.com](https://vercel.com) |
 | **Safe (Sepolia)** | On-chain multisig for hub governance | [app.safe.global](https://app.safe.global) |
+| **HubsNetworkBadgeSBT** | Non-transferable badge minted to approved hub Safes | Sepolia contract (see env vars) |
+
+**Sepolia addresses (defaults):**
+
+| Contract / Safe | Address |
+|-----------------|---------|
+| HN Directors Safe | `0xc770755f793197C34Fd5b8F86b50d73D943C98a3` |
+| HubsNetworkBadgeSBT | `0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B` |
+| Relayer wallet | `0xe09bc78d7A2479E1E542D7a1C29eE783F3871a2d` (must be funded; pays gas for relay + badge mint) |
 
 ---
 
@@ -115,15 +137,25 @@ src/
 │   ├── my-hubs/                    # Personal hub dashboard
 │   ├── register/hub/               # Registration form
 │   ├── admin/
+│   │   ├── page.tsx                # HN Admin Panel (badge applications)
 │   │   ├── dev/                    # Legacy dev admin tool
 │   │   └── sponsored-tx-test/      # Magic Smart Account test page
 │   └── api/
-│       ├── hubs/                   # Hub CRUD (GET, POST)
+│       ├── hubs/                   # Hub CRUD (GET = approved only, POST)
 │       ├── hubs/[hubId]/           # Hub detail (GET, PUT, DELETE)
+│       ├── hubs/[hubId]/hn-badge/  # Badge application
+│       │   └── apply/              # POST — hub owner applies for badge
 │       ├── hubs/[hubId]/admins/    # Admin listing (Safe owners)
 │       ├── admins/                 # Admin check, my-hubs
-│       └── relay/                  # ← NEW: Gas relay system
+│       ├── hn/is-admin/            # POST — check if wallet is HN admin
+│       ├── admin/hn-badge/         # HN admin badge management
+│       │   └── applications/       # GET pending list
+│       │       └── [hubId]/
+│       │           ├── approve/    # POST — mint SBT + update JSON
+│       │           └── reject/     # POST — reject application
+│       └── relay/                  # Gas relay system
 │           ├── route.ts            # Direct relay (threshold=1, injected wallets)
+│           ├── deploy/             # Safe deployment via relayer
 │           ├── propose/            # Propose multisig tx (threshold>1)
 │           ├── confirm/            # Add confirmation signature
 │           ├── pending/            # List pending proposals
@@ -131,8 +163,8 @@ src/
 ├── components/
 │   ├── ui/                         # Reusable UI (Button, Card, Input...)
 │   ├── layout/                     # Header, Footer
-│   ├── auth/                       # LoginPanel, UserWalletBadge
-│   ├── hubs/                       # HubCard, AdminPanel, PendingTransactions
+│   ├── auth/                       # LoginPanel, UserWalletBadge (+ Admin Panel link)
+│   ├── hubs/                       # HubCard, AdminPanel, HNBadgeCard, PendingTransactions
 │   └── forms/                      # Registration form steps
 ├── context/
 │   └── auth-context.tsx            # Auth state (Magic + injected wallets)
@@ -141,16 +173,22 @@ src/
 │   ├── magic-smart-account.ts      # Sponsored tx helper (Magic users)
 │   ├── safe.ts                     # Server-side Safe SDK helpers
 │   ├── safe-client.ts              # Client-side Safe deployment
-│   ├── safe-operations.ts          # ← CORE: Safe owner mgmt operations
+│   ├── safe-operations.ts          # Safe owner mgmt operations
 │   ├── hub-admin.ts                # Unified admin check (Safe + legacy)
+│   ├── hn-admin.ts                 # HN Directors Safe admin detection
+│   ├── hn-badge-sbt.ts             # SBT contract reads + relayer mint + multicall
+│   ├── hn-badge-message.ts         # Shared signed admin action message builder
+│   ├── hn-badge-client.ts          # Client-side personal_sign for approve/reject
+│   ├── hn-badge-verify.ts          # Server-side signature recovery + freshness check
 │   ├── env.ts                      # Environment variable validation
 │   ├── admin.ts                    # @deprecated Legacy Neon admin functions
 │   ├── db.ts                       # Neon Postgres client
-│   ├── schemas/hub.ts              # Zod schemas
-│   ├── data/hubs.ts                # Data access (GitHub/filesystem)
+│   ├── schemas/hub.ts              # Zod schemas (incl. hnBadge* fields)
+│   ├── data/hubs.ts                # Data access; getApprovedHubs() for public listing
 │   └── github/                     # GitHub Contents API adapter
 ├── config/
-│   └── vocabularies.ts             # Controlled vocabularies
+│   ├── vocabularies.ts             # Controlled vocabularies
+│   └── hubs-network.ts             # HN Directors Safe, SBT address, manifesto URL
 └── types/
     └── index.ts                    # TypeScript interfaces
 
@@ -183,6 +221,8 @@ Each hub is governed by a **Safe multisig contract on Sepolia**. The Safe addres
 3. Client deploys a new Safe on Sepolia (gas-sponsored) with the creator as sole owner (threshold=1)
 4. Safe address is stored as `hub.id` and `hub.safeAddress` in the JSON
 5. Server verifies ownership on-chain before saving
+
+Registration does **not** grant the Hubs Network Badge. After registration, the owner can apply from the hub edit page (see [Hubs Network Badge](#hubs-network-badge)).
 
 ### Admin Permissions
 
@@ -225,6 +265,93 @@ When threshold > 1, operations require multiple signatures:
 
 ---
 
+## Hubs Network Badge
+
+Official Hubs Network hubs hold a **non-transferable SBT** minted to their Safe address. The badge flow is separate from registration — registering creates a hub profile and Safe; becoming an **official** listed hub requires application and HN admin approval.
+
+### Badge status (`hnBadgeStatus`)
+
+| Status | Meaning |
+|--------|---------|
+| `none` | Default for legacy/new hubs; not applied |
+| `pending` | Application submitted, awaiting HN admin review |
+| `approved` | SBT minted; hub appears in public `/hubs` directory |
+| `rejected` | Application rejected; owner can apply again |
+
+Additional fields on approval: `hnBadgeTokenId`, `hnBadgeApprovedAt`, `hnBadgeApprovedBy`, `hnBadgeTxHash`. On rejection: `hnBadgeRejectedAt`, `hnBadgeRejectedBy` (cleared on re-application).
+
+### Hub owner flow
+
+1. Hub owner opens **Edit Hub** → first step (**Basic Info**) shows the **Hubs Network Badge** card
+2. Accepts the [Hubs Network Manifesto](https://www.hubsnetwork.org/manifesto) and clicks **Apply for Hubs Network Badge**
+3. Server verifies Safe ownership via `checkHubAdmin`; sets `hnBadgeStatus: "pending"`
+4. If **rejected**, owner sees the rejection message and can click **Apply again** after updating hub info
+
+### HN admin flow
+
+HN admins are wallets that are **owners of the HN Directors Safe** on Sepolia (`0xc770755f793197C34Fd5b8F86b50d73D943C98a3`). Detection is on-chain via `isHNAdmin()`.
+
+1. Connect as a Directors Safe owner → **Admin Panel** appears in the wallet menu → `/admin`
+2. **HN Badge Applications** lists hubs with `hnBadgeStatus === "pending"`
+3. **Approve**: wallet prompts `personal_sign` → server recovers signer, verifies HN admin → relayer calls `mintBadge(hubSafe, approver)` on the SBT contract → hub JSON updated to `approved`
+4. **Reject**: same signed-message flow → hub JSON updated to `rejected` (no on-chain tx)
+
+Admin actions require a **signed message** (not just a wallet address in the request body). The server reconstructs the message, recovers the signer with `recoverMessageAddress`, checks freshness (10-minute window), then verifies the signer is an HN Directors Safe owner.
+
+### Public listing filter
+
+`/hubs`, the homepage featured section, and `GET /api/hubs` use `getApprovedHubs()`:
+
+1. Filter hubs where `hnBadgeStatus === "approved"` (JSON cache)
+2. Reconcile via a **single multicall** to `isApprovedHub()` on the SBT contract (60s cache)
+3. If RPC fails, fall back to JSON-only so the directory does not go empty
+
+Hub detail pages at `/hubs/[hubId]` remain accessible by direct URL for any registered hub. Approved hubs show a **Hubs Network Badge** label and optional token ID / mint tx in metadata.
+
+### SBT contract (`HubsNetworkBadgeSBT`)
+
+| Function | Purpose |
+|----------|---------|
+| `mintBadge(hubSafe, approver)` | Mint SBT to hub Safe (called by relayer) |
+| `isApprovedHub(hubSafe)` | On-chain approval check for directory reconciliation |
+| `hasBadge(hubSafe)` | Fallback read |
+| `badgeOf(hubSafe)` | Token ID for a hub Safe |
+
+Reads use `SEPOLIA_RPC_URL`. Mint uses `RELAYER_PRIVATE_KEY` (same relayer as Safe operations).
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/config/hubs-network.ts` | Directors Safe address, SBT address, manifesto URL |
+| `src/lib/hn-admin.ts` | `isHNAdmin()`, `getHNDirectorsSafeInfo()` |
+| `src/lib/hn-badge-sbt.ts` | On-chain reads, relayer mint, multicall batch |
+| `src/lib/hn-badge-message.ts` | Shared approve/reject message format |
+| `src/lib/hn-badge-client.ts` | Client `personal_sign` for admin actions |
+| `src/lib/hn-badge-verify.ts` | Server signature recovery |
+| `src/components/hubs/hn-badge-card.tsx` | Apply / pending / approved / rejected UI |
+| `src/app/admin/page.tsx` | HN admin panel |
+
+### Manual testing checklist
+
+**Apply (hub owner):**
+- Connect as Safe owner → `/hubs/<safeAddress>/edit` → accept manifesto → Apply
+- Non-owner should receive 403 from `POST /api/hubs/[hubId]/hn-badge/apply`
+
+**Approve (HN admin):**
+- Connect as Directors Safe owner → `/admin` → Approve → sign message → relayer mints SBT
+- Verify on [Sepolia Etherscan](https://sepolia.etherscan.io): `isApprovedHub(hubSafe)` = true
+- Hub appears in `/hubs` and shows badge label on detail page
+
+**Reject (HN admin):**
+- Reject pending application → hub owner sees rejection + **Apply again** on edit page
+
+**Security:**
+- Approve/reject without valid signature → 401
+- Non-HN-admin wallet → 403 (even with forged address in body — signer is recovered from signature)
+
+---
+
 ## Gas Sponsorship
 
 **No user ever pays gas.** Two mechanisms:
@@ -233,6 +360,8 @@ When threshold > 1, operations require multiple signatures:
 |-----------|-----------|--------------|
 | Magic (email) | Alchemy Gas Manager | Smart Account sends UserOperation, Alchemy pays |
 | Injected (MetaMask) | Backend Relay | User signs message (free), relayer wallet pays gas |
+
+The relayer wallet also pays gas for **Hubs Network Badge SBT minting** when an HN admin approves an application (`mintBadge` via `RELAYER_PRIVATE_KEY`).
 
 The relayer wallet must be funded with SepoliaETH. Monitor its balance periodically.
 
@@ -325,10 +454,12 @@ The codebase is prepared for [Holons](https://docs.holons.io/) bot integration:
 ## Deployment (Vercel)
 
 Required environment variables on Vercel:
-- All `NEXT_PUBLIC_*` variables
-- `RELAYER_PRIVATE_KEY`
+- All `NEXT_PUBLIC_*` variables (Magic, Alchemy, Sepolia RPC, HN/SBT addresses)
+- `RELAYER_PRIVATE_KEY` — must be funded on Sepolia (Safe relay + badge mint)
 - `DATABASE_URL`
 - `SEPOLIA_RPC_URL`
+- `HUBS_NETWORK_BADGE_SBT_ADDRESS`
+- `HN_DIRECTORS_SAFE_ADDRESS` (optional if using defaults)
 - `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
 
 Build settings:

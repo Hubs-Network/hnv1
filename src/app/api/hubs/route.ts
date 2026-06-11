@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllHubs } from "@/lib/data/hubs";
+import { getApprovedHubs } from "@/lib/data/hubs";
 import { hubProfileSchema } from "@/lib/schemas/hub";
 import { saveProfileToRepo } from "@/lib/github/adapter";
 import { generateHubId } from "@/lib/utils";
@@ -8,7 +8,8 @@ import type { HubProfile } from "@/types";
 
 export async function GET() {
   try {
-    const hubs = await getAllHubs();
+    // Public directory: only hubs approved for the Hubs Network Badge.
+    const hubs = await getApprovedHubs();
     const publicHubs = hubs.map(({ admins: _admins, ...hub }) => ({
       ...hub,
       admin_policy: hub.safeAddress

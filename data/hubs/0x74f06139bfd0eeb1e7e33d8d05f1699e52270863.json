@@ -38,12 +38,23 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:38:49.848Z",
-    "updated_at": "2026-06-05T20:38:49.848Z",
+    "updated_at": "2026-06-11T13:23:37.662Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
     "language": "en"
   },
   "safeAddress": "0x74f06139bfd0eeb1e7e33d8d05f1699e52270863",
   "chainId": 11155111,
-  "network_id": "sepolia"
+  "network_id": "sepolia",
+  "hnBadgeStatus": "approved",
+  "hnBadgeApplication": {
+    "submittedAt": "2026-06-11T13:23:13.567Z",
+    "manifestoAccepted": true,
+    "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
+    "applicantAddress": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5"
+  },
+  "hnBadgeTokenId": "1",
+  "hnBadgeApprovedAt": "2026-06-11T13:23:37.662Z",
+  "hnBadgeApprovedBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "hnBadgeTxHash": "0x6bf90db73fd6b484115f4bd8e65c156cb29882a734c581dd25b4d6cf34d1d224"
 }

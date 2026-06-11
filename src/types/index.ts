@@ -111,6 +111,17 @@ export interface HubMetadata {
   language: string;
 }
 
+// ─── Hubs Network Badge ──────────────────────────────────────────────
+
+export type HNBadgeStatus = "none" | "pending" | "approved" | "rejected";
+
+export interface HNBadgeApplication {
+  submittedAt: string;
+  manifestoAccepted: true;
+  manifestoUrl: "https://www.hubsnetwork.org/manifesto";
+  applicantAddress?: string;
+}
+
 export interface HubProfile {
   schema_version: string;
   hub_id: string;
@@ -133,6 +144,16 @@ export interface HubProfile {
   safeAddress?: string;
   chainId?: number;
   network_id?: string;
+  // Hubs Network Badge application (optional; legacy hubs treated as "none")
+  hnBadgeStatus?: HNBadgeStatus;
+  hnBadgeApplication?: HNBadgeApplication;
+  // Hubs Network Badge SBT (set on approval / rejection)
+  hnBadgeTokenId?: string;
+  hnBadgeApprovedAt?: string;
+  hnBadgeApprovedBy?: string;
+  hnBadgeTxHash?: string;
+  hnBadgeRejectedAt?: string;
+  hnBadgeRejectedBy?: string;
 }
 
 // ─── Filter & Query Types ────────────────────────────────────────────

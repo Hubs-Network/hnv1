@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/auth-context";
-import { LogOut, Wallet, Sparkles, Building2 } from "lucide-react";
+import { LogOut, Wallet, Sparkles, Building2, ShieldCheck } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -13,6 +13,7 @@ function shortenAddress(address: string): string {
 export function UserWalletBadge() {
   const { address, ensName, authProvider, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isHNAdmin, setIsHNAdmin] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,6 +25,30 @@ export function UserWalletBadge() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!address) {
+      setIsHNAdmin(false);
+      return;
+    }
+    (async () => {
+      try {
+        const res = await fetch("/api/hn/is-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet_address: address }),
+        });
+        const result = await res.json();
+        if (!cancelled) setIsHNAdmin(result.is_hn_admin === true);
+      } catch {
+        if (!cancelled) setIsHNAdmin(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
 
   if (!address) return null;
 
@@ -74,6 +99,16 @@ export function UserWalletBadge() {
               <Building2 className="w-4 h-4" />
               My Hubs
             </Link>
+            {isHNAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-stone-50 rounded-md transition-colors w-full"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Admin Panel
+              </Link>
+            )}
             <button
               onClick={() => {
                 logout();
