@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare:pilgrim-passport-deploy": "tsx scripts/prepare-pilgrim-passport-deploy.ts",
+    "test:pilgrim-passport-hash": "tsx scripts/test-pilgrim-passport-hash.ts"
   },
   "dependencies": {
     "@magic-ext/smart-account": "^1.1.1",
@@ -33,6 +35,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }

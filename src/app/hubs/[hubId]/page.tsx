@@ -22,6 +22,7 @@ import {
   Award,
 } from "lucide-react";
 import { HubEditButton } from "@/components/hubs/edit-button";
+import { HubPassportSection } from "@/components/passport/hub-passport-section";
 
 interface PageProps {
   params: Promise<{ hubId: string }>;
@@ -318,6 +319,15 @@ export default async function HubDetailPage({ params }: PageProps) {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Pilgrim Passport (approved hubs only) */}
+          {hub.hnBadgeStatus === "approved" &&
+            /^0x[a-fA-F0-9]{40}$/.test(hub.safeAddress || hub.hub_id) && (
+              <HubPassportSection
+                hubId={hub.hub_id}
+                hubSafe={hub.safeAddress || hub.hub_id}
+              />
+            )}
+
           {/* Contact */}
           {hub.contact && (hub.contact.contact_name || hub.contact.email || hub.contact.telegram) && (
             <Card padding="md">

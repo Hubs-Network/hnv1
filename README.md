@@ -17,6 +17,7 @@ An open platform for mapping hub capabilities, needs and networks — the first 
 - **JSON-based storage** — public profile data stored as JSON on GitHub
 - **Hubs Network Badge** — application flow, HN admin review, on-chain SBT minting
 - **HN Admin Panel** — Directors Safe owners review pending badge applications
+- **Pilgrim Passport (MVP)** — pilgrims claim a non-transferable skills SBT from an approved hub; hub Safe owners approve & mint. Fully on-chain (no off-chain DB), gasless via EIP-712 + relayer
 
 ### Registered hub ≠ official hub
 
@@ -45,6 +46,7 @@ Any wallet can register a hub and deploy a Safe. Only hubs that **apply**, are *
               │  - Safe Multisig    │
               │  - HN Badge SBT     │
               │  - HN Directors Safe│
+              │  - Pilgrim Passport │
               └────────────────────┘
                         │
               ┌─────────▼──────────┐
@@ -52,6 +54,8 @@ Any wallet can register a hub and deploy a Safe. Only hubs that **apply**, are *
               │  - Proposals        │
               │  - Confirmations    │
               │  - Legacy admins    │
+              │  (NOT used by       │
+              │   Pilgrim Passport) │
               └────────────────────┘
                         │
               ┌─────────▼──────────┐
@@ -90,6 +94,10 @@ Open [http://localhost:3001](http://localhost:3001).
 | `NEXT_PUBLIC_HN_CHAIN_ID` | Optional | Client | HN network chain ID (default: `11155111`) |
 | `HUBS_NETWORK_BADGE_SBT_ADDRESS` | Yes | Server | `HubsNetworkBadgeSBT` contract on Sepolia (relayer mints on approval) |
 | `NEXT_PUBLIC_HUBS_NETWORK_BADGE_SBT_ADDRESS` | Optional | Client | Same contract address for display/links |
+| `PILGRIM_PASSPORT_SBT_ADDRESS` | Yes (Passport) | Server | `PilgrimPassportSBT` contract on Sepolia (relayer submits claim/mint) |
+| `NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS` | Yes (Passport) | Client | Same contract address (client EIP-712 `verifyingContract` + links) |
+| `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` | Yes (Passport) | Server | Dedicated backend EOA that co-signs `AppAuthorization`. Server-only; must equal the contract's `appSigner`. No `NEXT_PUBLIC_` mirror, no ETH needed |
+| `PILGRIM_PASSPORT_APP_SIGNER_ADDRESS` | Optional | Server | Informational mirror of the app signer address (derived from the key at runtime) |
 | `SEPOLIA_RPC_URL` | Yes | Server | Sepolia RPC for server-side reads and SBT mint |
 | `RELAYER_PRIVATE_KEY` | Yes | Server | Private key of the funded relayer wallet (pays gas for injected wallet users) |
 | `DATABASE_URL` | Yes | Server | Neon Postgres connection string |
@@ -113,6 +121,7 @@ Open [http://localhost:3001](http://localhost:3001).
 | **Vercel** | Hosting & deployment | [vercel.com](https://vercel.com) |
 | **Safe (Sepolia)** | On-chain multisig for hub governance | [app.safe.global](https://app.safe.global) |
 | **HubsNetworkBadgeSBT** | Non-transferable badge minted to approved hub Safes | Sepolia contract (see env vars) |
+| **PilgrimPassportSBT** | Non-transferable skills passport minted to pilgrims by approved hubs | Sepolia contract (see env vars) |
 
 **Sepolia addresses (defaults):**
 
@@ -120,7 +129,9 @@ Open [http://localhost:3001](http://localhost:3001).
 |-----------------|---------|
 | HN Directors Safe | `0xc770755f793197C34Fd5b8F86b50d73D943C98a3` |
 | HubsNetworkBadgeSBT | `0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B` |
-| Relayer wallet | `0xe09bc78d7A2479E1E542D7a1C29eE783F3871a2d` (must be funded; pays gas for relay + badge mint) |
+| PilgrimPassportSBT | set via `PILGRIM_PASSPORT_SBT_ADDRESS` (no baked-in default) |
+| Passport app signer | set via `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` (backend EOA; must match contract `appSigner`) |
+| Relayer wallet | `0xe09bc78d7A2479E1E542D7a1C29eE783F3871a2d` (must be funded; pays gas for relay + badge/passport mint) |
 
 ---
 
@@ -153,6 +164,11 @@ src/
 │       │       └── [hubId]/
 │       │           ├── approve/    # POST — mint SBT + update JSON
 │       │           └── reject/     # POST — reject application
+│       ├── pilgrim-passport/        # Pilgrim Passport (fully on-chain)
+│       │   ├── app-authorization/  # POST — server co-signs AppAuthorization
+│       │   ├── claims/             # POST submit claim; GET list (hubSafe|applicant)
+│       │   │   └── [claimId]/approve/  # POST — owner approves & mints
+│       │   └── passport/           # GET — owner passport state + claim nonce
 │       └── relay/                  # Gas relay system
 │           ├── route.ts            # Direct relay (threshold=1, injected wallets)
 │           ├── deploy/             # Safe deployment via relayer
@@ -165,6 +181,7 @@ src/
 │   ├── layout/                     # Header, Footer
 │   ├── auth/                       # LoginPanel, UserWalletBadge (+ Admin Panel link)
 │   ├── hubs/                       # HubCard, AdminPanel, HNBadgeCard, PendingTransactions
+│   ├── passport/                   # SkillSelector, HubPassportSection, HubPassportClaimsAdmin
 │   └── forms/                      # Registration form steps
 ├── context/
 │   └── auth-context.tsx            # Auth state (Magic + injected wallets)
@@ -180,6 +197,11 @@ src/
 │   ├── hn-badge-message.ts         # Shared signed admin action message builder
 │   ├── hn-badge-client.ts          # Client-side personal_sign for approve/reject
 │   ├── hn-badge-verify.ts          # Server-side signature recovery + freshness check
+│   ├── pilgrim-passport-sbt.ts     # Passport reads + relayer claim/mint + on-chain skill recovery
+│   ├── pilgrim-passport-message.ts # EIP-712 builders (ClaimRequest/AppAuthorization/ApproveClaim)
+│   ├── pilgrim-passport-app-signer.ts # Server-only AppAuthorization signer
+│   ├── pilgrim-passport-client.ts  # Client EIP-712 signing + flow orchestration
+│   ├── pilgrim-skills.ts           # Canonical skill id ↔ bytes32 hash helpers + labels
 │   ├── env.ts                      # Environment variable validation
 │   ├── admin.ts                    # @deprecated Legacy Neon admin functions
 │   ├── db.ts                       # Neon Postgres client
@@ -188,11 +210,20 @@ src/
 │   └── github/                     # GitHub Contents API adapter
 ├── config/
 │   ├── vocabularies.ts             # Controlled vocabularies
-│   └── hubs-network.ts             # HN Directors Safe, SBT address, manifesto URL
+│   ├── hubs-network.ts             # HN Directors Safe, SBT address, manifesto URL
+│   ├── pilgrim-passport.ts         # Passport address, chain id, EIP-712 domain, ABI, skill limits
+│   └── pilgrim-skill-categories.ts # Frontend-only skill grouping + labels
 └── types/
     └── index.ts                    # TypeScript interfaces
 
-migrations/                         # SQL migrations for Neon
+contracts/
+  └── PilgrimPassportSBT.sol        # Passport contract source (deploy reference)
+
+scripts/
+  ├── prepare-pilgrim-passport-deploy.ts  # Generate constructor args / skill hashes
+  └── test-pilgrim-passport-hash.ts       # Assert skillsHash / claimId match Solidity
+
+migrations/                         # SQL migrations for Neon (NOT used by Passport)
   ├── 001_profile_admins.sql        # Legacy admin table
   └── 002_safe_proposals.sql        # Multisig proposals + confirmations
 ```
@@ -352,6 +383,119 @@ Reads use `SEPOLIA_RPC_URL`. Mint uses `RELAYER_PRIVATE_KEY` (same relayer as Sa
 
 ---
 
+## Pilgrim Passport (MVP)
+
+A **Pilgrim Passport** is a non-transferable SBT (`PilgrimPassportSBT`, symbol `HNPASS`) that records a pilgrim's skills, attested by an approved hub. A pilgrim proposes skills and claims a passport from an approved hub; a hub Safe owner reviews the proposed skills and mints. **No off-chain database is involved** — all claim state is read directly from the contract.
+
+### Design principles
+
+- **Identity via EIP-712, not `msg.sender`** — every state change is authorized by a typed-data signature (applicant, app signer, hub owner). This is why the relayer can submit transactions on users' behalf (gasless).
+- **Fully on-chain, no Neon** — pending claims, status, and proposed skills are read from chain. There is no `passport_claims` table.
+- **One passport per address** — `tokenOfOwner[applicant]` must be 0 to claim.
+- **Skills are canonical** — each skill is a `bytes32` (keccak of a canonical id). The frontend maps ids ↔ hashes and groups them into display categories. The initial proposal/approval cap is `MAX_INITIAL_SKILLS` (kept in sync with the contract via `src/config/pilgrim-passport.ts`).
+
+### Claim status (on-chain `ClaimStatus` enum)
+
+| Value | Status | Meaning |
+|-------|--------|---------|
+| 0 | `None` | No claim with this id |
+| 1 | `Pending` | Claim requested, awaiting hub owner approval |
+| 2 | `Minted` | Approved and passport minted |
+| 3 | `Cancelled` | Reserved |
+| 4 | `Rejected` | Reserved |
+
+### Pilgrim claim flow
+
+1. Logged-in user on an **approved** hub page opens the **Pilgrim Passport** card and selects skills.
+2. Client requests an `AppAuthorization` from `POST /api/pilgrim-passport/app-authorization` (server validates and co-signs with the app signer key).
+3. Client signs the `ClaimRequest` EIP-712 message (Magic via `rpcProvider`, or injected wallet — both via `eth_signTypedData_v4`).
+4. `POST /api/pilgrim-passport/claims` re-verifies both signatures + nonce + hub approval, then the relayer submits `requestPassportClaim` (gasless). The claim now lives on-chain.
+
+### Hub owner approval flow
+
+1. A hub Safe owner sees **Pending Passport Claims** on the hub page (rendered only for owners).
+2. Each claim shows the **skills the pilgrim proposed**, pre-selected. The owner may deselect any to attest a subset (cannot add new ones).
+3. Owner clicks **Approve & mint** → signs the `ApproveClaim` EIP-712 message.
+4. `POST /api/pilgrim-passport/claims/[claimId]/approve` verifies Safe ownership + signature, then the relayer submits `approveClaimAndMint` (gasless). The contract enforces ownership and that approved skills were proposed.
+5. The minted passport and its attested skills are viewable at `/passport/[tokenId]`.
+
+### Reading claims & proposed skills (on-chain)
+
+The auto getter for `claimRequests` **omits** the fixed-size `proposedSkills` array, and the `PassportClaimRequested` event does not carry skills. The app recovers proposed skills with a two-step strategy:
+
+1. **Direct getter** — `getClaimProposedSkills(claimId)` returns the skills in a single read. Present on contracts deployed with it.
+2. **Fallback (older deploys)** — locate the claim's block via its `createdAt` (binary search), then read `PassportClaimRequested` logs in a ≤10-block window (within the Alchemy free-tier `eth_getLogs` limit) and decode `proposedSkills` from the request tx calldata.
+
+`getDetailedClaim` tries the getter first, then the fallback, so the UI works on both. For best performance and lowest RPC usage, deploy with `getClaimProposedSkills`.
+
+### EIP-712 messages
+
+Domain: `EIP712("PilgrimPassportSBT", "1")`, `chainId` = Sepolia, `verifyingContract` = contract address.
+
+| Primary type | Signed by | Purpose |
+|--------------|-----------|---------|
+| `ClaimRequest` | Applicant (pilgrim) | Authorizes the claim with proposed skills + nonce |
+| `AppAuthorization` | App signer (backend EOA) | Co-authorizes the same claim parameters |
+| `ApproveClaim` | Hub Safe owner | Approves a subset of proposed skills and mints |
+
+`skillsHash` = `keccak256(abi.encodePacked(skillIds))`; `claimId` = `keccak256(abi.encode(applicant, hubSafe, skillsHash, applicantNonce))`. These are verified to match Solidity via `npm run test:pilgrim-passport-hash`.
+
+### Contract (`PilgrimPassportSBT`)
+
+| Function | Purpose |
+|----------|---------|
+| `requestPassportClaim(params, applicantSig, appSig)` | Create a pending claim (verifies both signatures) |
+| `approveClaimAndMint(params, hubSig)` | Owner approves subset + mints passport |
+| `getHubClaims(hubSafe)` / `getApplicantClaims(applicant)` | Claim ids by hub / applicant |
+| `claimRequests(claimId)` | Status/applicant/hubSafe/skillCount/createdAt (omits skills array) |
+| `getClaimProposedSkills(claimId)` | Proposed skills for a claim (added getter) |
+| `tokenOf(owner)` / `getSkills(tokenId)` | Passport token + attested skills |
+| `claimNonces(applicant)` | Per-applicant nonce for replay protection |
+
+Source for deployment is in `contracts/PilgrimPassportSBT.sol`. Reads use `SEPOLIA_RPC_URL`; claim/mint use `RELAYER_PRIVATE_KEY`; `AppAuthorization` is signed with `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` (must equal the contract's `appSigner`).
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/config/pilgrim-passport.ts` | Address, chain id, EIP-712 domain, curated ABI, skill limits |
+| `src/config/pilgrim-skill-categories.ts` | Frontend-only skill grouping + labels |
+| `src/lib/pilgrim-skills.ts` | Canonical id ↔ `bytes32` hash + labels |
+| `src/lib/pilgrim-passport-message.ts` | EIP-712 builders, `skillsHash`, `claimId` |
+| `src/lib/pilgrim-passport-sbt.ts` | Reads, relayer writes, on-chain skill recovery |
+| `src/lib/pilgrim-passport-app-signer.ts` | Server-only `AppAuthorization` signing |
+| `src/lib/pilgrim-passport-client.ts` | Client signing + flow orchestration |
+| `src/components/passport/skill-selector.tsx` | Grouped multi-select skill picker |
+| `src/components/passport/hub-passport-section.tsx` | Claim CTA + status + owner panel |
+| `src/components/passport/hub-passport-claims-admin.tsx` | Owner: review proposed skills + approve & mint |
+| `src/app/passport/[tokenId]/page.tsx` | Passport display page |
+
+### Deploying / redeploying the contract
+
+1. Compile & deploy `contracts/PilgrimPassportSBT.sol` on Sepolia with the same constructor args: `hubBadgeSBTAddress`, `hnDirectorsSafeAddress`, `appSigner_` (= address of `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY`), `initialSkills[]` (the canonical skill hashes — see `npm run prepare:pilgrim-passport-deploy`).
+2. Set `PILGRIM_PASSPORT_SBT_ADDRESS` and `NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS` to the new address.
+3. If you change the initial-skills cap, update `MAX_INITIAL_SKILLS` in `src/config/pilgrim-passport.ts` (and the `bytes32[N] proposedSkills` array in the contract) to match.
+4. ABI shape, EIP-712 domain and signing code are unchanged across these redeploys.
+
+### Manual testing checklist
+
+**Claim (pilgrim):**
+- On an approved hub page, select skills → **Claim Pilgrim Passport** → claim becomes `Pending` on-chain
+- Works with both Magic (email) and injected wallets
+- Claiming when you already hold a passport → rejected (`AlreadyHasPassport`)
+
+**Approve & mint (hub owner):**
+- Owner sees the claim with the pilgrim's **proposed skills pre-selected**
+- Deselect some → only the selected subset is attested
+- **Approve & mint** → passport minted; viewable at `/passport/<tokenId>`
+- Non-owner cannot approve (signature is recovered server-side and checked against Safe ownership)
+
+**Security:**
+- Tampered/forged signatures → rejected by the API and/or contract
+- Stale nonce → `409` with the expected nonce
+
+---
+
 ## Gas Sponsorship
 
 **No user ever pays gas.** Two mechanisms:
@@ -361,7 +505,7 @@ Reads use `SEPOLIA_RPC_URL`. Mint uses `RELAYER_PRIVATE_KEY` (same relayer as Sa
 | Magic (email) | Alchemy Gas Manager | Smart Account sends UserOperation, Alchemy pays |
 | Injected (MetaMask) | Backend Relay | User signs message (free), relayer wallet pays gas |
 
-The relayer wallet also pays gas for **Hubs Network Badge SBT minting** when an HN admin approves an application (`mintBadge` via `RELAYER_PRIVATE_KEY`).
+The relayer wallet also pays gas for **Hubs Network Badge SBT minting** (`mintBadge`) and for **Pilgrim Passport** `requestPassportClaim` / `approveClaimAndMint`, all via `RELAYER_PRIVATE_KEY`.
 
 The relayer wallet must be funded with SepoliaETH. Monitor its balance periodically.
 
@@ -373,6 +517,8 @@ Run both migrations in the Neon SQL Editor:
 
 1. `migrations/001_profile_admins.sql` — Legacy admin table (still used for old hubs)
 2. `migrations/002_safe_proposals.sql` — Multisig proposals and confirmations
+
+> **Note:** the Pilgrim Passport feature does **not** use Neon — all its state is on-chain. No migration is required for it.
 
 ---
 
@@ -454,11 +600,13 @@ The codebase is prepared for [Holons](https://docs.holons.io/) bot integration:
 ## Deployment (Vercel)
 
 Required environment variables on Vercel:
-- All `NEXT_PUBLIC_*` variables (Magic, Alchemy, Sepolia RPC, HN/SBT addresses)
-- `RELAYER_PRIVATE_KEY` — must be funded on Sepolia (Safe relay + badge mint)
+- All `NEXT_PUBLIC_*` variables (Magic, Alchemy, Sepolia RPC, HN/SBT/Passport addresses)
+- `RELAYER_PRIVATE_KEY` — must be funded on Sepolia (Safe relay + badge mint + passport claim/mint)
 - `DATABASE_URL`
 - `SEPOLIA_RPC_URL`
 - `HUBS_NETWORK_BADGE_SBT_ADDRESS`
+- `PILGRIM_PASSPORT_SBT_ADDRESS` + `NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS`
+- `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` — must match the deployed contract's `appSigner`
 - `HN_DIRECTORS_SAFE_ADDRESS` (optional if using defaults)
 - `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
 
