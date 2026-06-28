@@ -45,9 +45,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-muted-light">
-                  Pilgrims — coming soon
-                </span>
+                <Link
+                  href="/pilgrims"
+                  className="text-sm text-muted hover:text-foreground transition-colors"
+                >
+                  Pilgrims
+                </Link>
               </li>
               <li>
                 <span className="text-sm text-muted-light">

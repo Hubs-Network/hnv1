@@ -5,12 +5,21 @@ import { useAuth } from "@/context/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2, Crown, Shield, Building2, Plus, Trash2 } from "lucide-react";
+import {
+  Loader2,
+  Crown,
+  Shield,
+  Building2,
+  Plus,
+  Trash2,
+  BadgeCheck,
+} from "lucide-react";
 
 interface MyHub {
   profile_id: string;
   role: string;
   name?: string;
+  has_badge?: boolean;
 }
 
 export default function MyHubsPage() {
@@ -128,9 +137,17 @@ export default function MyHubsPage() {
                     <Shield className="w-5 h-5 text-primary" />
                   )}
                   <div>
-                    <p className="text-sm font-semibold text-foreground">
-                      {hub.name || hub.profile_id}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold text-foreground">
+                        {hub.name || hub.profile_id}
+                      </p>
+                      {hub.has_badge && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full bg-primary-bg text-primary">
+                          <BadgeCheck className="w-3 h-3" />
+                          HN Badge
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-muted capitalize">{hub.role}</p>
                   </div>
                 </Link>
@@ -140,7 +157,8 @@ export default function MyHubsPage() {
                       View →
                     </Button>
                   </Link>
-                  {hub.role === "owner" && (
+                  {/* Hubs holding the HN Badge SBT cannot be deleted. */}
+                  {hub.role === "owner" && !hub.has_badge && (
                     <Button
                       variant="ghost"
                       size="sm"

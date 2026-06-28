@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getApprovedHubs } from "@/lib/data/hubs";
 import { HubCard } from "@/components/hubs/hub-card";
 import { Button } from "@/components/ui/button";
@@ -12,36 +13,49 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-bg text-primary text-xs font-medium mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Phase 1 — Hub Registry
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-28">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-bg text-primary text-xs font-medium mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Phase 1 — Hubs & Pilgrims Registry
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-[1.1]">
+                Residencies by{" "}
+                <span className="text-primary">Hubs Network</span>
+              </h1>
+
+              <p className="mt-6 text-lg sm:text-xl text-muted leading-relaxed">
+                An open registry of hubs, their capabilities, spaces, networks and
+                challenges — the first layer of a platform connecting hubs with
+                pilgrims and patrons for regenerative residencies.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/register/hub">
+                  <Button size="lg">
+                    Register your Hub
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <Link href="/hubs">
+                  <Button variant="secondary" size="lg">
+                    Browse Hubs
+                  </Button>
+                </Link>
+              </div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-[1.1]">
-              Residencies by{" "}
-              <span className="text-primary">Hubs Network</span>
-            </h1>
-
-            <p className="mt-6 text-lg sm:text-xl text-muted leading-relaxed max-w-2xl">
-              An open registry of hubs, their capabilities, spaces, networks and
-              challenges — the first layer of a platform connecting hubs with
-              pilgrims and patrons for regenerative residencies.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/register/hub">
-                <Button size="lg">
-                  Register your Hub
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              <Link href="/hubs">
-                <Button variant="secondary" size="lg">
-                  Browse Hubs
-                </Button>
-              </Link>
+            <div className="relative aspect-square w-full max-w-md mx-auto lg:max-w-none">
+              <Image
+                src="/hubView.png"
+                alt="A Hubs Network hub: a regenerative space for making, growing and collaborating"
+                fill
+                priority
+                sizes="(max-width: 1024px) 90vw, 45vw"
+                className="object-contain drop-shadow-xl"
+              />
             </div>
           </div>
         </div>
@@ -73,7 +87,7 @@ export default async function HomePage() {
                 icon: Users,
                 title: "Pilgrims",
                 desc: "Skilled contributors who travel to hubs, bringing expertise matched to real needs.",
-                active: false,
+                active: true,
               },
               {
                 icon: Layers,

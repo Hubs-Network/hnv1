@@ -16,7 +16,7 @@ export function Header() {
     { name: "Home", href: "/" },
     { name: "Hubs", href: "/hubs" },
     { name: "Register", href: "/register/hub" },
-    { name: "Pilgrims", href: "/pilgrims", disabled: true },
+    { name: "Pilgrims", href: "/pilgrims" },
     { name: "Patrons", href: "/patrons", disabled: true },
   ];
 

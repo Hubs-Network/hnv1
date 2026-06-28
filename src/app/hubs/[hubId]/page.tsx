@@ -484,7 +484,7 @@ export default async function HubDetailPage({ params }: PageProps) {
                 {hub.metadata.submitted_by}
               </p>
               <p>Schema: v{hub.schema_version}</p>
-              <p>ID: {hub.hub_id}</p>
+              <p className="break-all">ID: {hub.hub_id}</p>
               {hub.hnBadgeStatus === "approved" && (
                 <>
                   {hub.hnBadgeTokenId && (

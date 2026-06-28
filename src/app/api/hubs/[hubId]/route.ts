@@ -145,6 +145,18 @@ export async function DELETE(
       );
     }
 
+    // Hubs holding the Hubs Network Badge SBT cannot be deleted.
+    const safeAddress = (hub as any)?.safeAddress;
+    if (safeAddress) {
+      const { isHubApprovedOnChain } = await import("@/lib/hn-badge-sbt");
+      if (await isHubApprovedOnChain(safeAddress)) {
+        return NextResponse.json(
+          { error: "Hubs holding the Hubs Network Badge cannot be deleted." },
+          { status: 409 }
+        );
+      }
+    }
+
     const result = await deleteProfileFromRepo("hub", hubId);
 
     if (!result.success) {

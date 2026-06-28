@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAllHubs } from "@/lib/data/hubs";
 import { isHubAdmin } from "@/lib/safe";
 import { isSafeBasedHub } from "@/lib/hub-admin";
+import { getCachedOnChainApprovedSet } from "@/lib/hn-badge-sbt";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +13,14 @@ export async function GET(request: NextRequest) {
     }
 
     const normalized = walletAddress.toLowerCase();
-    const results: { profile_id: string; role: string; safe_based: boolean; name?: string }[] = [];
+    const results: {
+      profile_id: string;
+      role: string;
+      safe_based: boolean;
+      name?: string;
+      safeAddress?: string;
+      has_badge: boolean;
+    }[] = [];
 
     // Check Safe-based hubs: load all hubs and check ownership on-chain
     const allHubs = await getAllHubs();
@@ -23,7 +31,14 @@ export async function GET(request: NextRequest) {
       if (safeAddr && isSafeBasedHub(safeAddr)) {
         const isOwner = await isHubAdmin(safeAddr, walletAddress);
         if (isOwner) {
-          results.push({ profile_id: hubId, role: "owner", safe_based: true, name: hub.name });
+          results.push({
+            profile_id: hubId,
+            role: "owner",
+            safe_based: true,
+            name: hub.name,
+            safeAddress: safeAddr,
+            has_badge: false,
+          });
         }
       }
     }
@@ -48,11 +63,30 @@ export async function GET(request: NextRequest) {
             role: row.role,
             safe_based: false,
             name: hubData?.name,
+            safeAddress: (hubData as any)?.safeAddress,
+            has_badge: false,
           });
         }
       }
     } catch {
       // Neon not configured — that's fine
+    }
+
+    // Reconcile against the on-chain HN Badge SBT (single cached multicall).
+    try {
+      const safeAddresses = results
+        .map((r) => (r.safeAddress || "").toLowerCase())
+        .filter(Boolean);
+      if (safeAddresses.length > 0) {
+        const approved = await getCachedOnChainApprovedSet(safeAddresses);
+        if (approved) {
+          for (const r of results) {
+            r.has_badge = !!r.safeAddress && approved.has(r.safeAddress.toLowerCase());
+          }
+        }
+      }
+    } catch {
+      // RPC unavailable — leave has_badge as false rather than failing the page.
     }
 
     return NextResponse.json({ hubs: results });
