@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { PILGRIM_SKILL_CATEGORIES } from "@/config/pilgrim-skill-categories";
-import { getSkillLabel } from "@/lib/pilgrim-skills";
+import { useSkillCatalog } from "@/lib/use-skill-catalog";
 
 interface SkillSelectorProps {
   selected: string[];
@@ -24,17 +24,38 @@ export function SkillSelector({
   availableSkillIds,
   disabled = false,
 }: SkillSelectorProps) {
+  const { categories: catalogCategories, labelOf } = useSkillCatalog();
+
   const allowed = useMemo(
     () => (availableSkillIds ? new Set(availableSkillIds) : null),
     [availableSkillIds]
   );
 
-  const categories = useMemo(() => {
+  // Use the live catalog (static + custom skills) once loaded; fall back to the
+  // static taxonomy while it's loading so the picker is never empty.
+  const baseCategories = useMemo(() => {
+    if (catalogCategories.length > 0) {
+      return catalogCategories.map((cat) => ({
+        id: cat.id,
+        label: cat.label,
+        skills: cat.skills.map((s) => s.id),
+      }));
+    }
     return PILGRIM_SKILL_CATEGORIES.map((cat) => ({
-      ...cat,
-      skills: cat.skills.filter((s) => !allowed || allowed.has(s)),
-    })).filter((cat) => cat.skills.length > 0);
-  }, [allowed]);
+      id: cat.id,
+      label: cat.label,
+      skills: [...cat.skills] as string[],
+    }));
+  }, [catalogCategories]);
+
+  const categories = useMemo(() => {
+    return baseCategories
+      .map((cat) => ({
+        ...cat,
+        skills: cat.skills.filter((s) => !allowed || allowed.has(s)),
+      }))
+      .filter((cat) => cat.skills.length > 0);
+  }, [baseCategories, allowed]);
 
   function toggle(skillId: string) {
     if (disabled) return;
@@ -73,7 +94,7 @@ export function SkillSelector({
                     (disabled || atLimit) && "opacity-50 cursor-not-allowed"
                   )}
                 >
-                  {getSkillLabel(skillId)}
+                  {labelOf(skillId)}
                 </button>
               );
             })}

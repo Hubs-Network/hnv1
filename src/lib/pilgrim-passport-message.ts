@@ -55,6 +55,16 @@ export const APPROVE_CLAIM_TYPES = {
   ],
 } as const;
 
+export const SET_SKILL_STATUS_TYPES = {
+  SetSkillStatus: [
+    { name: "skillId", type: "bytes32" },
+    { name: "active", type: "bool" },
+    { name: "signer", type: "address" },
+    { name: "nonce", type: "uint256" },
+    { name: "signatureDeadline", type: "uint256" },
+  ],
+} as const;
+
 const EIP712_DOMAIN_TYPE = [
   { name: "name", type: "string" },
   { name: "version", type: "string" },
@@ -195,6 +205,39 @@ export function buildApproveClaimTypedData(input: {
     primaryType: "ApproveClaim" as const,
     message,
     approvedSkillsHash,
+  };
+}
+
+export interface SetSkillStatusMessage {
+  skillId: Hex;
+  active: boolean;
+  signer: `0x${string}`;
+  nonce: bigint;
+  signatureDeadline: bigint;
+}
+
+/** Build the typed-data payload for SetSkillStatus (HN Director signs this). */
+export function buildSetSkillStatusTypedData(input: {
+  skillId: Hex;
+  active: boolean;
+  signer: string;
+  nonce: bigint;
+  signatureDeadline: bigint;
+  domain?: TypedDataDomain;
+}) {
+  const domain = input.domain ?? buildPilgrimPassportDomain();
+  const message: SetSkillStatusMessage = {
+    skillId: input.skillId,
+    active: input.active,
+    signer: getAddress(input.signer),
+    nonce: input.nonce,
+    signatureDeadline: input.signatureDeadline,
+  };
+  return {
+    domain,
+    types: SET_SKILL_STATUS_TYPES,
+    primaryType: "SetSkillStatus" as const,
+    message,
   };
 }
 

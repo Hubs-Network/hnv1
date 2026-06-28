@@ -13,7 +13,7 @@ import {
   buildApproveClaimTypedData,
   toEip712Json,
 } from "./pilgrim-passport-message";
-import { skillIdToHash } from "./pilgrim-skills";
+import { computeSkillHash } from "./pilgrim-skills";
 import { PILGRIM_PASSPORT_CHAIN_ID } from "@/config/pilgrim-passport";
 
 type Eip1193Provider = {
@@ -66,7 +66,7 @@ async function ensureChain(provider: Eip1193Provider): Promise<void> {
   }
 }
 
-async function getSigner(
+export async function getSigner(
   authProvider: string | null
 ): Promise<{ provider: Eip1193Provider; account: string }> {
   if (authProvider === "magic") {
@@ -96,7 +96,7 @@ async function getSigner(
   throw new Error("No wallet provider found");
 }
 
-async function signTypedDataV4(
+export async function signTypedDataV4(
   provider: Eip1193Provider,
   account: string,
   json: string
@@ -167,7 +167,7 @@ export async function requestPassport(
   });
 
   // 3. Applicant signs the matching ClaimRequest (use server-canonical values).
-  const skillHashes = input.skillIds.map((id) => skillIdToHash(id));
+  const skillHashes = input.skillIds.map((id) => computeSkillHash(id));
   const claimTd = buildClaimRequestTypedData({
     applicant,
     hubSafe,
@@ -226,7 +226,7 @@ export async function approvePassportClaim(
   const signatureDeadline = String(
     Math.floor(Date.now() / 1000) + CLAIM_DEADLINE_SECONDS
   );
-  const approvedHashes = input.approvedSkillIds.map((id) => skillIdToHash(id));
+  const approvedHashes = input.approvedSkillIds.map((id) => computeSkillHash(id));
 
   const td = buildApproveClaimTypedData({
     claimId: input.claimId as `0x${string}`,

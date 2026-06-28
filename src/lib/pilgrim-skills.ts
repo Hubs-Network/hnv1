@@ -5,6 +5,7 @@
  * bytes32 hashes. Labels/categories are frontend-only (see
  * src/config/pilgrim-skill-categories.ts) and never go on-chain.
  */
+import { keccak256, toBytes } from "viem";
 import {
   PILGRIM_SKILL_IDS,
   PILGRIM_SKILL_HASHES,
@@ -17,6 +18,32 @@ import {
 } from "@/config/pilgrim-skill-categories";
 
 export type SkillHash = `0x${string}`;
+
+/**
+ * Universal skill-id → bytes32 hash, matching the on-chain convention
+ * (keccak256(toBytes(id))). This is how the canonical PILGRIM_SKILL_HASHES were
+ * generated, so it works identically for canonical AND custom (admin-added)
+ * skill IDs. Use this whenever a skill ID may be custom.
+ */
+export function computeSkillHash(skillId: string): SkillHash {
+  return keccak256(toBytes(skillId));
+}
+
+/**
+ * Derive a canonical slug ID from a free-text label, e.g. "Glass Blowing" →
+ * "glass_blowing". Shared by client and server so the derived ID (and thus the
+ * on-chain bytes32 hash) is identical on both sides. Returns "" if nothing
+ * usable remains.
+ */
+export function slugifySkillId(label: string): string {
+  return label
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
 
 /** Reverse lookup: bytes32 hash → canonical skill ID. */
 const HASH_TO_ID: Record<string, PilgrimSkillId> = (() => {

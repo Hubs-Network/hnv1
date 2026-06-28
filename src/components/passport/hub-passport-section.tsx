@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -117,6 +116,12 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
     }
   }
 
+  // Holders who aren't hub owners have nothing to do here; the Passport is
+  // reachable from the top-right account menu instead.
+  if (isAuthenticated && passport?.hasPassport && !isOwner) {
+    return null;
+  }
+
   return (
     <Card padding="md">
       <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -131,21 +136,11 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
         </p>
       )}
 
-      {/* Logged in */}
-      {isAuthenticated && (
+      {/* Logged in (and not already a holder) */}
+      {isAuthenticated && !passport?.hasPassport && (
         <div className="space-y-3">
           {loadingState && !passport ? (
             <p className="text-sm text-muted">Checking your Passport status…</p>
-          ) : passport?.hasPassport ? (
-            <p className="text-sm text-foreground">
-              You hold Passport #{passport.tokenId}.{" "}
-              <Link
-                href={`/passport/${passport.tokenId}`}
-                className="text-primary hover:underline"
-              >
-                View Passport
-              </Link>
-            </p>
           ) : submittedTx || pendingClaim ? (
             <div className="text-sm text-foreground space-y-1">
               <p>Your claim is pending a hub owner&apos;s approval.</p>

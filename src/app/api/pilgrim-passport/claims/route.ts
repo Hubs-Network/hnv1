@@ -6,10 +6,10 @@ import {
   type Hex,
 } from "viem";
 import {
-  isCanonicalSkillId,
-  skillIdToHash,
-  skillHashToId,
-} from "@/lib/pilgrim-skills";
+  isAllowedSkillId,
+  skillIdToHashUniversal,
+  resolveSkillIds,
+} from "@/lib/pilgrim-skills-catalog";
 import { isHubApprovedOnChain } from "@/lib/hn-badge-sbt";
 import {
   getClaimNonce,
@@ -44,12 +44,6 @@ function statusLabel(status: number): string {
   }
 }
 
-function hashesToSkillIds(hashes: readonly string[]): string[] {
-  return hashes
-    .map((h) => skillHashToId(h))
-    .filter((id): id is NonNullable<ReturnType<typeof skillHashToId>> => id !== null);
-}
-
 export const dynamic = "force-dynamic";
 
 /**
@@ -72,13 +66,15 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Invalid hubSafe" }, { status: 400 });
       }
       const detailed = await getDetailedClaimsForHub(hubSafe, CLAIM_STATUS.Pending);
-      const claims = detailed.map((d) => ({
-        claimId: d.claimId,
-        applicant: d.applicant,
-        hubSafe: d.hubSafe,
-        proposedSkills: hashesToSkillIds(d.proposedSkillHashes),
-        status: "pending",
-      }));
+      const claims = await Promise.all(
+        detailed.map(async (d) => ({
+          claimId: d.claimId,
+          applicant: d.applicant,
+          hubSafe: d.hubSafe,
+          proposedSkills: await resolveSkillIds(d.proposedSkillHashes),
+          status: "pending",
+        }))
+      );
       return NextResponse.json({ claims });
     }
 
@@ -88,15 +84,17 @@ export async function GET(request: NextRequest) {
       }
       const ids = await getApplicantClaims(applicant);
       const detailed = await Promise.all(ids.map((id) => getDetailedClaim(id)));
-      const claims = detailed
-        .filter((d) => d !== null)
-        .map((d) => ({
-          claimId: d!.claimId,
-          applicant: d!.applicant,
-          hubSafe: d!.hubSafe,
-          proposedSkills: hashesToSkillIds(d!.proposedSkillHashes),
-          status: statusLabel(d!.status),
-        }));
+      const claims = await Promise.all(
+        detailed
+          .filter((d): d is NonNullable<typeof d> => d !== null)
+          .map(async (d) => ({
+            claimId: d.claimId,
+            applicant: d.applicant,
+            hubSafe: d.hubSafe,
+            proposedSkills: await resolveSkillIds(d.proposedSkillHashes),
+            status: statusLabel(d.status),
+          }))
+      );
       return NextResponse.json({ claims });
     }
 
@@ -136,11 +134,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const allowed = await Promise.all(proposedSkills.map(isAllowedSkillId));
     if (
       proposedSkills.length < MIN_INITIAL_SKILLS ||
       proposedSkills.length > MAX_INITIAL_SKILLS ||
       new Set(proposedSkills).size !== proposedSkills.length ||
-      !proposedSkills.every(isCanonicalSkillId)
+      !allowed.every(Boolean)
     ) {
       return NextResponse.json({ error: "Invalid skill selection" }, { status: 400 });
     }
@@ -167,7 +166,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const skillHashes = proposedSkills.map((id) => skillIdToHash(id));
+    const skillHashes = proposedSkills.map((id) => skillIdToHashUniversal(id));
 
     // Pre-verify both signatures (the contract enforces this too, but failing
     // early avoids wasting relayer gas and yields clearer errors).

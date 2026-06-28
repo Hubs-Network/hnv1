@@ -1,7 +1,14 @@
 "use client";
 
 import { useAuth } from "@/context/auth-context";
-import { LogOut, Wallet, Sparkles, Building2, ShieldCheck } from "lucide-react";
+import {
+  LogOut,
+  Wallet,
+  Sparkles,
+  Building2,
+  ShieldCheck,
+  BadgeCheck,
+} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -14,6 +21,7 @@ export function UserWalletBadge() {
   const { address, ensName, authProvider, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHNAdmin, setIsHNAdmin] = useState(false);
+  const [passportTokenId, setPassportTokenId] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,6 +51,32 @@ export function UserWalletBadge() {
         if (!cancelled) setIsHNAdmin(result.is_hn_admin === true);
       } catch {
         if (!cancelled) setIsHNAdmin(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!address) {
+      setPassportTokenId(null);
+      return;
+    }
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/pilgrim-passport/passport?owner=${address}`
+        );
+        const result = await res.json();
+        if (!cancelled) {
+          setPassportTokenId(
+            result?.hasPassport && result?.tokenId ? String(result.tokenId) : null
+          );
+        }
+      } catch {
+        if (!cancelled) setPassportTokenId(null);
       }
     })();
     return () => {
@@ -91,6 +125,16 @@ export function UserWalletBadge() {
             </p>
           </div>
           <div className="p-1 space-y-0.5">
+            {passportTokenId && (
+              <Link
+                href={`/passport/${passportTokenId}`}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-stone-50 rounded-md transition-colors w-full"
+              >
+                <BadgeCheck className="w-4 h-4" />
+                My Passport
+              </Link>
+            )}
             <Link
               href="/my-hubs"
               onClick={() => setMenuOpen(false)}

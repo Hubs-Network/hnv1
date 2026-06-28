@@ -13,6 +13,7 @@ import {
   ExternalLink,
   CheckCircle,
 } from "lucide-react";
+import { AddPilgrimSkill } from "@/components/admin/add-pilgrim-skill";
 
 interface BadgeApplication {
   hub_id: string;
@@ -314,6 +315,10 @@ export default function AdminPage() {
           </div>
         )}
       </section>
+
+      {address && (
+        <AddPilgrimSkill address={address} authProvider={authProvider} />
+      )}
     </div>
   );
 }

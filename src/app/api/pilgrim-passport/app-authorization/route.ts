@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAddress, getAddress } from "viem";
-import { isCanonicalSkillId, skillIdToHash } from "@/lib/pilgrim-skills";
+import {
+  isAllowedSkillId,
+  skillIdToHashUniversal,
+} from "@/lib/pilgrim-skills-catalog";
 import { isHubApprovedOnChain } from "@/lib/hn-badge-sbt";
 import {
   getClaimNonce,
@@ -59,8 +62,9 @@ export async function POST(request: NextRequest) {
     if (new Set(proposedSkills).size !== proposedSkills.length) {
       return NextResponse.json({ error: "Duplicate skill selected" }, { status: 400 });
     }
-    if (!proposedSkills.every(isCanonicalSkillId)) {
-      return NextResponse.json({ error: "Non-canonical skill in selection" }, { status: 400 });
+    const allowed = await Promise.all(proposedSkills.map(isAllowedSkillId));
+    if (!allowed.every(Boolean)) {
+      return NextResponse.json({ error: "Unknown skill in selection" }, { status: 400 });
     }
 
     // 3. Deadline not expired
@@ -103,7 +107,7 @@ export async function POST(request: NextRequest) {
       // If the read fails we proceed; the contract will still enforce the signer.
     }
 
-    const skillHashes = proposedSkills.map((id) => skillIdToHash(id));
+    const skillHashes = proposedSkills.map((id) => skillIdToHashUniversal(id));
     const appSignature = await signAppAuthorization({
       applicant,
       hubSafe,

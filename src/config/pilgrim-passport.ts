@@ -111,6 +111,33 @@ export const PILGRIM_PASSPORT_SBT_ABI = [
     outputs: [{ name: "", type: "address" }],
   },
   {
+    name: "setSkillStatusByHNDirector",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      {
+        name: "params",
+        type: "tuple",
+        components: [
+          { name: "skillId", type: "bytes32" },
+          { name: "active", type: "bool" },
+          { name: "signer", type: "address" },
+          { name: "nonce", type: "uint256" },
+          { name: "signatureDeadline", type: "uint256" },
+        ],
+      },
+      { name: "signature", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    name: "hnDirectorNonces",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
     name: "claimNonces",
     type: "function",
     stateMutability: "view",
@@ -242,6 +269,15 @@ export const PILGRIM_PASSPORT_SBT_ABI = [
       { name: "skillId", type: "bytes32", indexed: true },
       { name: "hubSafe", type: "address", indexed: true },
       { name: "signer", type: "address", indexed: false },
+    ],
+    anonymous: false,
+  },
+  {
+    name: "SkillStatusUpdated",
+    type: "event",
+    inputs: [
+      { name: "skillId", type: "bytes32", indexed: true },
+      { name: "active", type: "bool", indexed: false },
     ],
     anonymous: false,
   },

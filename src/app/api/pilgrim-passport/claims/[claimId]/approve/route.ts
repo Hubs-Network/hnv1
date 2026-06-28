@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAddress, recoverTypedDataAddress, type Hex } from "viem";
 import { isHubAdmin } from "@/lib/safe";
 import {
-  isCanonicalSkillId,
-  skillIdToHash,
-  skillHashToId,
-} from "@/lib/pilgrim-skills";
+  isAllowedSkillId,
+  skillIdToHashUniversal,
+  resolveSkillIds,
+} from "@/lib/pilgrim-skills-catalog";
 import {
   getDetailedClaim,
   submitApproveClaimAndMint,
@@ -60,22 +60,19 @@ export async function POST(
       return NextResponse.json({ error: "Claim is not pending on-chain" }, { status: 409 });
     }
 
-    // 2. approvedSkills: 1..3, canonical, unique, subset of proposed.
+    // 2. approvedSkills: 1..max, known (canonical or custom), unique, subset.
+    const approvedAllowed = await Promise.all(approvedSkills.map(isAllowedSkillId));
     if (
       approvedSkills.length < MIN_INITIAL_SKILLS ||
       approvedSkills.length > MAX_INITIAL_SKILLS ||
       new Set(approvedSkills).size !== approvedSkills.length ||
-      !approvedSkills.every(isCanonicalSkillId)
+      !approvedAllowed.every(Boolean)
     ) {
       return NextResponse.json({ error: "Invalid approved skill selection" }, { status: 400 });
     }
     // Subset check against the reconstructed proposed skills (when available).
     // If reconstruction failed, the contract still enforces the subset rule.
-    const proposedIds = claim.proposedSkillHashes
-      .map((h) => skillHashToId(h))
-      .filter(
-        (id): id is NonNullable<ReturnType<typeof skillHashToId>> => id !== null
-      );
+    const proposedIds = await resolveSkillIds(claim.proposedSkillHashes);
     if (
       proposedIds.length > 0 &&
       !approvedSkills.every((s) => proposedIds.includes(s))
@@ -95,7 +92,7 @@ export async function POST(
     }
 
     // 4. Verify the hub owner's EIP-712 ApproveClaim signature.
-    const approvedHashes = approvedSkills.map((id) => skillIdToHash(id));
+    const approvedHashes = approvedSkills.map((id) => skillIdToHashUniversal(id));
     const td = buildApproveClaimTypedData({
       claimId: claimId as Hex,
       applicant: claim.applicant,

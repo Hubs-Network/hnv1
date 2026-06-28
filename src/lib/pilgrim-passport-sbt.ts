@@ -185,6 +185,20 @@ export async function getClaimNonce(applicant: string): Promise<bigint> {
   return read<bigint>("claimNonces", [getAddress(applicant)]);
 }
 
+/** Current SetSkillStatus nonce for an HN Director signer. */
+export async function getHNDirectorNonce(signer: string): Promise<bigint> {
+  return read<bigint>("hnDirectorNonces", [getAddress(signer)]);
+}
+
+/** Whether a skill hash is currently active (validSkill) on-chain. */
+export async function isValidSkillOnChain(skillHash: Hex): Promise<boolean> {
+  try {
+    return await read<boolean>("validSkill", [skillHash]);
+  } catch {
+    return false;
+  }
+}
+
 export async function getOnChainAppSigner(): Promise<`0x${string}`> {
   return read<`0x${string}`>("appSigner", []);
 }
@@ -475,4 +489,51 @@ export async function submitApproveClaimAndMint(
     tokenId = id !== null ? id.toString() : null;
   }
   return { txHash, tokenId };
+}
+
+export interface SetSkillStatusParams {
+  skillId: Hex;
+  active: boolean;
+  signer: string;
+  nonce: bigint;
+  signatureDeadline: bigint;
+}
+
+/**
+ * Submit setSkillStatusByHNDirector via the relayer (gasless). The contract
+ * verifies the HN Director's EIP-712 signature + Safe ownership, not msg.sender.
+ */
+export async function submitSetSkillStatus(
+  params: SetSkillStatusParams,
+  signature: Hex
+): Promise<{ txHash: string }> {
+  const walletClient = createWalletClient({
+    account: getRelayerAccount(),
+    chain: sepolia,
+    transport: http(getRpcUrl()),
+  });
+  const publicClient = getPublicClient();
+
+  const txHash = await walletClient.writeContract({
+    address: getContractAddress(),
+    abi: PILGRIM_PASSPORT_SBT_ABI,
+    functionName: "setSkillStatusByHNDirector",
+    args: [
+      {
+        skillId: params.skillId,
+        active: params.active,
+        signer: getAddress(params.signer),
+        nonce: params.nonce,
+        signatureDeadline: params.signatureDeadline,
+      },
+      signature,
+    ],
+    chain: sepolia,
+  });
+
+  const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
+  if (receipt.status === "reverted") {
+    throw new Error("setSkillStatusByHNDirector reverted on-chain");
+  }
+  return { txHash };
 }

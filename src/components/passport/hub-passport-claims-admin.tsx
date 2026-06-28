@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
-import { getSkillLabel } from "@/lib/pilgrim-skills";
+import { useSkillCatalog } from "@/lib/use-skill-catalog";
 import { approvePassportClaim } from "@/lib/pilgrim-passport-client";
 import {
   MAX_INITIAL_SKILLS,
@@ -29,6 +29,7 @@ interface ClaimRecord {
  */
 export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
   const { address, authProvider } = useAuth();
+  const { labelOf } = useSkillCatalog();
   const [claims, setClaims] = useState<ClaimRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedByClaim, setSelectedByClaim] = useState<Record<string, string[]>>({});
@@ -186,7 +187,7 @@ export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
                                   "opacity-50 cursor-not-allowed"
                               )}
                             >
-                              {getSkillLabel(s)}
+                              {labelOf(s)}
                             </button>
                           );
                         })}

@@ -8,7 +8,8 @@ import {
   getPassportSkills,
   getSkillAttestations,
 } from "@/lib/pilgrim-passport-sbt";
-import { getSkillLabelByHash } from "@/lib/pilgrim-skills";
+import { getHubById } from "@/lib/data/hubs";
+import { resolveSkillLabelByHash } from "@/lib/pilgrim-skills-catalog";
 import { NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS } from "@/config/pilgrim-passport";
 import type { SkillHash } from "@/lib/pilgrim-passport-message";
 
@@ -44,9 +45,21 @@ export default async function PassportPage({ params }: PageProps) {
   const attestationsBySkill = await Promise.all(
     skills.map(async (skill) => ({
       skill,
+      label: await resolveSkillLabelByHash(skill),
       attestations: await getSkillAttestations(tokenId, skill as SkillHash),
     }))
   );
+
+  // The minting hub is the one behind the earliest attestation (initial mint).
+  const earliestAttestation = attestationsBySkill
+    .flatMap((a) => a.attestations)
+    .reduce<(typeof attestationsBySkill)[number]["attestations"][number] | null>(
+      (min, a) => (!min || a.timestamp < min.timestamp ? a : min),
+      null
+    );
+  const mintHubSafe = earliestAttestation?.hubSafe ?? null;
+  const mintHub = mintHubSafe ? await getHubById(mintHubSafe) : null;
+  const mintHubName = mintHub?.name ?? (mintHubSafe ? shorten(mintHubSafe) : null);
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -80,6 +93,17 @@ export default async function PassportPage({ params }: PageProps) {
             <ExternalLink className="w-3 h-3" />
           </a>
         </p>
+        {mintHubSafe && (
+          <p className="text-sm text-muted break-all mt-1">
+            Minted by:{" "}
+            <Link
+              href={`/hubs/${mintHubSafe}`}
+              className="text-primary hover:underline"
+            >
+              {mintHubName}
+            </Link>
+          </p>
+        )}
       </div>
 
       <h2 className="text-lg font-semibold text-foreground mb-4">
@@ -90,12 +114,12 @@ export default async function PassportPage({ params }: PageProps) {
         <p className="text-sm text-muted">No skills attested yet.</p>
       ) : (
         <div className="space-y-4">
-          {attestationsBySkill.map(({ skill, attestations }) => {
+          {attestationsBySkill.map(({ skill, label, attestations }) => {
             const active = attestations.filter((a) => !a.revoked);
             return (
               <Card key={skill} padding="md">
                 <h3 className="font-medium text-foreground mb-2">
-                  {getSkillLabelByHash(skill)}
+                  {label}
                 </h3>
                 {active.length === 0 ? (
                   <p className="text-xs text-muted">No active attestations.</p>
