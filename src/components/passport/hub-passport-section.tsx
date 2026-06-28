@@ -16,6 +16,16 @@ interface Props {
   hubSafe: string;
 }
 
+/** Surface a useful message from Errors and wallet RPC error objects alike. */
+function extractErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  if (err && typeof err === "object" && "message" in err) {
+    return String((err as { message: unknown }).message);
+  }
+  return "";
+}
+
 interface PassportState {
   hasPassport: boolean;
   tokenId: string | null;
@@ -101,7 +111,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
       setPendingClaim(true);
       await loadState();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit claim");
+      setError(extractErrorMessage(err) || "Failed to submit claim");
     } finally {
       setSubmitting(false);
     }

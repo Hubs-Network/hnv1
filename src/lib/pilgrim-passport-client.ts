@@ -14,10 +14,57 @@ import {
   toEip712Json,
 } from "./pilgrim-passport-message";
 import { skillIdToHash } from "./pilgrim-skills";
+import { PILGRIM_PASSPORT_CHAIN_ID } from "@/config/pilgrim-passport";
 
 type Eip1193Provider = {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
 };
+
+const TARGET_CHAIN_ID_HEX = `0x${PILGRIM_PASSPORT_CHAIN_ID.toString(16)}`;
+
+/**
+ * MetaMask (and most injected wallets) reject eth_signTypedData_v4 when the
+ * EIP-712 domain.chainId differs from the wallet's active chain. Switch (or add)
+ * the wallet to the Passport chain before signing so injected claims work.
+ */
+async function ensureChain(provider: Eip1193Provider): Promise<void> {
+  let current: unknown;
+  try {
+    current = await provider.request({ method: "eth_chainId" });
+  } catch {
+    return; // some providers (e.g. Magic) don't need/alter chain here
+  }
+  if (typeof current === "string" && current.toLowerCase() === TARGET_CHAIN_ID_HEX) {
+    return;
+  }
+  try {
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: TARGET_CHAIN_ID_HEX }],
+    });
+  } catch (err) {
+    // 4902 = chain not added to the wallet → add it, then it becomes active.
+    const code = (err as { code?: number })?.code;
+    if (code === 4902) {
+      await provider.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainId: TARGET_CHAIN_ID_HEX,
+            chainName: "Sepolia",
+            nativeCurrency: { name: "Sepolia Ether", symbol: "ETH", decimals: 18 },
+            rpcUrls: ["https://rpc.sepolia.org"],
+            blockExplorerUrls: ["https://sepolia.etherscan.io"],
+          },
+        ],
+      });
+    } else {
+      throw new Error(
+        "Please switch your wallet to the Sepolia network and try again."
+      );
+    }
+  }
+}
 
 async function getSigner(
   authProvider: string | null
@@ -41,6 +88,8 @@ async function getSigner(
     const accounts = (await provider.request({
       method: "eth_requestAccounts",
     })) as string[];
+    // Injected wallets must be on the Passport chain for signTypedData_v4.
+    await ensureChain(provider);
     return { provider, account: accounts[0] };
   }
 

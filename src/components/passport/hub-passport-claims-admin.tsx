@@ -102,10 +102,13 @@ export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
       setMintedByClaim((m) => ({ ...m, [claim.claimId]: result.tokenId }));
       await refresh();
     } catch (err) {
-      setErrorByClaim((e) => ({
-        ...e,
-        [claim.claimId]: err instanceof Error ? err.message : "Approval failed",
-      }));
+      const msg =
+        err instanceof Error
+          ? err.message
+          : err && typeof err === "object" && "message" in err
+            ? String((err as { message: unknown }).message)
+            : "Approval failed";
+      setErrorByClaim((e) => ({ ...e, [claim.claimId]: msg || "Approval failed" }));
     } finally {
       setBusyClaim(null);
     }
