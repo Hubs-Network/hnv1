@@ -1,0 +1,182 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x27701648eda279dea46fed38a3bdbbc984cb3bc4",
+  "name": "Commons Hub",
+  "tagline": "an experimental playground for regenerative systems design in the Austrian Alps",
+  "description": "A communal event venue and guesthouse in the Austrian Alps - but also much more than that!",
+  "website": "https://commons-hub.at",
+  "contact": {
+    "contact_name": "Felix Fritsch",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Wien",
+    "region": "",
+    "country": "Austria",
+    "timezone": ""
+  },
+  "languages": [
+    "english",
+    "german",
+    "portuguese"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "technology",
+      "art",
+      "economics"
+    ],
+    "mission_keywords": [],
+    "organizational_type": "for_profit",
+    "stage": "incorporated",
+    "revenue_models": [
+      "space_or_asset_rental"
+    ],
+    "revenue_notes": "accommodation and event space, mostly"
+  },
+  "spaces": [
+    {
+      "name": "Seminar Room",
+      "space_types": [
+        "workshop_space",
+        "coworking",
+        "event_space",
+        "gallery"
+      ],
+      "host_capacity_day": 20,
+      "notes": ""
+    },
+    {
+      "name": "Main Hall",
+      "space_types": [
+        "event_space",
+        "classroom"
+      ],
+      "host_capacity_day": 100,
+      "notes": ""
+    },
+    {
+      "name": "Maker Space",
+      "space_types": [
+        "workshop_space",
+        "maker_space"
+      ],
+      "host_capacity_day": 20,
+      "notes": ""
+    },
+    {
+      "name": "Garden",
+      "space_types": [
+        "garden"
+      ],
+      "host_capacity_day": 100,
+      "notes": "big garden, spa area, veggies, herbs, freshwater pool in the river"
+    },
+    {
+      "name": "Kitchen",
+      "space_types": [
+        "kitchen"
+      ],
+      "host_capacity_day": 30,
+      "notes": "a former restaurant kitchen, 50m2, big enough for any kinda event"
+    }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": [
+      "single",
+      "dormitory",
+      "shared_bathroom"
+    ],
+    "notes": "we got single, double, and twin rooms, plus multi bed rooms with 4-6 beds. in total, we have 30 beds - for bigger events, we can also book nearby appartments."
+  },
+  "assets": [
+    {
+      "name": "3D Printer (Bambu Labs X1 Carbon)",
+      "category": "hardware",
+      "focus_areas": [
+        "fabrication",
+        "production",
+        "art"
+      ],
+      "notes": ""
+    },
+    {
+      "name": "Laser Cutter (xtools S1 40W)",
+      "category": "hardware",
+      "focus_areas": [
+        "fabrication",
+        "production",
+        "art"
+      ],
+      "notes": ""
+    },
+    {
+      "name": "wood workshop",
+      "category": "hardware",
+      "focus_areas": [
+        "production",
+        "fabrication",
+        "art",
+        "operations"
+      ],
+      "notes": ""
+    }
+  ],
+  "network": [
+    {
+      "name": "Crypto Commons Association",
+      "scale": "international",
+      "scope": [
+        "events",
+        "asset_sharing",
+        "community_building",
+        "research",
+        "visibility"
+      ],
+      "url": "https://crypto-commons.org/"
+    },
+    {
+      "name": "P2P Foundation",
+      "scale": "international",
+      "scope": [
+        "knowledge_transfer",
+        "research"
+      ],
+      "url": "https://p2pfoundation.net/"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "woodwork",
+      "problem_description": "its an old house with several side buildings, some of them wood - we always have carpentry work to be done. we have a range of machines for woodwork, best we have a call before the ",
+      "area": [
+        "production_fabrication_agriculture"
+      ],
+      "urgency": 3,
+      "difficulty": 4,
+      "impact_scores": {
+        "technological": 0,
+        "artistic": 0,
+        "financial": 0,
+        "production": 0,
+        "educational": 0,
+        "community": 0
+      },
+      "expected_solution": "come, stay at least a couple weeks, and tackle the most urgent and/or lowest hanging fruits first, under your own planning/guidance."
+    }
+  ],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-06-29T10:02:32.501Z",
+    "updated_at": "2026-06-29T10:02:32.501Z",
+    "submitted_by": "Felix Fritsch",
+    "creator_address": "0x6a44d537c9b9dd7fea601c6c413c62681c386dc7",
+    "language": "en"
+  },
+  "safeAddress": "0x27701648eda279dea46fed38a3bdbbc984cb3bc4",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
