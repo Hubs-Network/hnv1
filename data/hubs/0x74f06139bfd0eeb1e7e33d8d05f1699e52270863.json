@@ -2,31 +2,65 @@
   "schema_version": "0.3",
   "hub_id": "0x74f06139bfd0eeb1e7e33d8d05f1699e52270863",
   "name": "Sanr3mo",
-  "tagline": "music is by the S34!",
-  "description": "a studio retreat for hacking on music tech and web3, while at the sea",
-  "website": "",
+  "tagline": "web3 hub in the italian riviera",
+  "description": "a web3 co-working space and community located in the old town of Sanremo, Italy.",
+  "website": "https://www.linkedin.com/company/sanr3mo",
   "contact": {
-    "contact_name": "",
+    "contact_name": "Miriam",
     "email": "",
     "telegram": "",
     "preferred_contact": []
   },
   "location": {
-    "city": "",
-    "region": "",
-    "country": "",
-    "timezone": ""
+    "city": "Sanremo",
+    "region": "Liguria",
+    "country": "Italy",
+    "timezone": "Rome"
   },
-  "languages": [],
+  "languages": [
+    "english",
+    "french",
+    "italian"
+  ],
   "identity": {
-    "vocation_tags": [],
-    "mission_keywords": [],
+    "vocation_tags": [
+      "art",
+      "technology"
+    ],
+    "mission_keywords": [
+      "events",
+      "exhibitions",
+      "education",
+      "urban requalification"
+    ],
     "organizational_type": "nonprofit",
     "stage": "informal",
-    "revenue_models": [],
+    "revenue_models": [
+      "space_or_asset_rental",
+      "services",
+      "consulting_services"
+    ],
     "revenue_notes": ""
   },
-  "spaces": [],
+  "spaces": [
+    {
+      "name": "Il Buco",
+      "space_types": [
+        "coworking"
+      ],
+      "host_capacity_day": 5,
+      "notes": "Co-working, exhibition and event space in the heart of Sanremo"
+    },
+    {
+      "name": "Casa Bonmoschetto",
+      "space_types": [
+        "residency_space",
+        "studio"
+      ],
+      "host_capacity_day": 4,
+      "notes": "Studio apartment by the sea"
+    }
+  ],
   "accommodation": {
     "type": "none",
     "formats": [],
@@ -38,7 +72,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:38:49.848Z",
-    "updated_at": "2026-06-11T13:23:37.662Z",
+    "updated_at": "2026-06-29T08:44:24.547Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
     "language": "en"
