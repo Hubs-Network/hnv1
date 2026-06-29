@@ -55,8 +55,11 @@
     }
   ],
   "accommodation": {
-    "type": "none",
-    "formats": [],
+    "type": "in_house",
+    "formats": [
+      "single",
+      "shared_bathroom"
+    ],
     "notes": ""
   },
   "assets": [],
@@ -65,7 +68,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-29T09:00:31.485Z",
+    "updated_at": "2026-06-29T09:00:45.606Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
