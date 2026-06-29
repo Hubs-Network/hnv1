@@ -42,7 +42,25 @@
     ],
     "revenue_notes": ""
   },
-  "spaces": [],
+  "spaces": [
+    {
+      "name": "Il Buco",
+      "space_types": [
+        "coworking"
+      ],
+      "host_capacity_day": 5,
+      "notes": "Co-working, exhibition and event space in the heart of Sanremo"
+    },
+    {
+      "name": "Casa Bonmoschetto",
+      "space_types": [
+        "residency_space",
+        "studio"
+      ],
+      "host_capacity_day": 4,
+      "notes": "Studio apartment by the sea"
+    }
+  ],
   "accommodation": {
     "type": "none",
     "formats": [],
@@ -54,7 +72,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:38:49.848Z",
-    "updated_at": "2026-06-29T08:42:30.296Z",
+    "updated_at": "2026-06-29T08:44:24.547Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
     "language": "en"
