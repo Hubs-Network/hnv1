@@ -6,18 +6,24 @@
   "description": "combining music, software development and hardware hack.",
   "website": "",
   "contact": {
-    "contact_name": "",
+    "contact_name": "Mat",
     "email": "",
     "telegram": "",
     "preferred_contact": []
   },
   "location": {
-    "city": "",
-    "region": "",
-    "country": "",
-    "timezone": ""
+    "city": "Turin",
+    "region": "Piedmont",
+    "country": "Italy",
+    "timezone": "Rome"
   },
-  "languages": [],
+  "languages": [
+    "english",
+    "spanish",
+    "french",
+    "german",
+    "italian"
+  ],
   "identity": {
     "vocation_tags": [],
     "mission_keywords": [],
@@ -38,7 +44,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-11T13:41:24.986Z",
+    "updated_at": "2026-06-29T08:57:32.013Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
