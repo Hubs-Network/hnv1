@@ -25,11 +25,21 @@
     "italian"
   ],
   "identity": {
-    "vocation_tags": [],
-    "mission_keywords": [],
+    "vocation_tags": [
+      "technology",
+      "art",
+      "economics"
+    ],
+    "mission_keywords": [
+      "decentralize music"
+    ],
     "organizational_type": "nonprofit",
     "stage": "informal",
-    "revenue_models": [],
+    "revenue_models": [
+      "consulting_services",
+      "services",
+      "donations"
+    ],
     "revenue_notes": ""
   },
   "spaces": [],
@@ -44,7 +54,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-29T08:57:32.013Z",
+    "updated_at": "2026-06-29T08:58:39.366Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
