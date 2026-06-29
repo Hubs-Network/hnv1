@@ -64,11 +64,32 @@
   },
   "assets": [],
   "network": [],
-  "challenges": [],
+  "challenges": [
+    {
+      "title": "MICAR compliat music royalties tokenization",
+      "problem_description": "we need legal and technological advice on how to tokenize music royalties while staying MICAR compliant.",
+      "area": [
+        "software_development",
+        "knowledge_transfer",
+        "experimentation"
+      ],
+      "urgency": 2,
+      "difficulty": 3,
+      "impact_scores": {
+        "technological": 3,
+        "artistic": 0,
+        "financial": 3,
+        "production": 2,
+        "educational": 0,
+        "community": 3
+      },
+      "expected_solution": "coming up with a legal framework that can unleash music royalties in the EU zone"
+    }
+  ],
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-29T09:00:45.606Z",
+    "updated_at": "2026-06-29T09:03:17.607Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
