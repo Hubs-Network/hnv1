@@ -42,7 +42,18 @@
     ],
     "revenue_notes": ""
   },
-  "spaces": [],
+  "spaces": [
+    {
+      "name": "Studio Room",
+      "space_types": [
+        "coworking",
+        "studio",
+        "residency_space"
+      ],
+      "host_capacity_day": 2,
+      "notes": ""
+    }
+  ],
   "accommodation": {
     "type": "none",
     "formats": [],
@@ -54,7 +65,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-29T08:58:39.366Z",
+    "updated_at": "2026-06-29T08:59:02.704Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
