@@ -38,6 +38,7 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 const STORAGE_KEY = "hn_auth_provider";
+const STORAGE_ADDR = "hn_auth_address";
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
@@ -59,12 +60,33 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Restore session on mount
+  // Restore session on mount.
+  //
+  // This is intentionally NON-destructive: we never clear the saved session on
+  // transient errors or because an injected wallet is temporarily locked. We
+  // optimistically restore the last address and only verify it in the
+  // background. The session is removed only on an explicit logout or when Magic
+  // reports the user is genuinely logged out. This prevents the spurious
+  // logouts users hit when a wallet auto-locks or an RPC call momentarily fails.
   useEffect(() => {
     async function restoreSession() {
       if (typeof window === "undefined") return;
 
       const savedProvider = localStorage.getItem(STORAGE_KEY) as AuthProvider;
+      const savedAddr = localStorage.getItem(STORAGE_ADDR);
+
+      if (!savedProvider) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Optimistic restore so the user stays logged in across refreshes even if
+      // the wallet is locked or the network hiccups.
+      if (savedAddr) {
+        setAddress(savedAddr);
+        setAuthProvider(savedProvider);
+        if (savedProvider === "injected") resolveEns(savedAddr);
+      }
 
       try {
         if (savedProvider === "magic") {
@@ -78,28 +100,32 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
             if (ethAddress) {
               setAddress(ethAddress);
               setAuthProvider("magic");
+              localStorage.setItem(STORAGE_ADDR, ethAddress);
             }
           } else {
+            // Genuine logged-out state reported by Magic → clear session.
+            setAddress(null);
+            setAuthProvider(null);
             localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(STORAGE_ADDR);
           }
-        } else if (savedProvider === "injected") {
-          if (window.ethereum) {
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const accounts = await provider.listAccounts();
-            if (accounts.length > 0) {
-              const addr = accounts[0].address;
-              setAddress(addr);
-              setAuthProvider("injected");
-              resolveEns(addr);
-            } else {
-              localStorage.removeItem(STORAGE_KEY);
-            }
-          } else {
-            localStorage.removeItem(STORAGE_KEY);
+        } else if (savedProvider === "injected" && window.ethereum) {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.listAccounts();
+          if (accounts.length > 0) {
+            const addr = accounts[0].address;
+            setAddress(addr);
+            setAuthProvider("injected");
+            localStorage.setItem(STORAGE_ADDR, addr);
+            resolveEns(addr);
           }
+          // No accounts → wallet locked / permission paused. Keep the optimistic
+          // session; it re-aligns automatically on unlock (accountsChanged) or
+          // the next reload. Do NOT clear it here.
         }
       } catch {
-        localStorage.removeItem(STORAGE_KEY);
+        // Transient error (RPC, Magic network blip): keep the optimistic
+        // session rather than logging the user out.
       } finally {
         setIsLoading(false);
       }
@@ -125,6 +151,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
         setAuthProvider("magic");
         setEnsName(null);
         localStorage.setItem(STORAGE_KEY, "magic");
+        localStorage.setItem(STORAGE_ADDR, ethAddress);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Magic login failed";
@@ -153,6 +180,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
         setAddress(addr);
         setAuthProvider("injected");
         localStorage.setItem(STORAGE_KEY, "injected");
+        localStorage.setItem(STORAGE_ADDR, addr);
         resolveEns(addr);
       } else {
         setError("No accounts returned from wallet.");
@@ -183,6 +211,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     setAuthProvider(null);
     setError(null);
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_ADDR);
   }, [authProvider]);
 
   // Listen for account changes on injected wallets
@@ -193,11 +222,14 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       const accs = accounts as string[];
       if (authProvider !== "injected") return;
 
-      if (accs.length === 0) {
-        logout();
-      } else {
+      // An empty array means the wallet locked or paused permissions. We do NOT
+      // log the user out (that would wipe the session and force a manual
+      // reconnect). The session re-aligns automatically once the wallet emits a
+      // non-empty account again. Explicit disconnect is available in the menu.
+      if (accs.length > 0) {
         const addr = accs[0];
         setAddress(addr);
+        localStorage.setItem(STORAGE_ADDR, addr);
         resolveEns(addr);
       }
     };
