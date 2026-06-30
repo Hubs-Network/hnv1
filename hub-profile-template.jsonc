@@ -142,7 +142,7 @@
       // REQUIRED — at least one.
       // Allowed values: "funding_revenue", "documentation", "onboarding",
       //   "communication", "events", "software_development",
-      //   "production_fabrication_agriculture", "knowledge_transfer",
+      //   "agriculture", "construction_fabrication", "knowledge_transfer",
       //   "experimentation", "governance", "space_design", "partnerships",
       //   "community_growth", "education_programming", "operations"
       "area": [],

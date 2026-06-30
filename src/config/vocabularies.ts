@@ -119,7 +119,8 @@ export const CHALLENGE_AREAS = [
   "communication",
   "events",
   "software_development",
-  "production_fabrication_agriculture",
+  "agriculture",
+  "construction_fabrication",
   "knowledge_transfer",
   "experimentation",
   "governance",
@@ -180,5 +181,8 @@ export const ASSET_CATEGORY_LABELS = toLabelMap(ASSET_CATEGORIES);
 export const ASSET_FOCUS_AREA_LABELS = toLabelMap(ASSET_FOCUS_AREAS);
 export const NETWORK_SCALE_LABELS = toLabelMap(NETWORK_SCALES);
 export const NETWORK_SCOPE_LABELS = toLabelMap(NETWORK_SCOPES);
-export const CHALLENGE_AREA_LABELS = toLabelMap(CHALLENGE_AREAS);
+export const CHALLENGE_AREA_LABELS = {
+  ...toLabelMap(CHALLENGE_AREAS),
+  construction_fabrication: "Construction & Fabrication",
+};
 export const LANGUAGE_LABELS = toLabelMap(LANGUAGES);

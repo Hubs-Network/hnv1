@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CHALLENGE_AREAS } from "@/config/vocabularies";
+import { CHALLENGE_AREAS, CHALLENGE_AREA_LABELS } from "@/config/vocabularies";
 import { Plus, Trash2 } from "lucide-react";
 import { formatLabel } from "@/lib/utils";
 import { MinCharsHint } from "../min-chars-hint";
@@ -142,6 +142,7 @@ export function ChallengesStep({ data, updateData, errors }: StepProps) {
           <MultiSelect
             label="Challenge Areas"
             options={CHALLENGE_AREAS}
+            labels={CHALLENGE_AREA_LABELS}
             value={challenge.area}
             onChange={(val) =>
               updateChallenge(i, { area: val as ChallengeArea[] })

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ScoreBar } from "@/components/ui/score-bar";
 import { Button } from "@/components/ui/button";
 import { formatLabel, formatDate } from "@/lib/utils";
+import { CHALLENGE_AREA_LABELS } from "@/config/vocabularies";
 import {
   MapPin,
   Globe,
@@ -264,7 +265,8 @@ export default async function HubDetailPage({ params }: PageProps) {
                       {challenge.area.map((a) => (
                         <Badge
                           key={a}
-                          label={a}
+                          label={CHALLENGE_AREA_LABELS[a] ?? formatLabel(a)}
+                          raw
                           variant="accent"
                           size="sm"
                         />

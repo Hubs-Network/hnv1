@@ -13,6 +13,8 @@ interface MultiSelectProps {
   error?: string;
   placeholder?: string;
   max?: number;
+  /** Optional display-label overrides keyed by option value. Falls back to formatLabel. */
+  labels?: Record<string, string>;
 }
 
 export function MultiSelect({
@@ -23,7 +25,9 @@ export function MultiSelect({
   error,
   placeholder = "Select options…",
   max,
+  labels,
 }: MultiSelectProps) {
+  const displayOf = (option: string) => labels?.[option] ?? formatLabel(option);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -74,7 +78,8 @@ export function MultiSelect({
             {value.map((v) => (
               <Badge
                 key={v}
-                label={v}
+                label={displayOf(v)}
+                raw
                 variant="primary"
                 size="sm"
                 onClick={() => remove(v)}
@@ -111,7 +116,7 @@ export function MultiSelect({
                       : "hover:bg-stone-50 text-foreground"
                   )}
                 >
-                  {formatLabel(option)}
+                  {displayOf(option)}
                 </button>
               );
             })}

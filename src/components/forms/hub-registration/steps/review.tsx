@@ -3,6 +3,7 @@
 import type { StepProps } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { formatLabel } from "@/lib/utils";
+import { CHALLENGE_AREA_LABELS } from "@/config/vocabularies";
 
 function Section({
   title,
@@ -177,7 +178,13 @@ export function ReviewStep({ data }: StepProps) {
               </p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {c.area.map((a) => (
-                  <Badge key={a} label={a} size="sm" variant="accent" />
+                  <Badge
+                    key={a}
+                    label={CHALLENGE_AREA_LABELS[a] ?? formatLabel(a)}
+                    raw
+                    size="sm"
+                    variant="accent"
+                  />
                 ))}
               </div>
             </div>
