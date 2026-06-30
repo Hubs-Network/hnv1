@@ -27,15 +27,21 @@ export default async function HomePage() {
               </h1>
 
               <p className="mt-6 text-lg sm:text-xl text-muted leading-relaxed">
-                An open registry of hubs, their capabilities, spaces, networks and
+                An open registry of hubs, their mission, assets, spaces, networks and
                 challenges — the first layer of a platform connecting hubs with
-                pilgrims and patrons for regenerative residencies.
+                travelling talent and patrons for regenerative residencies.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/register/hub">
                   <Button size="lg">
                     Register your Hub
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <Link href="/pilgrims">
+                  <Button size="lg">
+                    Become a Pilgrim
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
