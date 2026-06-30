@@ -6,39 +6,90 @@
   "description": "combining music, software development and hardware hack.",
   "website": "",
   "contact": {
-    "contact_name": "",
+    "contact_name": "Mat",
     "email": "",
     "telegram": "",
     "preferred_contact": []
   },
   "location": {
-    "city": "",
-    "region": "",
-    "country": "",
-    "timezone": ""
+    "city": "Turin",
+    "region": "Piedmont",
+    "country": "Italy",
+    "timezone": "Rome"
   },
-  "languages": [],
+  "languages": [
+    "english",
+    "spanish",
+    "french",
+    "german",
+    "italian"
+  ],
   "identity": {
-    "vocation_tags": [],
-    "mission_keywords": [],
+    "vocation_tags": [
+      "technology",
+      "art",
+      "economics"
+    ],
+    "mission_keywords": [
+      "decentralize music"
+    ],
     "organizational_type": "nonprofit",
     "stage": "informal",
-    "revenue_models": [],
+    "revenue_models": [
+      "consulting_services",
+      "services",
+      "donations"
+    ],
     "revenue_notes": ""
   },
-  "spaces": [],
+  "spaces": [
+    {
+      "name": "Studio Room",
+      "space_types": [
+        "coworking",
+        "studio",
+        "residency_space"
+      ],
+      "host_capacity_day": 2,
+      "notes": ""
+    }
+  ],
   "accommodation": {
-    "type": "none",
-    "formats": [],
+    "type": "in_house",
+    "formats": [
+      "single",
+      "shared_bathroom"
+    ],
     "notes": ""
   },
   "assets": [],
   "network": [],
-  "challenges": [],
+  "challenges": [
+    {
+      "title": "MICAR compliat music royalties tokenization",
+      "problem_description": "we need legal and technological advice on how to tokenize music royalties while staying MICAR compliant.",
+      "area": [
+        "software_development",
+        "knowledge_transfer",
+        "experimentation"
+      ],
+      "urgency": 2,
+      "difficulty": 3,
+      "impact_scores": {
+        "technological": 3,
+        "artistic": 0,
+        "financial": 3,
+        "production": 2,
+        "educational": 0,
+        "community": 3
+      },
+      "expected_solution": "coming up with a legal framework that can unleash music royalties in the EU zone"
+    }
+  ],
   "admins": [],
   "metadata": {
     "submitted_at": "2026-06-05T20:47:37.680Z",
-    "updated_at": "2026-06-11T13:41:24.986Z",
+    "updated_at": "2026-06-29T09:03:17.607Z",
     "submitted_by": "Anonymous",
     "creator_address": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
     "language": "en"
