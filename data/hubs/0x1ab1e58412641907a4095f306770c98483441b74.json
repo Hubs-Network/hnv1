@@ -1,0 +1,136 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x1ab1e58412641907a4095f306770c98483441b74",
+  "name": "Liminal Village",
+  "tagline": "Co-live and cocreate on spaceship earth",
+  "description": "Liminal Village is a co-living and co-creation eco-tech hub in the center of Italy. We have been experimenting with forming and weaving temporary communities aimed at creating value for the world, heal themselves and heal the collective, by emphasising the balance of personal, local and global regeneration. Inspired by the concept of a Resource-Based Economy, Liminal, meaning \"a place of transition\" or \"a place that occupies both sides\", is an embodied experimental ground where value-aligned people come together to co-create and experience the future they would like to see (eg: Game B). Using natural cycles to guide progress, we focus on reinventing how we can live in harmony with each other and the planet, by \"upgrading the operating system of society\" and transitioning from scarcity based market economies to \"access abundance\". Together with other eco initiatives around the village and around the globe, we are kickstarting a regenerative network of interdependent communities.",
+  "website": "https://www.liminalvillage.com",
+  "contact": {
+    "contact_name": "Roberto Valenti",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Ascoli Piceno",
+    "region": "Marche",
+    "country": "Italy",
+    "timezone": "Europe/Rome"
+  },
+  "languages": [
+    "english",
+    "italian"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "technology",
+      "environment",
+      "economics",
+      "health_wellbeing"
+    ],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "incorporated",
+    "revenue_models": [
+      "grants",
+      "memberships_subscriptions",
+      "donations"
+    ],
+    "revenue_notes": "Paid for game A players, free for game B players"
+  },
+  "spaces": [
+    {
+      "name": "Pagoda",
+      "space_types": [
+        "event_space",
+        "workshop_space",
+        "outdoor_space"
+      ],
+      "host_capacity_day": 20,
+      "notes": ""
+    },
+    {
+      "name": "The Cave",
+      "space_types": [
+        "coworking"
+      ],
+      "host_capacity_day": 8,
+      "notes": ""
+    },
+    {
+      "name": "Liminal kitchen",
+      "space_types": [
+        "kitchen"
+      ],
+      "host_capacity_day": 15,
+      "notes": "Cook and eat!"
+    }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": [
+      "shared_bathroom",
+      "single"
+    ],
+    "notes": "2 double rooms, 2 single rooms, 1 dorm (max 4 people), camper van (max 4 people), 2 caravans (max 2 people each)"
+  },
+  "assets": [
+    {
+      "name": "Holons.io in house coordination infrastructure",
+      "category": "infrastructure",
+      "focus_areas": [
+        "operations",
+        "community",
+        "data",
+        "economy",
+        "governance"
+      ],
+      "notes": ""
+    }
+  ],
+  "network": [
+    {
+      "name": "ReGenerativa APS-ETS",
+      "scale": "regional",
+      "scope": [
+        "asset_sharing",
+        "funding",
+        "events",
+        "education",
+        "community_building"
+      ],
+      "url": "https://www.regenerativa.earth"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "Continuation",
+      "problem_description": "Lot of people pass by, but we need more permanent/returning visitors who are familiar with the space and the culture to be able to steward it",
+      "area": [
+        "knowledge_transfer"
+      ],
+      "urgency": 5,
+      "difficulty": 3,
+      "impact_scores": {
+        "technological": 3,
+        "artistic": 2,
+        "financial": 0,
+        "production": 0,
+        "educational": 2,
+        "community": 4
+      },
+      "expected_solution": "A collective of people will commit to pay the expenses for a long period, and assign stewards from their group to manage the space"
+    }
+  ],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-07-02T16:51:52.085Z",
+    "updated_at": "2026-07-02T16:51:52.085Z",
+    "submitted_by": "Roberto Valenti",
+    "creator_address": "0x4109ed2ab91c9290bee71bd78171fd3d386da2e4",
+    "language": "en"
+  },
+  "safeAddress": "0x1ab1e58412641907a4095f306770c98483441b74",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
