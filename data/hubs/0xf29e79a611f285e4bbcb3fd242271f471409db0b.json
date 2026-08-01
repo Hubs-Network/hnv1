@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xf29e79a611f285e4bbcb3fd242271f471409db0b",
+  "name": "Higuerones",
+  "tagline": "Re-Weaving the social fabric between and among 2.5% of the earth’s biodiversity",
+  "description": "‘Promoting better economic, social, cultural and environmental alternatives for the OSA community’. \n\nWelcome to Los Higuerones!...We are a community hub that invites people to come together and connect in ways that celebrate equity, biodiversity, and culture in the Osa. Beyond a community hub, we are a project incubator that initiates and nurtures projects that provide accompaniment of local farmers, producers and artisans in the fortification of a local economic system. Over the last 6 years we have set up multiple projects that are strengthening the community ties and sense of solidarity among the local community. \n\n\nBesides our community projects, the spaces of Los Higuerones itself are living examples of how we can live more harmoniously within our natural environment. The non-built areas of the property have grown from bare patches of dirt to abundant permaculture inspired gardens for food, fertility, and fancy. In addition…the built space has been curated into a multi-use “campus” with spaces for workshops, classes, meetings, gatherings and the like as well as accomodations for hosting work-traders, special visitors and groups of people focused on support for our Osa community. ",
+  "website": "https://www.higueronescoop.org",
+  "contact": {
+    "contact_name": "Tricia Stapleton",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Puerto jimnez",
+    "region": "Puntarenas",
+    "country": "Costa Rica",
+    "timezone": "CST"
+  },
+  "languages": [
+    "english",
+    "spanish"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "agriculture",
+      "economics",
+      "community_learning"
+    ],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [
+      "donations",
+      "memberships_subscriptions",
+      "space_or_asset_rental",
+      "services"
+    ],
+    "revenue_notes": "Working on it."
+  },
+  "spaces": [
+    {
+      "name": "El sueno",
+      "space_types": [
+        "residency_space"
+      ],
+      "host_capacity_day": 4,
+      "notes": "Dormitory with shared bath and kitchen"
+    },
+    {
+      "name": "El tejido",
+      "space_types": [
+        "residency_space"
+      ],
+      "host_capacity_day": 2,
+      "notes": "Private room, shared bath and kitchen"
+    }
+  ],
+  "accommodation": {
+    "type": "in_house",
+    "formats": [
+      "single",
+      "dormitory",
+      "shared_bathroom",
+      "private_bathroom"
+    ],
+    "notes": "We can comfortably accomodate 3-5 people into our space but for short term activites we can house Up to 28 people on site at any given time."
+  },
+  "assets": [
+    {
+      "name": "Workshop",
+      "category": "infrastructure",
+      "focus_areas": [
+        "operations"
+      ],
+      "notes": ""
+    }
+  ],
+  "network": [
+    {
+      "name": "ReFi Costa Rica",
+      "scale": "regional",
+      "scope": [
+        "events",
+        "education",
+        "community_building"
+      ],
+      "url": ""
+    },
+    {
+      "name": "Osa Foundation",
+      "scale": "local",
+      "scope": [
+        "asset_sharing"
+      ],
+      "url": "https://www.fundacionosa.org"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "Accounting",
+      "problem_description": "Our accounting system does not quite meet our needs.",
+      "area": [
+        "documentation"
+      ],
+      "urgency": 4,
+      "difficulty": 4,
+      "impact_scores": {
+        "technological": 0,
+        "artistic": 0,
+        "financial": 0,
+        "production": 0,
+        "educational": 0,
+        "community": 0
+      },
+      "expected_solution": "Integrated spreadsheets"
+    }
+  ],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-08-01T15:00:03.321Z",
+    "updated_at": "2026-08-01T15:00:03.321Z",
+    "submitted_by": "Tricia Stapleton",
+    "creator_address": "0x69a270a1946c2f84fa1abd1a7e056a38b3691f55",
+    "language": "en"
+  },
+  "safeAddress": "0xf29e79a611f285e4bbcb3fd242271f471409db0b",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
