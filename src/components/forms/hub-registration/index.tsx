@@ -5,19 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { FORM_STEPS, type FormData } from "./types";
+import { type FormData } from "./types";
 import { describeIssues, type ValidationIssue } from "./validation-issues";
-import { BasicInfoStep } from "./steps/basic-info";
-import { ContactLocationStep } from "./steps/contact-location";
-import { IdentityStep } from "./steps/identity";
-import { SpacesStep } from "./steps/spaces";
-import { AccommodationStep } from "./steps/accommodation";
-import { AssetsStep } from "./steps/assets";
-import { NetworkStep } from "./steps/network";
-import { ChallengesStep } from "./steps/challenges";
-import { ReviewStep } from "./steps/review";
-import { ArrowLeft, ArrowRight, Check, Loader2, UserCircle, Shield } from "lucide-react";
+import { RegistrationBasicsStep } from "./steps/registration-basics";
+import { Loader2, UserCircle, Shield } from "lucide-react";
 import { LoginPanel } from "@/components/auth/login-panel";
 import { deploySafeForHub } from "@/lib/safe-client";
 
@@ -63,13 +54,10 @@ const initialData: FormData = {
 export function HubRegistrationForm() {
   const router = useRouter();
   const { address, isAuthenticated, isLoading: authLoading, authProvider } = useAuth();
-  const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submittedHubId, setSubmittedHubId] = useState<string | null>(null);
   const [issueList, setIssueList] = useState<ValidationIssue[]>([]);
 
   useEffect(() => {
@@ -77,6 +65,8 @@ export function HubRegistrationForm() {
       const draft = localStorage.getItem(DRAFT_KEY);
       if (draft) {
         const parsed = JSON.parse(draft);
+        // Client-only draft hydration; effect avoids SSR hydration mismatch.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setData((prev) => ({ ...prev, ...parsed }));
       }
     } catch {}
@@ -94,24 +84,6 @@ export function HubRegistrationForm() {
     setSubmitError(null);
     setIssueList([]);
   }, []);
-
-  const currentStep = FORM_STEPS[step];
-  const isFirst = step === 0;
-  const isLast = step === FORM_STEPS.length - 1;
-
-  function goNext() {
-    if (step < FORM_STEPS.length - 1) {
-      setStep(step + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
-  function goBack() {
-    if (step > 0) {
-      setStep(step - 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
 
   const [deployingStatus, setDeployingStatus] = useState<string | null>(null);
 
@@ -163,12 +135,13 @@ export function HubRegistrationForm() {
         return;
       }
 
+      // Success: clear draft and take the owner straight to their hub dashboard,
+      // where they can verify the hub, manage signers and complete the profile.
       localStorage.removeItem(DRAFT_KEY);
-      setSubmitted(true);
-      setSubmittedHubId(result.hub_id);
+      setDeployingStatus("Opening your hub dashboard...");
+      router.push(`/hubs/${result.hub_id}/edit`);
     } catch {
       setSubmitError("Network error. Please try again.");
-    } finally {
       setSubmitting(false);
       setDeployingStatus(null);
     }
@@ -198,90 +171,20 @@ export function HubRegistrationForm() {
     );
   }
 
-  if (submitted) {
-    return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="w-16 h-16 rounded-full bg-primary-bg flex items-center justify-center mx-auto mb-6">
-          <Check className="w-8 h-8 text-primary" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground mb-3">
-          Hub Registered Successfully
-        </h2>
-        <p className="text-muted mb-8">
-          Your hub profile has been saved and is now visible in the directory.
-        </p>
-        <div className="flex gap-3 justify-center">
-          {submittedHubId && (
-            <Button onClick={() => router.push(`/hubs/${submittedHubId}`)}>
-              View your hub
-            </Button>
-          )}
-          <Button variant="secondary" onClick={() => router.push("/hubs")}>
-            Browse Hubs
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const stepProps = { data, updateData, errors };
-
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Step indicator */}
-      <div className="mb-8">
-        <div className="flex items-center gap-1 overflow-x-auto pb-2">
-          {FORM_STEPS.map((s, i) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => setStep(i)}
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
-                i === step
-                  ? "bg-primary text-white"
-                  : i < step
-                    ? "bg-primary-bg text-primary"
-                    : "bg-stone-100 text-muted"
-              )}
-            >
-              <span
-                className={cn(
-                  "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold",
-                  i === step
-                    ? "bg-white/20 text-white"
-                    : i < step
-                      ? "bg-primary/20 text-primary"
-                      : "bg-stone-200 text-muted-light"
-                )}
-              >
-                {i < step ? <Check className="w-3 h-3" /> : i + 1}
-              </span>
-              <span className="hidden sm:inline">{s.title}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
+    <div className="max-w-2xl mx-auto">
       {/* Step header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-foreground">
-          {currentStep.title}
-        </h2>
-        <p className="text-sm text-muted mt-1">{currentStep.description}</p>
+        <h2 className="text-xl font-bold text-foreground">Basic Info</h2>
+        <p className="text-sm text-muted mt-1">
+          Just the essentials to create your hub. You can complete the full
+          profile from your hub dashboard right after.
+        </p>
       </div>
 
-      {/* Step content */}
+      {/* Form */}
       <div className="mb-8">
-        {step === 0 && <BasicInfoStep {...stepProps} />}
-        {step === 1 && <ContactLocationStep {...stepProps} />}
-        {step === 2 && <IdentityStep {...stepProps} />}
-        {step === 3 && <SpacesStep {...stepProps} />}
-        {step === 4 && <AccommodationStep {...stepProps} />}
-        {step === 5 && <ChallengesStep {...stepProps} />}
-        {step === 6 && <AssetsStep {...stepProps} />}
-        {step === 7 && <NetworkStep {...stepProps} />}
-        {step === 8 && <ReviewStep {...stepProps} />}
+        <RegistrationBasicsStep data={data} updateData={updateData} errors={errors} />
       </div>
 
       {/* Error message */}
@@ -293,20 +196,13 @@ export function HubRegistrationForm() {
               {issueList.map((issue, i) => (
                 <li key={i} className="text-sm text-danger flex items-start gap-2">
                   <span className="mt-1.5 w-1 h-1 rounded-full bg-danger shrink-0" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStep(issue.step);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="text-left hover:underline"
-                  >
+                  <span>
                     <span className="font-medium">{issue.section}</span>
                     {issue.label && (
                       <span className="text-danger/80"> · {issue.label}</span>
                     )}
                     <span className="text-danger/70"> — {issue.message}</span>
-                  </button>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -314,38 +210,21 @@ export function HubRegistrationForm() {
         </div>
       )}
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between border-t border-border pt-6">
-        <Button
-          variant="ghost"
-          onClick={goBack}
-          disabled={isFirst}
-          className={isFirst ? "invisible" : ""}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
+      {/* Deploy */}
+      <div className="flex items-center justify-end border-t border-border pt-6">
+        <Button onClick={handleSubmit} disabled={submitting}>
+          {submitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              {deployingStatus || "Submitting…"}
+            </>
+          ) : (
+            <>
+              <Shield className="w-4 h-4" />
+              Deploy Hub
+            </>
+          )}
         </Button>
-
-        {isLast ? (
-          <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                {deployingStatus || "Submitting…"}
-              </>
-            ) : (
-              <>
-                <Shield className="w-4 h-4" />
-                Deploy Safe & Register
-              </>
-            )}
-          </Button>
-        ) : (
-          <Button onClick={goNext}>
-            Next
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        )}
       </div>
     </div>
   );

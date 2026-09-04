@@ -5,9 +5,10 @@ import { getAllHubs, getHubById } from "@/lib/data/hubs";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScoreBar } from "@/components/ui/score-bar";
-import { Button } from "@/components/ui/button";
 import { formatLabel, formatDate } from "@/lib/utils";
 import { CHALLENGE_AREA_LABELS } from "@/config/vocabularies";
+import { CompletenessBar } from "@/components/hubs/completeness-bar";
+import { computeHubCompleteness } from "@/lib/hub-completeness";
 import {
   MapPin,
   Globe,
@@ -76,6 +77,8 @@ export default async function HubDetailPage({ params }: PageProps) {
   const hub = await getHubById(hubId);
 
   if (!hub) notFound();
+
+  const completeness = computeHubCompleteness(hub);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -151,6 +154,10 @@ export default async function HubDetailPage({ params }: PageProps) {
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
+        </div>
+
+        <div className="mt-5 max-w-md">
+          <CompletenessBar percent={completeness.percent} />
         </div>
       </div>
 

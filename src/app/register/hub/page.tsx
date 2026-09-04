@@ -15,8 +15,9 @@ export default function RegisterHubPage() {
           Register your Hub
         </h1>
         <p className="mt-3 text-muted leading-relaxed">
-          Share your hub&apos;s profile with the Hubs Network. Fill in the sections
-          below to describe your spaces, capabilities, network and challenges.
+          Create your hub in a minute — just the basics. Once your hub Safe is
+          deployed, you&apos;ll land on your hub dashboard to verify it, manage
+          signers and complete the full profile.
         </p>
         <div className="mt-4 p-3.5 rounded-lg bg-amber-50 border border-amber-200/60">
           <p className="text-sm text-amber-800">

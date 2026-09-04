@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/auth-context";
 import type { HubProfile } from "@/types";
@@ -23,11 +23,15 @@ import {
   ArrowRight,
   ShieldX,
   UserCircle,
+  Pencil,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { AdminPanel } from "@/components/hubs/admin-panel";
 import { PendingTransactions } from "@/components/hubs/pending-transactions";
 import { HNBadgeCard } from "@/components/hubs/hn-badge-card";
+import { CompletenessBar } from "@/components/hubs/completeness-bar";
+import { computeHubCompleteness } from "@/lib/hub-completeness";
 import { describeIssues, type ValidationIssue } from "@/components/forms/hub-registration/validation-issues";
 
 const EDIT_STEPS = [
@@ -85,7 +89,6 @@ function hubToFormData(hub: HubProfile): FormData {
 
 export function EditHubClient() {
   const params = useParams();
-  const router = useRouter();
   const hubId = params.hubId as string;
   const { address, isAuthenticated } = useAuth();
 
@@ -96,6 +99,9 @@ export function EditHubClient() {
   const [error, setError] = useState<string | null>(null);
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
+  // "dashboard" = management overview (verify, signers, completeness);
+  // "edit" = the full multi-section profile editor.
+  const [view, setView] = useState<"dashboard" | "edit">("dashboard");
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -177,6 +183,19 @@ export function EditHubClient() {
     }
   }
 
+  function openEditor(atStep = 0) {
+    setStep(atStep);
+    setView("edit");
+    setError(null);
+    setIssueList([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function backToDashboard() {
+    setView("dashboard");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   async function handleSave() {
     if (!hub || !data || !address) return;
 
@@ -210,6 +229,8 @@ export function EditHubClient() {
         return;
       }
 
+      // Reflect the saved data locally so the completeness bar updates.
+      setHub((prev) => (prev ? { ...prev, ...data } : prev));
       setSaved(true);
       setTimeout(() => setSaved(false), 4000);
     } catch {
@@ -277,23 +298,114 @@ export function EditHubClient() {
   }
 
   const stepProps = { data, updateData, errors };
+  const completeness = computeHubCompleteness(hub);
+  const isSafeHub = !!hub.safeAddress || /^0x[a-fA-F0-9]{40}$/.test(hubId);
 
+  // ---- DASHBOARD OVERVIEW ----
+  if (view === "dashboard") {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <Link
+          href={`/hubs/${hubId}`}
+          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          View public profile
+        </Link>
+
+        <h1 className="text-2xl font-bold text-foreground mb-1">
+          {hub.name} — Dashboard
+        </h1>
+        <p className="text-sm text-muted mb-8">
+          Verify your hub, manage signers and complete your profile.
+        </p>
+
+        <div className="space-y-6">
+          {/* Verify Hub */}
+          <HNBadgeCard
+            hubId={hubId}
+            status={hub.hnBadgeStatus || "none"}
+            onApplied={loadHub}
+            title="Verify Hub"
+            applyLabel="Verify Hub"
+          />
+
+          {/* Edit Hub Profile + completeness */}
+          <Card className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Pencil className="w-5 h-5 text-primary" />
+              <h3 className="text-base font-semibold">Edit Hub Profile</h3>
+            </div>
+
+            <CompletenessBar percent={completeness.percent} />
+
+            {completeness.missing.length > 0 ? (
+              <p className="text-sm text-muted">
+                Add more info to reach 100%. Missing:{" "}
+                <span className="text-foreground">
+                  {completeness.missing.join(", ")}
+                </span>
+                .
+              </p>
+            ) : (
+              <p className="text-sm text-muted">
+                Your profile is complete. You can still update it anytime.
+              </p>
+            )}
+
+            <Button onClick={() => openEditor(0)} className="gap-1.5">
+              <Pencil className="w-4 h-4" />
+              Edit Hub Profile
+            </Button>
+          </Card>
+
+          {/* Signers / multisig (AdminPanel renders its own titled card) */}
+          <AdminPanel hubId={hubId} safeAddress={hub?.safeAddress} />
+
+          {isSafeHub && (
+            <PendingTransactions
+              safeAddress={hub?.safeAddress || hubId}
+              threshold={1}
+              owners={[]}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- FULL PROFILE EDITOR ----
   return (
     <div className="max-w-3xl mx-auto">
-      <Link
-        href={`/hubs/${hubId}`}
+      <button
+        type="button"
+        onClick={backToDashboard}
         className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to {hub.name}
-      </Link>
+        Back to dashboard
+      </button>
 
-      <h1 className="text-2xl font-bold text-foreground mb-1">
-        Edit {hub.name}
-      </h1>
-      <p className="text-sm text-muted mb-8">
+      <div className="flex items-center justify-between gap-4 mb-2">
+        <h1 className="text-2xl font-bold text-foreground">
+          Edit {hub.name}
+        </h1>
+        <Link
+          href={`/hubs/${hubId}`}
+          target="_blank"
+          className="hidden sm:inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
+        >
+          View public profile
+          <ExternalLink className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+      <p className="text-sm text-muted mb-6">
         Update your hub&apos;s public profile. Navigate between sections and save when ready.
       </p>
+
+      <div className="mb-6">
+        <CompletenessBar percent={completeness.percent} />
+      </div>
 
       {/* Step indicator */}
       <div className="mb-8">
@@ -334,18 +446,7 @@ export function EditHubClient() {
 
       {/* Step content */}
       <div className="mb-8">
-        {step === 0 && (
-          <>
-            <BasicInfoStep {...stepProps} />
-            <div className="mt-8">
-              <HNBadgeCard
-                hubId={hubId}
-                status={hub.hnBadgeStatus || "none"}
-                onApplied={loadHub}
-              />
-            </div>
-          </>
-        )}
+        {step === 0 && <BasicInfoStep {...stepProps} />}
         {step === 1 && <ContactLocationStep {...stepProps} />}
         {step === 2 && <IdentityStep {...stepProps} />}
         {step === 3 && <SpacesStep {...stepProps} />}
@@ -428,18 +529,6 @@ export function EditHubClient() {
             </Button>
           )}
         </div>
-      </div>
-
-      {/* Admin management (visible to all admins, editable by owner) */}
-      <div className="mt-12 space-y-4">
-        <AdminPanel hubId={hubId} safeAddress={hub?.safeAddress} />
-        {(hub?.safeAddress || /^0x[a-fA-F0-9]{40}$/.test(hubId)) && (
-          <PendingTransactions
-            safeAddress={hub?.safeAddress || hubId}
-            threshold={1}
-            owners={[]}
-          />
-        )}
       </div>
     </div>
   );

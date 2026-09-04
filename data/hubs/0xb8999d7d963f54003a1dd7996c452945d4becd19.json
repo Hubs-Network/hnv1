@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xb8999d7d963f54003a1dd7996c452945d4becd19",
+  "name": "Stone Oven House",
+  "tagline": "a hub for tests!",
+  "description": "Art and Work Residencies in the Italia Alps",
+  "website": "https://stoneovenhouse.com",
+  "contact": {
+    "contact_name": "Claudia",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Rorà",
+    "region": "",
+    "country": "Italy",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-09-04T16:35:38.253Z",
+    "updated_at": "2026-09-04T16:35:38.253Z",
+    "submitted_by": "Claudia",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0xb8999d7d963f54003a1dd7996c452945d4becd19",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}

@@ -12,9 +12,19 @@ interface HNBadgeCardProps {
   hubId: string;
   status: HNBadgeStatus;
   onApplied?: () => void;
+  /** Card title. Defaults to "Hubs Network Badge". */
+  title?: string;
+  /** Apply button label. Defaults to "Apply for Hubs Network Badge". */
+  applyLabel?: string;
 }
 
-export function HNBadgeCard({ hubId, status, onApplied }: HNBadgeCardProps) {
+export function HNBadgeCard({
+  hubId,
+  status,
+  onApplied,
+  title = "Hubs Network Badge",
+  applyLabel = "Apply for Hubs Network Badge",
+}: HNBadgeCardProps) {
   const { address } = useAuth();
   const [accepted, setAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -64,7 +74,7 @@ export function HNBadgeCard({ hubId, status, onApplied }: HNBadgeCardProps) {
     <Card className="space-y-4">
       <div className="flex items-center gap-2">
         <Award className="w-5 h-5 text-primary" />
-        <h3 className="text-base font-semibold">Hubs Network Badge</h3>
+        <h3 className="text-base font-semibold">{title}</h3>
       </div>
 
       {localStatus === "pending" && (
@@ -93,7 +103,7 @@ export function HNBadgeCard({ hubId, status, onApplied }: HNBadgeCardProps) {
           <p className="text-sm text-muted">
             {localStatus === "rejected"
               ? "Your previous application was not approved. You can update your hub information and apply again — it will be reviewed by Hubs Network admins."
-              : "Registering a hub does not automatically make it an official Hubs Network hub. Apply for the badge — it requires review by Hubs Network admins."}
+              : "Registering a hub does not automatically make it an official Hubs Network hub. Apply for the badge token — it requires review by Hubs Network admins."}
           </p>
 
           <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
@@ -117,8 +127,8 @@ export function HNBadgeCard({ hubId, status, onApplied }: HNBadgeCardProps) {
               <Award className="w-4 h-4" />
             )}
             {localStatus === "rejected"
-              ? "Apply again for Hubs Network Badge"
-              : "Apply for Hubs Network Badge"}
+              ? `${applyLabel} again`
+              : applyLabel}
           </Button>
         </>
       )}
