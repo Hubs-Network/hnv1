@@ -9,6 +9,15 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getPublishedPilgrims } from "@/lib/data/pilgrims";
+import { getApprovedHubs } from "@/lib/data/hubs";
+import { PilgrimCard } from "@/components/passport/pilgrim-card";
+import {
+  ClaimHubPicker,
+  type ClaimHubItem,
+} from "@/components/passport/claim-hub-picker";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Become a Pilgrim — Hubs Network",
@@ -33,7 +42,19 @@ const STEPS = [
   "Your approved skills become visible as Hub-attested skills.",
 ];
 
-export default function PilgrimsPage() {
+export default async function PilgrimsPage() {
+  const [pilgrims, approvedHubs] = await Promise.all([
+    getPublishedPilgrims(),
+    getApprovedHubs(),
+  ]);
+
+  const claimHubs: ClaimHubItem[] = approvedHubs.map((h) => ({
+    id: h.hub_id || h.safeAddress || "",
+    name: h.name,
+    city: h.location?.city,
+    country: h.location?.country,
+  }));
+
   return (
     <div>
       {/* Intro + pilgrim samples */}
@@ -58,18 +79,8 @@ export default function PilgrimsPage() {
                 organizer, maker, strategist, educator, or any other kind of
                 contributor willing to work with a hub on a concrete challenge.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/hubs">
-                  <Button size="lg">
-                    Claim your Passport
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-                <Link href="/hubs">
-                  <Button variant="secondary" size="lg">
-                    Browse Hubs
-                  </Button>
-                </Link>
+              <div className="mt-8">
+                <ClaimHubPicker hubs={claimHubs} />
               </div>
             </div>
 
@@ -97,6 +108,28 @@ export default function PilgrimsPage() {
           </div>
         </div>
       </section>
+
+      {/* Published pilgrims directory */}
+      {pilgrims.length > 0 && (
+        <section className="border-b border-border bg-stone-50/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+            <div className="flex items-center gap-2 mb-2">
+              <BadgeCheck className="w-5 h-5 text-primary" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                Meet the Pilgrims
+              </h2>
+            </div>
+            <p className="text-sm sm:text-base text-muted mb-8">
+              Pilgrims who published their passport and skills.
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {pilgrims.map((p) => (
+                <PilgrimCard key={p.wallet} pilgrim={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Body */}
       <section>

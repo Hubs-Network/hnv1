@@ -128,6 +128,8 @@ export interface RequestPassportInput {
   hubId: string;
   skillIds: string[];
   authProvider: string | null;
+  /** Optional progress callback so the UI can show the current sub-step. */
+  onStep?: (msg: string) => void;
 }
 
 /**
@@ -139,8 +141,10 @@ export async function requestPassport(
 ): Promise<{ claimId: string; txHash: string }> {
   const applicant = getAddress(input.applicant);
   const hubSafe = getAddress(input.hubSafe);
+  const step = input.onStep ?? (() => {});
 
   // 1. Current passport state + claim nonce.
+  step("Checking your Passport status…");
   const state = await fetch(
     `/api/pilgrim-passport/passport?owner=${applicant}`
   ).then((r) => r.json());
@@ -153,6 +157,7 @@ export async function requestPassport(
   );
 
   // 2. App authorization (server validates + signs AppAuthorization).
+  step("Requesting app authorization…");
   const auth = await postJson<{
     appSignature: string;
     applicantNonce: string;
@@ -176,6 +181,7 @@ export async function requestPassport(
     signatureDeadline: BigInt(auth.signatureDeadline),
   });
 
+  step("Waiting for your signature…");
   const { provider, account } = await getSigner(input.authProvider);
   if (getAddress(account) !== applicant) {
     throw new Error("Connected wallet does not match the applicant address.");
@@ -192,6 +198,7 @@ export async function requestPassport(
   );
 
   // 4. Submit via relayer + persist.
+  step("Submitting your claim on-chain…");
   return postJson<{ claimId: string; txHash: string }>(
     "/api/pilgrim-passport/claims",
     {

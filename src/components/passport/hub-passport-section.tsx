@@ -4,11 +4,21 @@ import { useCallback, useEffect, useState } from "react";
 import { BadgeCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/auth-context";
 import { requestPassport } from "@/lib/pilgrim-passport-client";
 import { MAX_INITIAL_SKILLS } from "@/config/pilgrim-passport";
 import { SkillSelector } from "./skill-selector";
 import { HubPassportClaimsAdmin } from "./hub-passport-claims-admin";
+import { ClaimSteps, type ClaimStepDef } from "./claim-steps";
+
+const CLAIM_STEPS: ClaimStepDef[] = [
+  { id: "select", label: "Select your skills" },
+  { id: "sign", label: "Sign & submit your claim" },
+  { id: "approval", label: "Hub reviews & mints" },
+  { id: "minted", label: "Passport minted" },
+];
 
 interface Props {
   hubId: string;
@@ -48,12 +58,19 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submittedTx, setSubmittedTx] = useState<string | null>(null);
+  const [progressMsg, setProgressMsg] = useState<string | null>(null);
+
+  // Pilgrim identity — saved to the pilgrim's JSON so the hub owner sees who is
+  // claiming (nickname required, tagline/link optional).
+  const [nickname, setNickname] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [link, setLink] = useState("");
 
   const loadState = useCallback(async () => {
     if (!address) return;
     setLoadingState(true);
     try {
-      const [state, claimsRes, ownerRes] = await Promise.all([
+      const [state, claimsRes, ownerRes, profileRes] = await Promise.all([
         fetch(`/api/pilgrim-passport/passport?owner=${address}`).then((r) => r.json()),
         fetch(`/api/pilgrim-passport/claims?applicant=${address}`).then((r) => r.json()),
         fetch("/api/admins/check", {
@@ -66,7 +83,16 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
             safe_address: hubSafe,
           }),
         }).then((r) => r.json()),
+        fetch(`/api/pilgrims/${address}`).then((r) => r.json()),
       ]);
+
+      // Prefill pilgrim identity from any existing profile.
+      const profile = profileRes?.profile;
+      if (profile) {
+        setNickname((v) => v || profile.nickname || "");
+        setTagline((v) => v || profile.tagline || "");
+        setLink((v) => v || profile.link || "");
+      }
 
       setPassport({
         hasPassport: Boolean(state?.hasPassport),
@@ -96,15 +122,32 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
 
   async function handleClaim() {
     if (!address) return;
+    if (!nickname.trim()) {
+      setError("Please choose a nickname before claiming.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
+      // Save the pilgrim identity first so the hub owner sees it on the claim.
+      await fetch("/api/pilgrims", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _wallet_address: address,
+          nickname: nickname.trim(),
+          tagline: tagline.trim(),
+          link: link.trim(),
+        }),
+      });
+
       const result = await requestPassport({
         applicant: address,
         hubSafe,
         hubId,
         skillIds: selected,
         authProvider,
+        onStep: setProgressMsg,
       });
       setSubmittedTx(result.txHash);
       setPendingClaim(true);
@@ -113,8 +156,29 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
       setError(extractErrorMessage(err) || "Failed to submit claim");
     } finally {
       setSubmitting(false);
+      setProgressMsg(null);
     }
   }
+
+  // While a claim is pending, poll so the UI reflects the mint without a
+  // manual refresh (the section then hides itself for the new holder).
+  const isPending = Boolean(submittedTx || pendingClaim);
+  useEffect(() => {
+    if (!address || !isPending || passport?.hasPassport) return;
+    const t = setInterval(() => {
+      loadState();
+    }, 25000);
+    return () => clearInterval(t);
+  }, [address, isPending, passport?.hasPassport, loadState]);
+
+  // Current stepper position from the claim lifecycle.
+  const currentStep = passport?.hasPassport
+    ? 3
+    : isPending
+      ? 2
+      : submitting
+        ? 1
+        : 0;
 
   // Holders who aren't hub owners have nothing to do here; the Passport is
   // reachable from the top-right account menu instead.
@@ -139,6 +203,21 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
       {/* Logged in (and not already a holder) */}
       {isAuthenticated && !passport?.hasPassport && (
         <div className="space-y-3">
+          {/* Always-visible roadmap so the pilgrim understands the process */}
+          {!isOwner && (
+            <ClaimSteps
+              steps={CLAIM_STEPS}
+              current={currentStep}
+              busy={submitting || isPending}
+              subLabel={
+                submitting
+                  ? progressMsg
+                  : isPending
+                    ? "Waiting for a hub owner to approve and mint."
+                    : null
+              }
+            />
+          )}
           {loadingState && !passport ? (
             <p className="text-sm text-muted">Checking your Passport status…</p>
           ) : submittedTx || pendingClaim ? (
@@ -161,9 +240,38 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
           ) : (
             <div className="space-y-3">
               <p className="text-sm text-muted">
-                Claim your Pilgrim Passport from this hub by selecting the skills
-                you propose to be attested.
+                Claim your Pilgrim Passport from this hub. Tell the hub who you
+                are, then select the skills you propose to be attested.
               </p>
+
+              <Input
+                label="Nickname"
+                name="pilgrim-nickname"
+                placeholder="e.g. wandering.dev"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                disabled={submitting}
+                hint="Shown to the hub and on your public card. Required."
+              />
+              <Textarea
+                label="Tagline (optional)"
+                name="pilgrim-tagline"
+                placeholder="One line about you as a pilgrim"
+                rows={2}
+                value={tagline}
+                onChange={(e) => setTagline(e.target.value)}
+                disabled={submitting}
+              />
+              <Input
+                label="Link (optional)"
+                name="pilgrim-link"
+                type="url"
+                placeholder="https://your-site.xyz"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                disabled={submitting}
+              />
+
               <SkillSelector
                 selected={selected}
                 onChange={setSelected}
@@ -174,7 +282,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
               <Button
                 size="sm"
                 onClick={handleClaim}
-                disabled={submitting || selected.length < 1}
+                disabled={submitting || selected.length < 1 || !nickname.trim()}
               >
                 {submitting ? "Submitting…" : "Claim Pilgrim Passport"}
               </Button>

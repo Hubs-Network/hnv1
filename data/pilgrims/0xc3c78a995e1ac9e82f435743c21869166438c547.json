@@ -1,0 +1,17 @@
+{
+  "wallet": "0xc3c78a995e1ac9e82f435743c21869166438c547",
+  "nickname": "Alessio M.",
+  "tagline": "Intercultural Mediaton specialist",
+  "link": "",
+  "passportTokenId": "5",
+  "published": true,
+  "skills": [
+    {
+      "hash": "0xea0cb02f592c526b10b42ca67fd68b97f84d73983375caf20ecaca99ba61d3af",
+      "label": "Conflict Mediation"
+    }
+  ],
+  "createdAt": "2026-09-04T18:19:43.503Z",
+  "updatedAt": "2026-09-04T19:50:51.170Z",
+  "publishedAt": "2026-09-04T19:50:51.170Z"
+}

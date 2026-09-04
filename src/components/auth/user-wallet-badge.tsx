@@ -22,6 +22,7 @@ export function UserWalletBadge() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHNAdmin, setIsHNAdmin] = useState(false);
   const [passportTokenId, setPassportTokenId] = useState<string | null>(null);
+  const [needsPublish, setNeedsPublish] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export function UserWalletBadge() {
   useEffect(() => {
     let cancelled = false;
     if (!address) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsHNAdmin(false);
       return;
     }
@@ -61,26 +63,57 @@ export function UserWalletBadge() {
   useEffect(() => {
     let cancelled = false;
     if (!address) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPassportTokenId(null);
+      setNeedsPublish(false);
       return;
     }
-    (async () => {
+    async function refresh() {
       try {
         const res = await fetch(
           `/api/pilgrim-passport/passport?owner=${address}`
         );
         const result = await res.json();
-        if (!cancelled) {
-          setPassportTokenId(
-            result?.hasPassport && result?.tokenId ? String(result.tokenId) : null
-          );
+        const tokenId =
+          result?.hasPassport && result?.tokenId ? String(result.tokenId) : null;
+        if (cancelled) return;
+        setPassportTokenId(tokenId);
+
+        // Red-dot: passport minted but not yet published by the pilgrim.
+        if (tokenId) {
+          try {
+            const pr = await fetch(`/api/pilgrims/${address}`);
+            const pdata = await pr.json();
+            const profile = pdata?.profile;
+            const published =
+              profile?.published && profile?.passportTokenId === tokenId;
+            if (!cancelled) setNeedsPublish(!published);
+          } catch {
+            if (!cancelled) setNeedsPublish(true);
+          }
+        } else if (!cancelled) {
+          setNeedsPublish(false);
         }
       } catch {
-        if (!cancelled) setPassportTokenId(null);
+        if (!cancelled) {
+          setPassportTokenId(null);
+          setNeedsPublish(false);
+        }
       }
-    })();
+    }
+    refresh();
+    // Light polling so the red dot appears shortly after a hub mints, without
+    // requiring a manual refresh.
+    const t = setInterval(refresh, 60000);
+    // Clear the dot instantly when the pilgrim publishes from the passport page.
+    const onPublished = () => {
+      if (!cancelled) setNeedsPublish(false);
+    };
+    window.addEventListener("pilgrim:published", onPublished);
     return () => {
       cancelled = true;
+      clearInterval(t);
+      window.removeEventListener("pilgrim:published", onPublished);
     };
   }, [address]);
 
@@ -90,12 +123,14 @@ export function UserWalletBadge() {
   const providerLabel =
     authProvider === "magic" ? "Magic wallet" : "External wallet";
 
+  const showPublishDot = needsPublish && !!passportTokenId;
+
   return (
     <div className="relative" ref={ref}>
       <button
         onClick={() => setMenuOpen(!menuOpen)}
         className={cn(
-          "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium",
+          "relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium",
           "bg-primary-bg text-primary border border-primary/20",
           "hover:border-primary/40 transition-colors"
         )}
@@ -106,6 +141,12 @@ export function UserWalletBadge() {
           <Wallet className="w-3.5 h-3.5" />
         )}
         {displayName}
+        {showPublishDot && (
+          <span
+            className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white"
+            aria-label="Your passport is ready to publish"
+          />
+        )}
       </button>
 
       {menuOpen && (
@@ -133,6 +174,12 @@ export function UserWalletBadge() {
               >
                 <BadgeCheck className="w-4 h-4" />
                 My Passport
+                {showPublishDot && (
+                  <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-red-600">
+                    <span className="w-2 h-2 rounded-full bg-red-500" />
+                    Ready
+                  </span>
+                )}
               </Link>
             )}
             <Link

@@ -169,6 +169,40 @@ export interface HubFilters {
   challenge_areas?: ChallengeArea[];
 }
 
+// ─── Pilgrim profile (off-chain, editable by the pilgrim) ─────────────
+
+export interface PilgrimSkillSnapshot {
+  /** bytes32 on-chain skill hash. */
+  hash: string;
+  /** Human-readable label resolved at publish time. */
+  label: string;
+}
+
+/**
+ * Off-chain, pilgrim-owned profile stored as data/pilgrims/{wallet}.json.
+ *
+ * Nickname / tagline / link can be saved anytime. The passport token id is
+ * only written when the pilgrim explicitly "publishes" after the hub mints
+ * their SBT — and only after verifying on-chain that the wallet owns it.
+ */
+export interface PilgrimProfile {
+  /** Lowercased wallet address — the file id. */
+  wallet: string;
+  nickname?: string;
+  tagline?: string;
+  /** Optional external URL (personal site, portfolio, socials). */
+  link?: string;
+  /** Set on publish, after on-chain ownership verification. */
+  passportTokenId?: string;
+  /** True once the pilgrim has published (card visible in the directory). */
+  published?: boolean;
+  /** Skills snapshot captured at publish time for cheap directory rendering. */
+  skills?: PilgrimSkillSnapshot[];
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+}
+
 // ─── Generic entity type for future extensibility ────────────────────
 
 export type EntityType = "hub" | "pilgrim" | "patron";

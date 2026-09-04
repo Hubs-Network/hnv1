@@ -12,6 +12,7 @@ import { getHubById } from "@/lib/data/hubs";
 import { resolveSkillLabelByHash } from "@/lib/pilgrim-skills-catalog";
 import { NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS } from "@/config/pilgrim-passport";
 import type { SkillHash } from "@/lib/pilgrim-passport-message";
+import { PilgrimProfilePanel } from "@/components/passport/pilgrim-profile-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +105,10 @@ export default async function PassportPage({ params }: PageProps) {
             </Link>
           </p>
         )}
+      </div>
+
+      <div className="mb-8">
+        <PilgrimProfilePanel tokenId={tokenIdStr} owner={owner} />
       </div>
 
       <h2 className="text-lg font-semibold text-foreground mb-4">

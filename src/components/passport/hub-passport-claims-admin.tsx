@@ -12,6 +12,8 @@ import {
   MAX_INITIAL_SKILLS,
   MIN_INITIAL_SKILLS,
 } from "@/config/pilgrim-passport";
+import { ExternalLink } from "lucide-react";
+import type { PilgrimProfile } from "@/types";
 
 interface ClaimRecord {
   claimId: string;
@@ -36,6 +38,9 @@ export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
   const [busyClaim, setBusyClaim] = useState<string | null>(null);
   const [errorByClaim, setErrorByClaim] = useState<Record<string, string>>({});
   const [mintedByClaim, setMintedByClaim] = useState<Record<string, string | null>>({});
+  const [profileByApplicant, setProfileByApplicant] = useState<
+    Record<string, PilgrimProfile | null>
+  >({});
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -54,6 +59,23 @@ export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
         }
         return merged;
       });
+
+      // Fetch the pilgrim identity for each applicant so the owner sees who is
+      // claiming, not just an address.
+      const applicants = Array.from(
+        new Set(next.map((c) => c.applicant.toLowerCase()))
+      );
+      const entries = await Promise.all(
+        applicants.map(async (addr) => {
+          try {
+            const p = await fetch(`/api/pilgrims/${addr}`).then((r) => r.json());
+            return [addr, p?.profile ?? null] as const;
+          } catch {
+            return [addr, null] as const;
+          }
+        })
+      );
+      setProfileByApplicant(Object.fromEntries(entries));
     } catch {
       setClaims([]);
     } finally {
@@ -136,13 +158,36 @@ export function HubPassportClaimsAdmin({ hubSafe }: { hubSafe: string }) {
         <div className="space-y-4">
           {claims.map((claim) => {
             const minted = mintedByClaim[claim.claimId];
+            const profile = profileByApplicant[claim.applicant.toLowerCase()];
             return (
               <div
                 key={claim.claimId}
                 className="border border-border rounded-lg p-3 space-y-3"
               >
-                <div className="text-xs text-muted break-all">
-                  Applicant: <span className="text-foreground">{claim.applicant}</span>
+                <div className="space-y-1">
+                  {profile?.nickname && (
+                    <p className="text-sm font-semibold text-foreground">
+                      {profile.nickname}
+                    </p>
+                  )}
+                  {profile?.tagline && (
+                    <p className="text-xs text-muted">{profile.tagline}</p>
+                  )}
+                  {profile?.link && (
+                    <a
+                      href={profile.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                    >
+                      {profile.link.replace(/^https?:\/\//, "")}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                  <p className="text-xs text-muted break-all">
+                    Applicant:{" "}
+                    <span className="text-foreground">{claim.applicant}</span>
+                  </p>
                 </div>
 
                 {minted !== undefined ? (
