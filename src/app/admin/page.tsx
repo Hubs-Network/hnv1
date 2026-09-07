@@ -14,6 +14,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { AddPilgrimSkill } from "@/components/admin/add-pilgrim-skill";
+import { PatronApplicationsAdmin } from "@/components/patrons/patron-applications-admin";
 
 interface BadgeApplication {
   hub_id: string;
@@ -315,6 +316,10 @@ export default function AdminPage() {
           </div>
         )}
       </section>
+
+      {address && (
+        <PatronApplicationsAdmin address={address} authProvider={authProvider} />
+      )}
 
       {address && (
         <AddPilgrimSkill address={address} authProvider={authProvider} />

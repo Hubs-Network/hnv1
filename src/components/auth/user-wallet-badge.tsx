@@ -8,6 +8,7 @@ import {
   Building2,
   ShieldCheck,
   BadgeCheck,
+  Landmark,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -189,6 +190,14 @@ export function UserWalletBadge() {
             >
               <Building2 className="w-4 h-4" />
               My Hubs
+            </Link>
+            <Link
+              href="/my-patrons"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-stone-50 rounded-md transition-colors w-full"
+            >
+              <Landmark className="w-4 h-4" />
+              My Patrons
             </Link>
             {isHNAdmin && (
               <Link

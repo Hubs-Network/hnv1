@@ -12,6 +12,8 @@ interface SkillSelectorProps {
   /** Restrict selectable skills (e.g. to a claim's proposed skills). */
   availableSkillIds?: string[];
   disabled?: boolean;
+  /** When true, the helper text asks for EXACTLY `max` skills (Patron flow). */
+  exact?: boolean;
 }
 
 /**
@@ -23,6 +25,7 @@ export function SkillSelector({
   max = 3,
   availableSkillIds,
   disabled = false,
+  exact = false,
 }: SkillSelectorProps) {
   const { categories: catalogCategories, labelOf } = useSkillCatalog();
 
@@ -69,7 +72,8 @@ export function SkillSelector({
   return (
     <div className="space-y-4">
       <p className="text-xs text-muted">
-        Select up to {max} skill{max > 1 ? "s" : ""} ({selected.length}/{max}).
+        {exact ? "Select exactly" : "Select up to"} {max} skill
+        {max > 1 ? "s" : ""} ({selected.length}/{max}).
       </p>
       {categories.map((cat) => (
         <div key={cat.id}>

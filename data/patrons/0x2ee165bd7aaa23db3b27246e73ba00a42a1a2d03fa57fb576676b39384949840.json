@@ -1,0 +1,18 @@
+{
+  "applicationId": "0x2ee165bd7aaa23db3b27246e73ba00a42a1a2d03fa57fb576676b39384949840",
+  "applicant": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "companyName": "SpaghettETH",
+  "description": "Italy's collective for blockchain tech adoption and education",
+  "website": "https://spaghett-eth.com",
+  "contact": "Maria",
+  "chainId": 11155111,
+  "contractAddress": "0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326",
+  "status": "approved",
+  "createdAt": "2026-09-07T12:42:10.421Z",
+  "applicationTxHash": "0x0882ec9295ec39859e2eb4ada98a86945157f29871f9fed04ef89360d81e281d",
+  "updatedAt": "2026-09-07T12:42:52.141Z",
+  "tokenId": "1",
+  "approvedAt": "2026-09-07T12:42:52.141Z",
+  "approvedBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "approvalTxHash": "0x3fd9da794de24842b8f06c840d9ae543ad69e47d89701dd5adf55f01a8aca1cb"
+}

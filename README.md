@@ -66,6 +66,36 @@ Any wallet can register a hub and deploy a Safe. Only hubs that **apply**, are *
 
 ---
 
+## Smart contracts
+
+All three tokens are non-transferable Soulbound Tokens (ERC-721) deployed on
+**Ethereum Sepolia** (`chainId 11155111`). Source lives in [`contracts/`](contracts/).
+Writes are always submitted by the funded **relayer** (users never pay gas);
+authorization is enforced on-chain via EIP-712 signatures / Safe ownership, not
+`msg.sender`.
+
+| Contract | Symbol | Address | Purpose | Source |
+|----------|--------|---------|---------|--------|
+| `HubsNetworkBadgeSBT` | `HNBADGE` | [`0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B`](https://sepolia.etherscan.io/address/0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B) | Verified-hub badge minted to a hub Safe after HN Director approval | [`HubsNetworkBadgeSBT.sol`](contracts/HubsNetworkBadgeSBT.sol) |
+| `PilgrimPassportSBT` | — | [`0x763aE5E630251684eA37dA57368074301cAf07c6`](https://sepolia.etherscan.io/address/0x763aE5E630251684eA37dA57368074301cAf07c6) | One-per-wallet Pilgrim Passport with hub-attested skills | [`PilgrimPassportSBT.sol`](contracts/PilgrimPassportSBT.sol) |
+| `HubsNetworkPatronSBT` | `HNPATRON` | [`0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326`](https://sepolia.etherscan.io/address/0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326) | Patron (organization) badge; many-per-wallet, 1–10 canonical skills | [`HubsNetworkPatronSBT.sol`](contracts/HubsNetworkPatronSBT.sol) |
+
+Shared infrastructure:
+
+| Role | Address |
+|------|---------|
+| HN Directors Safe (approval authority) | [`0xc770755f793197C34Fd5b8F86b50d73D943C98a3`](https://sepolia.etherscan.io/address/0xc770755f793197C34Fd5b8F86b50d73D943C98a3) |
+| Relayer (gas sponsor) | [`0xe09bc78d7A2479E1E542D7a1C29eE783F3871a2d`](https://sepolia.etherscan.io/address/0xe09bc78d7A2479E1E542D7a1C29eE783F3871a2d) |
+
+Canonical skill vocabulary (shared by Pilgrim Passport and Patron) is defined in
+`src/config/pilgrim-skills.ts`: 108 skill IDs, each stored on-chain only as its
+`bytes32` hash (`keccak256(toBytes(skillId))`); labels/categories are frontend-only.
+
+See per-contract detail in [Hubs Network Badge](#hubs-network-badge),
+[Pilgrim Passport](#pilgrim-passport-mvp) and [Patrons](#patrons-hubsnetworkpatronsbt).
+
+---
+
 ## Quick Start
 
 ```bash
@@ -493,6 +523,103 @@ Source for deployment is in `contracts/PilgrimPassportSBT.sol`. Reads use `SEPOL
 **Security:**
 - Tampered/forged signatures → rejected by the API and/or contract
 - Stale nonce → `409` with the expected nonce
+
+---
+
+## Patrons (HubsNetworkPatronSBT)
+
+A **Patron** is a company/organization supporting Hubs Network residencies and
+activities, represented by a non-transferable SBT (`HubsNetworkPatronSBT`, symbol
+`HNPATRON`). Unlike the Pilgrim Passport, **a wallet may hold many Patron SBTs**.
+Each application proposes **between 1 and 10 canonical skills** (same vocabulary as
+the Pilgrim Passport). Company metadata lives off-chain in GitHub JSON; **skills are
+never stored off-chain** — they are read from the contract.
+
+### Design principles
+
+- **Identity via EIP-712, not `msg.sender`** — applicant + app signer authorize
+  applications; a current HN Directors Safe owner authorizes approve/reject/revoke.
+  The relayer submits every tx (gasless).
+- **Contract is authoritative** — the JSON `status` is a UI cache. Admin listings
+  reconcile against `applications(applicationId)`; the public directory verifies
+  `isActivePatron(tokenId)`.
+- **No skills off-chain** — read via `getApplicationSkills(applicationId)` or
+  `getSkills(tokenId)`.
+- **Idempotent persistence** — if the on-chain application succeeds but the JSON
+  write fails, resubmitting `POST /api/patrons/applications` re-persists the JSON
+  without recreating the on-chain application (nonce/digest already consumed).
+
+### Application status (on-chain `PatronStatus` enum)
+
+| Value | Status | Meaning |
+|-------|--------|---------|
+| 0 | `None` | No application with this id |
+| 1 | `Pending` | Application submitted, awaiting HN Director approval |
+| 2 | `Minted` | Approved and Patron minted |
+| 3 | `Rejected` | Application rejected |
+
+(Revocation burns the SBT; `isActivePatron(tokenId)` becomes `false`. The JSON
+records `status = revoked`.)
+
+### Flows
+
+- **Register** (`/register/patron`): applicant fills company name, description,
+  website, contact + selects 1–10 skills. Client requests
+  `POST /api/patrons/app-authorization`, signs `PatronApplication`, then
+  `POST /api/patrons/applications` re-verifies both signatures + nonce and the
+  relayer submits `requestPatronApplication` (gasless). Company JSON is written to
+  `data/patrons/<applicationId>.json`.
+- **Approve / Reject** (HN admin, `/admin`): applicant + skills are reconstructed
+  **from chain**; the Director signs `ApprovePatronApplication` /
+  `RejectPatronApplication`; the relayer submits `approveApplicationAndMint` /
+  `rejectApplication`.
+- **Revoke** (HN admin): `ownerOf(tokenId)` + `hnDirectorNonces(signer)` are read
+  from chain; the Director signs `RevokePatron`; the relayer submits `revokePatron`.
+- **Public directory** (`/patrons`, `/patrons/[tokenId]`): only active, approved
+  Patrons (batched `isActivePatron` via multicall + 60s cache). Contact is never
+  rendered publicly.
+- **My Patrons** (`/my-patrons`): reconciles `getApplicantApplications(wallet)` with
+  JSON — shows Pending / Approved / Rejected / Revoked, with contact visible to the
+  owner.
+
+### EIP-712 messages
+
+Domain: `EIP712("HubsNetworkPatronSBT", "1")`, `chainId` = Sepolia,
+`verifyingContract` = contract address.
+
+| Primary type | Signed by | Solidity type |
+|--------------|-----------|---------------|
+| `PatronApplication` | Applicant | `PatronApplication(address applicant,bytes32 proposedSkillsHash,uint256 applicantNonce,uint256 signatureDeadline)` |
+| `AppAuthorization` | App signer | `AppAuthorization(address applicant,bytes32 proposedSkillsHash,uint256 applicantNonce,uint256 signatureDeadline)` |
+| `ApprovePatronApplication` | HN Director | `ApprovePatronApplication(bytes32 applicationId,address applicant,bytes32 skillsHash,address signer,uint256 signatureDeadline)` |
+| `RejectPatronApplication` | HN Director | `RejectPatronApplication(bytes32 applicationId,address applicant,address signer,uint256 signatureDeadline)` |
+| `RevokePatron` | HN Director | `RevokePatron(uint256 tokenId,address patronOwner,address signer,uint256 nonce,uint256 signatureDeadline)` |
+
+`skillsHash = keccak256(abi.encodePacked(skillIds))`;
+`applicationId = keccak256(abi.encode(applicant, skillsHash, applicantNonce))`.
+Verified against Solidity via `npm run test:patron-sbt`.
+
+### Config / env
+
+`PATRON_SBT_ADDRESS` / `NEXT_PUBLIC_PATRON_SBT_ADDRESS` (default
+`0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326`) and server-only
+`PATRON_SBT_APP_SIGNER_PRIVATE_KEY` (its derived address must equal the contract's
+`appSigner()`). Reads use `SEPOLIA_RPC_URL`; writes use `RELAYER_PRIVATE_KEY`.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/config/patron-sbt.ts` | Address, chain id, EIP-712 domain, curated ABI, `PATRON_SKILL_MIN`/`PATRON_SKILL_MAX` |
+| `src/lib/patron-sbt-message.ts` | EIP-712 builders, `skillsHash`, `applicationId` |
+| `src/lib/patron-sbt.ts` | Reads + relayer writes + batched active check |
+| `src/lib/patron-sbt-app-signer.ts` | Server-only `AppAuthorization` signing |
+| `src/lib/patron-sbt-client.ts` | Client signing + flow orchestration (reuses Passport plumbing) |
+| `src/lib/data/patrons.ts` | GitHub/filesystem JSON store (`data/patrons/<applicationId>.json`) |
+| `src/lib/patrons-directory.ts` | Public directory on-chain/JSON reconciliation |
+| `src/lib/schemas/patron.ts` | Patron JSON + form Zod schema (no skills) |
+| `src/components/patrons/*` | Registration form, admin panel, public card |
+| `src/app/register/patron`, `src/app/patrons`, `src/app/my-patrons` | Routes |
 
 ---
 
