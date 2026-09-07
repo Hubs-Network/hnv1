@@ -1,8 +1,53 @@
 {
   "wallet": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
-  "createdAt": "2026-09-07T08:13:32.532Z",
-  "updatedAt": "2026-09-07T08:13:32.532Z",
   "nickname": "matlemad",
   "tagline": "just another web3 ant",
-  "link": "https://linktr.ee/matteotambussi"
+  "link": "https://linktr.ee/matteotambussi",
+  "passportTokenId": "2",
+  "published": true,
+  "skills": [
+    {
+      "hash": "0x0fc064857f27eb4a3ff8cfd1f3fc0d6e3914a44d1e0bca3e2133c3eca4894c32",
+      "label": "Software Development"
+    },
+    {
+      "hash": "0x3463016c017ca4067247d433ea93e6234fc9947b72f5b598664ce079efb406b1",
+      "label": "Blockchain Infrastructure"
+    },
+    {
+      "hash": "0x24a84ec3e1702f9fb895ad84da713c835a201800011b2169605e1b4a76225ab9",
+      "label": "Music"
+    },
+    {
+      "hash": "0x4b3b454f9b60aa5f35057b96182657ee1a1eb6cf63f0a3208d3443c236812cfa",
+      "label": "Audiovisual Production"
+    },
+    {
+      "hash": "0xe63dc98f63bbf2edc84c5e4d00d9715224fade099eb1d37bef0be5478952ea35",
+      "label": "Performance"
+    },
+    {
+      "hash": "0x439087dee340cec0841ce0093c7f7667d9c91724c984f0c391f6ba7b59fb3608",
+      "label": "Community Organizing"
+    },
+    {
+      "hash": "0xe16920893711b985df3893d85b39127b3a481e91c3c57640cd8970c06e9e6007",
+      "label": "Strategy"
+    },
+    {
+      "hash": "0x5fd8c52bde1dda051d55f05b64416069af7fe1b0a126f68ddc8743d74517ca0a",
+      "label": "Martial Arts"
+    },
+    {
+      "hash": "0x033d214a7c63ad0ebd322697d0ae9662f548cb21a426f70f837bd9e1b007ef08",
+      "label": "Education"
+    },
+    {
+      "hash": "0x245783adc81f6e95516119962ed20268fd5fb5ea2e249016df70dcce5b300693",
+      "label": "Logistics"
+    }
+  ],
+  "createdAt": "2026-09-07T08:13:32.532Z",
+  "updatedAt": "2026-09-07T08:13:34.277Z",
+  "publishedAt": "2026-09-07T08:13:34.277Z"
 }
