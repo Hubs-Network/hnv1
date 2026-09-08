@@ -138,10 +138,22 @@ class GitHubAPIAdapter implements RepoAdapter {
 }
 
 class LocalFSAdapter implements RepoAdapter {
+  /**
+   * Resolve a repo-relative path into an absolute path scoped to the `data/`
+   * subfolder. Anchoring the static `"data"` segment keeps the Node File Trace
+   * (NFT) bundler from tracing the whole project on `path.join(process.cwd(),
+   * <fully dynamic>)`. All persisted entities live under `data/…`.
+   */
+  private async resolve(path: string): Promise<string> {
+    const pathMod = await import("path");
+    const relative = path.replace(/^\/+/, "").replace(/^data\//, "");
+    return pathMod.join(process.cwd(), "data", relative);
+  }
+
   async writeFile(path: string, content: string, _message: string): Promise<SubmissionResult> {
     const fs = await import("fs");
     const pathMod = await import("path");
-    const fullPath = pathMod.join(process.cwd(), path);
+    const fullPath = await this.resolve(path);
     const dir = pathMod.dirname(fullPath);
 
     if (!fs.existsSync(dir)) {
@@ -158,8 +170,7 @@ class LocalFSAdapter implements RepoAdapter {
 
   async deleteFile(path: string, _message: string): Promise<SubmissionResult> {
     const fs = await import("fs");
-    const pathMod = await import("path");
-    const fullPath = pathMod.join(process.cwd(), path);
+    const fullPath = await this.resolve(path);
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
     }
@@ -168,8 +179,7 @@ class LocalFSAdapter implements RepoAdapter {
 
   async fileExists(path: string): Promise<boolean> {
     const fs = await import("fs");
-    const pathMod = await import("path");
-    const fullPath = pathMod.join(process.cwd(), path);
+    const fullPath = await this.resolve(path);
     return fs.existsSync(fullPath);
   }
 }
