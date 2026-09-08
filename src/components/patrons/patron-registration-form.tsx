@@ -148,7 +148,7 @@ export function PatronRegistrationForm() {
 
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">
-            Skills scope{" "}
+            Domain scope{" "}
             <span
               className={
                 skillsOk ? "text-green-600" : "text-muted-light"
@@ -177,7 +177,7 @@ export function PatronRegistrationForm() {
             ? "Submitting…"
             : skillsOk
               ? "Submit Patron application"
-              : `Select 1–${PATRON_SKILL_MAX} skills to continue`}
+              : `Select 1–${PATRON_SKILL_MAX} domains to continue`}
         </Button>
         <p className="text-xs text-muted text-center">
           Gasless — you only sign. Hubs Network sponsors the transaction.
