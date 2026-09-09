@@ -7,8 +7,12 @@
   "contact": "hello@hubsnetwork.org",
   "chainId": 11155111,
   "contractAddress": "0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326",
-  "status": "pending",
+  "status": "approved",
   "createdAt": "2026-09-09T09:14:41.902Z",
   "applicationTxHash": "0x0613d3966f74184cd07070cee731627f9cb2e87b416e48db0cf04dce88a436bd",
-  "updatedAt": "2026-09-09T09:14:41.902Z"
+  "updatedAt": "2026-09-09T12:42:17.220Z",
+  "tokenId": "2",
+  "approvedAt": "2026-09-09T12:42:17.220Z",
+  "approvedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "approvalTxHash": "0xa9d6608860812269f7afcb78eff4d5bc8d606bab099d5e24b7557f3fb00264ac"
 }
