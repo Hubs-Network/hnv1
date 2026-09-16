@@ -1,0 +1,36 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x74f06139BFd0Eeb1e7e33d8d05f1699e52270863",
+  "hubName": "Sanr3mo",
+  "title": "Test Residency: Sanr3mo Music Spritz",
+  "description": "we are looking for a web3 full stack developer to help us prototype a web3 musical-social game for the next Festival of Sanremo. We offer accommodation x2.",
+  "isCalendarBound": true,
+  "startDate": "2026-11-24T00:00:00.000Z",
+  "endDate": "2026-12-01T00:00:00.000Z",
+  "applicationDeadline": "2026-11-08T21:19:00.000Z",
+  "milestones": [
+    "research",
+    "game design",
+    "app UX design",
+    "prompt",
+    "implementation",
+    "debug and MVP deployment"
+  ],
+  "rewardedSkills": [
+    "software_development",
+    "web3_integrations",
+    "mobile_app_development",
+    "product_design",
+    "music",
+    "strategy"
+  ],
+  "externalFormLink": "https://forms.gle/guhiTTxGFJP2BfZa8",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "createdAt": "2026-09-16T20:29:21.108Z",
+  "draftId": "8157157d-9c81-4ee8-98ed-3bdbc4a8a6b1",
+  "residencyId": "1",
+  "txHash": "0x8648cf935e7a91f0be15c17e1a7b634a91a0a444ad1d7c70b8dbea8ac3726fec"
+}

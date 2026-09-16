@@ -79,6 +79,7 @@ authorization is enforced on-chain via EIP-712 signatures / Safe ownership, not
 | `HubsNetworkBadgeSBT` | `HNBADGE` | [`0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B`](https://sepolia.etherscan.io/address/0x16453D889f19eCB30bbc47e423DcF0F2A531Cc4B) | Verified-hub badge minted to a hub Safe after HN Director approval | [`HubsNetworkBadgeSBT.sol`](contracts/HubsNetworkBadgeSBT.sol) |
 | `PilgrimPassportSBT` | — | [`0x763aE5E630251684eA37dA57368074301cAf07c6`](https://sepolia.etherscan.io/address/0x763aE5E630251684eA37dA57368074301cAf07c6) | One-per-wallet Pilgrim Passport with hub-attested skills | [`PilgrimPassportSBT.sol`](contracts/PilgrimPassportSBT.sol) |
 | `HubsNetworkPatronSBT` | `HNPATRON` | [`0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326`](https://sepolia.etherscan.io/address/0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326) | Patron (organization) badge; many-per-wallet, 1–10 canonical skills | [`HubsNetworkPatronSBT.sol`](contracts/HubsNetworkPatronSBT.sol) |
+| `HubsNetworkResidencies` | — | [`0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B`](https://sepolia.etherscan.io/address/0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B) | On-chain residency programmes: hubs post, pilgrims apply, hubs select + award Passport skills | [`HubsNetworkResidencies.sol`](contracts/HubsNetworkResidencies.sol) |
 
 Shared infrastructure:
 
@@ -620,6 +621,99 @@ Verified against Solidity via `npm run test:patron-sbt`.
 | `src/lib/schemas/patron.ts` | Patron JSON + form Zod schema (no skills) |
 | `src/components/patrons/*` | Registration form, admin panel, public card |
 | `src/app/register/patron`, `src/app/patrons`, `src/app/my-patrons` | Routes |
+
+---
+
+## Residencies (HubsNetworkResidencies)
+
+On-chain residency programmes. A **verified hub** (holds the HN Badge) posts a
+residency with 1–10 required skills; **Pilgrims** (Passport holders) apply on-chain
+after filling an external form; the hub **selects** participants after the
+application deadline, then **awards** them by attesting Residency skills to their
+Pilgrim Passport.
+
+### Design principles
+
+- **No app signer** (unlike the Passport claim). Authorization is a direct EOA
+  EIP-712 signature: **hub Safe owner** for create/select/award/cancel, **Pilgrim
+  Passport owner** for apply. The contract checks `isApprovedHub` + `ISafe.isOwner`
+  / passport ownership; the relayer submits every tx (gasless).
+- **Contract is authoritative** — status, skills, applicants, selection and awards
+  are read from chain. GitHub JSON only anchors title/description/milestones/form
+  link via `metadataURI` + `metadataHash` (the contract signs the **hash**, not the
+  URI).
+- **Shared nonce** — `signerNonces(signer)` is shared across all residency actions;
+  the client fetches it immediately before signing (`GET /api/residencies/nonce`).
+- **Award = two signatures** — `awardPilgrim` internally calls
+  `PilgrimPassportSBT.attestSkills`, so the hub signs both `AwardPilgrim`
+  (Residencies domain) and `AttestSkills` (Passport domain) with the same
+  `signatureDeadline`. Skills already actively attested by that hub are filtered
+  out to avoid `DuplicateAttestation`.
+
+### Status (on-chain `ResidencyStatus` + `isApplicationOpen`)
+
+| On-chain | `isApplicationOpen` | UI status |
+|----------|---------------------|-----------|
+| `Open (1)` | `true` | Open |
+| `Open (1)` | `false` | Applications closed |
+| `Closed (2)` | — | Closed |
+| `Cancelled (3)` | — | Cancelled |
+
+### Flows
+
+- **Create** (hub dashboard → Residencies): `POST /api/residencies/prepare`
+  persists the draft metadata + returns the signing params (metadataHash, skill
+  hashes, deadlines, nonce); the hub signs `CreateResidency`; `POST /api/residencies`
+  re-verifies and relays `createResidency`, then writes back `residencyId` + `txHash`.
+- **Apply** (residency detail): a Pilgrim signs `ApplyToResidency` with one matching
+  skill; the relayer submits `applyToResidency`.
+- **Select** (after deadline): the hub signs `SelectPilgrims`; relayer submits
+  `selectPilgrimsAndClose` (residency → Closed).
+- **Award** (closed): the hub signs `AwardPilgrim` + `AttestSkills`; relayer submits
+  `awardPilgrim`; skills appear on the Pilgrim Passport.
+- **Cancel** (open): the hub signs `CancelResidency`; relayer submits `cancelResidency`.
+
+### EIP-712 messages
+
+Domain: `EIP712("HubsNetworkResidencies", "1")`, Sepolia. (AttestSkills uses the
+`PilgrimPassportSBT` domain.)
+
+| Primary type | Signed by |
+|--------------|-----------|
+| `CreateResidency` | Hub Safe owner |
+| `ApplyToResidency` | Pilgrim |
+| `SelectPilgrims` | Hub Safe owner |
+| `AwardPilgrim` | Hub Safe owner |
+| `CancelResidency` | Hub Safe owner |
+| `AttestSkills` (Passport) | Hub Safe owner |
+
+Array hashing matches Solidity: `keccak256(abi.encodePacked(bytes32[]))` (skills)
+and `keccak256(abi.encodePacked(uint256[]))` (pilgrim ids). Verified via
+`npm run test:residencies`.
+
+### Config / env
+
+`HUBS_NETWORK_RESIDENCIES_ADDRESS` / `NEXT_PUBLIC_HUBS_NETWORK_RESIDENCIES_ADDRESS`
+(default `0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B`). No app signer. Reads use
+`SEPOLIA_RPC_URL`; writes use `RELAYER_PRIVATE_KEY`. The residency award depends on
+`NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS` matching the passport the Residencies
+contract was deployed against.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/config/residencies.ts` | Address, chain id, EIP-712 domain, curated ABI, status maps |
+| `src/lib/residencies-message.ts` | EIP-712 builders + `hashBytes32Array`/`hashUint256Array` + AttestSkills |
+| `src/lib/residencies-contract.ts` | On-chain reads + relayer writes |
+| `src/lib/residencies-directory.ts` | Assembles ResidencyViews (chain + metadata + skills) |
+| `src/lib/residencies-verify.ts` | Server signature recovery + hub-signer check |
+| `src/lib/residencies-client.ts` | Client signing + flow orchestration |
+| `src/lib/schemas/residency.ts` | Metadata Zod schema + canonical hash + URI scheme |
+| `src/lib/data/residencies.ts` | GitHub/filesystem JSON store (`data/residencies/<hubSafe>/<draftId>.json`) |
+| `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, eligibility, nonce, hub |
+| `src/components/residencies/*` | Card, status badge, detail, hub section |
+| `src/app/bulletin-board`, `src/app/residencies/[residencyId]` | Public routes |
 
 ---
 

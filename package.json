@@ -9,7 +9,8 @@
     "lint": "eslint",
     "prepare:pilgrim-passport-deploy": "tsx scripts/prepare-pilgrim-passport-deploy.ts",
     "test:pilgrim-passport-hash": "tsx scripts/test-pilgrim-passport-hash.ts",
-    "test:patron-sbt": "tsx scripts/test-patron-sbt.ts"
+    "test:patron-sbt": "tsx scripts/test-patron-sbt.ts",
+    "test:residencies": "tsx scripts/test-residencies.ts"
   },
   "dependencies": {
     "@magic-ext/smart-account": "^1.1.1",

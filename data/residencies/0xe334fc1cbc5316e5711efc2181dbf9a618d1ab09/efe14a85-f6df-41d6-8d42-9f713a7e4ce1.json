@@ -1,0 +1,27 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0xe334fC1Cbc5316E5711EFc2181Dbf9A618D1ab09",
+  "hubName": "Casa Macedonia",
+  "title": "Test Residency: Bike repairer",
+  "description": "I need someone to help me fix my two bikes.\nrust and a non-functioning gear.",
+  "isCalendarBound": false,
+  "applicationDeadline": "2026-12-31T22:59:00.000Z",
+  "milestones": [
+    "remove rust & check",
+    "clean",
+    "gear restoration"
+  ],
+  "rewardedSkills": [
+    "fabrication_maker_skills",
+    "plumbing"
+  ],
+  "externalFormLink": "https://forms.gle/ZepWVpkkzqpHAMtR7",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xdc16d21032354605801ed4FAb93c02550FB05fd7",
+  "createdAt": "2026-09-16T20:50:45.716Z",
+  "draftId": "efe14a85-f6df-41d6-8d42-9f713a7e4ce1",
+  "residencyId": "2",
+  "txHash": "0x2b536d24d1427ca9a15f2d8267e0a95b78129d04b418c4db33cf5581aaa80e9a"
+}

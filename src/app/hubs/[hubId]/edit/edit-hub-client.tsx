@@ -30,6 +30,7 @@ import Link from "next/link";
 import { AdminPanel } from "@/components/hubs/admin-panel";
 import { PendingTransactions } from "@/components/hubs/pending-transactions";
 import { HNBadgeCard } from "@/components/hubs/hn-badge-card";
+import { HubResidenciesSection } from "@/components/residencies/hub-residencies-section";
 import { CompletenessBar } from "@/components/hubs/completeness-bar";
 import { computeHubCompleteness } from "@/lib/hub-completeness";
 import { describeIssues, type ValidationIssue } from "@/components/forms/hub-registration/validation-issues";
@@ -328,6 +329,12 @@ export function EditHubClient() {
             onApplied={loadHub}
             title="Verify Hub"
             applyLabel="Verify Hub"
+          />
+
+          {/* Residencies (create + manage) */}
+          <HubResidenciesSection
+            hubSafe={hub.safeAddress || hubId}
+            hubName={hub.name}
           />
 
           {/* Edit Hub Profile + completeness */}
