@@ -1,5 +1,8 @@
 {
   "wallet": "0xca43134e0b96d7adeed9d1b9bdff655a5bd4bf67",
+  "nickname": "Nikoline_Nik",
+  "tagline": "",
+  "link": "https://nikoline.github.io/arns/",
   "passportTokenId": "6",
   "published": true,
   "skills": [
@@ -44,10 +47,7 @@
       "label": "Plumbing"
     }
   ],
-  "publishedAt": "2026-09-18T10:18:03.772Z",
   "createdAt": "2026-09-18T06:40:15.388Z",
-  "updatedAt": "2026-09-18T10:18:40.231Z",
-  "nickname": "Nikoline_Nik",
-  "tagline": "",
-  "link": "https://nikoline.github.io/arns/"
+  "updatedAt": "2026-09-18T10:18:41.721Z",
+  "publishedAt": "2026-09-18T10:18:03.772Z"
 }
