@@ -1,8 +1,53 @@
 {
   "wallet": "0xca43134e0b96d7adeed9d1b9bdff655a5bd4bf67",
-  "createdAt": "2026-09-18T06:40:15.388Z",
-  "updatedAt": "2026-09-18T06:40:15.388Z",
   "nickname": "Nikoline_Nik",
   "tagline": "",
-  "link": ""
+  "link": "https://nikoline.github.io/arns/",
+  "passportTokenId": "6",
+  "published": true,
+  "skills": [
+    {
+      "hash": "0x24a84ec3e1702f9fb895ad84da713c835a201800011b2169605e1b4a76225ab9",
+      "label": "Music"
+    },
+    {
+      "hash": "0xddf367e98d831d621f8d6a99849d81f2f7b4957c1978e709b387950f4cc28da7",
+      "label": "Business Development"
+    },
+    {
+      "hash": "0xe16920893711b985df3893d85b39127b3a481e91c3c57640cd8970c06e9e6007",
+      "label": "Strategy"
+    },
+    {
+      "hash": "0xb383a91dd7a6057ccfe8ef47dc812f7b9010318e237905ea6da7ef0001c89510",
+      "label": "Tokenomics"
+    },
+    {
+      "hash": "0xa5005f1a2097af64be037a1b348941f78c642393a235701ed7c2906ea7669bd1",
+      "label": "Partnerships"
+    },
+    {
+      "hash": "0x6eeeca8df2d541d4228fa17f87bc7691a925c54f25d5065f1a0bbd2d3118441f",
+      "label": "DAO Operations"
+    },
+    {
+      "hash": "0x439087dee340cec0841ce0093c7f7667d9c91724c984f0c391f6ba7b59fb3608",
+      "label": "Community Organizing"
+    },
+    {
+      "hash": "0x213eb6038df47d6b4f158741452839821527d702845feebeef4e2dd724293664",
+      "label": "Photography"
+    },
+    {
+      "hash": "0x26dffb98b62e863b202da5d9f5b8a062bf2d09922564a7e09f9b00234443a073",
+      "label": "Residency Hosting"
+    },
+    {
+      "hash": "0xdc2c371bbee39ce7016fe69284182d77091eec0b66ce08e54005b847977c6e93",
+      "label": "Plumbing"
+    }
+  ],
+  "createdAt": "2026-09-18T06:40:15.388Z",
+  "updatedAt": "2026-09-18T10:18:41.721Z",
+  "publishedAt": "2026-09-18T10:18:03.772Z"
 }
