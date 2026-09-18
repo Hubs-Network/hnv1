@@ -443,6 +443,17 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
               </div>
             )}
 
+            {/* Hub: waiting for the deadline before selection can open */}
+            {isHubSigner && residency.uiStatus === "open" && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <p className="text-sm text-muted flex items-center gap-2">
+                  <Clock className="w-4 h-4 shrink-0" />
+                  Selection opens after the application deadline (
+                  {fmtDate(residency.applicationDeadline)}).
+                </p>
+              </div>
+            )}
+
             {/* Hub: select & close */}
             {isHubSigner &&
               residency.uiStatus === "applications_closed" &&
