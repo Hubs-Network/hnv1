@@ -51,6 +51,33 @@ const initialData: FormData = {
   challenges: [],
 };
 
+/**
+ * Build the registration payload from ONLY the Basic Info fields, resetting all
+ * other sections to their empty defaults. The streamlined registration collects
+ * just the basics; the rest of the profile is completed later from the hub
+ * dashboard. This guarantees we never submit stale/partial sections (e.g. an
+ * empty Asset/Challenge item left over in a localStorage draft from the old
+ * multi-step flow), which would otherwise fail full-schema validation.
+ */
+function buildRegistrationPayload(data: FormData): FormData {
+  return {
+    ...initialData,
+    name: data.name,
+    tagline: data.tagline,
+    description: data.description,
+    website: data.website,
+    location: {
+      ...initialData.location,
+      city: data.location.city,
+      country: data.location.country,
+    },
+    contact: {
+      ...initialData.contact,
+      contact_name: data.contact.contact_name,
+    },
+  };
+}
+
 export function HubRegistrationForm() {
   const router = useRouter();
   const { address, isAuthenticated, isLoading: authLoading, authProvider } = useAuth();
@@ -74,7 +101,10 @@ export function HubRegistrationForm() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      // Persist only the Basic Info fields — the streamlined registration never
+      // collects the other sections, and keeping them out avoids re-introducing
+      // stale/partial items into the submitted payload.
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(buildRegistrationPayload(data)));
     } catch {}
   }, [data]);
 
@@ -105,13 +135,15 @@ export function HubRegistrationForm() {
         return;
       }
 
-      // Step 2: Submit hub profile with Safe address
+      // Step 2: Submit hub profile with Safe address. Only the Basic Info is
+      // sent; other sections are reset to empty defaults so stale draft items
+      // never block registration (completed later from the dashboard).
       setDeployingStatus("Saving hub profile...");
       const res = await fetch("/api/hubs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...data,
+          ...buildRegistrationPayload(data),
           _wallet_address: address,
           _safe_address: safeAddress,
         }),
