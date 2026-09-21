@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x611f99bd9eb34911bf3f660a0635231b98a37661",
+  "name": "AKASHA Hub Barcelona",
+  "tagline": "A civic infrastructure for social innovation",
+  "description": "We are a community made up of diverse professional profiles that connects people, projects and stakeholders to generate sustainable ideas, explore new possibilities for innovation, and develop solutions for society and for our environment at a glocal scale.",
+  "website": "https://akasha.barcelona",
+  "contact": {
+    "contact_name": "Carmen",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Barcelona",
+    "region": "",
+    "country": "Spain",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-09-21T11:44:40.332Z",
+    "updated_at": "2026-09-21T11:44:40.332Z",
+    "submitted_by": "Carmen",
+    "creator_address": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
+    "language": "en"
+  },
+  "safeAddress": "0x611f99bd9eb34911bf3f660a0635231b98a37661",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
