@@ -38,7 +38,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-09-21T11:44:40.332Z",
-    "updated_at": "2026-09-21T11:44:50.633Z",
+    "updated_at": "2026-09-21T11:45:06.035Z",
     "submitted_by": "Carmen",
     "creator_address": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
     "language": "en"
@@ -48,7 +48,7 @@
   "network_id": "sepolia",
   "hnBadgeStatus": "pending",
   "hnBadgeApplication": {
-    "submittedAt": "2026-09-21T11:44:50.633Z",
+    "submittedAt": "2026-09-21T11:45:06.035Z",
     "manifestoAccepted": true,
     "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
     "applicantAddress": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d"
