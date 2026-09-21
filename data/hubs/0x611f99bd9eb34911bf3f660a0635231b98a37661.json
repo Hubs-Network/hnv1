@@ -13,18 +13,42 @@
   },
   "location": {
     "city": "Barcelona",
-    "region": "",
+    "region": "Catalonia",
     "country": "Spain",
-    "timezone": ""
+    "timezone": "CEST"
   },
-  "languages": [],
+  "languages": [
+    "catalan",
+    "english",
+    "spanish",
+    "italian",
+    "french",
+    "portuguese",
+    "dutch",
+    "turkish",
+    "swedish"
+  ],
   "identity": {
-    "vocation_tags": [],
-    "mission_keywords": [],
+    "vocation_tags": [
+      "technology",
+      "environment",
+      "art",
+      "agriculture",
+      "community_learning",
+      "health_wellbeing",
+      "economics"
+    ],
+    "mission_keywords": [
+      "Civic engagement"
+    ],
     "organizational_type": "nonprofit",
-    "stage": "informal",
-    "revenue_models": [],
-    "revenue_notes": ""
+    "stage": "incorporated",
+    "revenue_models": [
+      "space_or_asset_rental",
+      "services",
+      "memberships_subscriptions"
+    ],
+    "revenue_notes": "Mixed economic model: Membership, Coworking, Education, Space rental"
   },
   "spaces": [],
   "accommodation": {
@@ -38,7 +62,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-09-21T11:44:40.332Z",
-    "updated_at": "2026-09-21T11:45:06.035Z",
+    "updated_at": "2026-09-21T12:14:58.668Z",
     "submitted_by": "Carmen",
     "creator_address": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
     "language": "en"
