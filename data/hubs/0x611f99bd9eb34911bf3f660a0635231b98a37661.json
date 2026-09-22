@@ -1,0 +1,123 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x611f99bd9eb34911bf3f660a0635231b98a37661",
+  "name": "AKASHA Hub Barcelona",
+  "tagline": "A civic infrastructure for social innovation",
+  "description": "We are a community made up of diverse professional profiles that connects people, projects and stakeholders to generate sustainable ideas, explore new possibilities for innovation, and develop solutions for society and for our environment at a glocal scale.",
+  "website": "https://akasha.barcelona",
+  "contact": {
+    "contact_name": "Carmen",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Barcelona",
+    "region": "Catalonia",
+    "country": "Spain",
+    "timezone": "CEST"
+  },
+  "languages": [
+    "catalan",
+    "english",
+    "spanish",
+    "italian",
+    "french",
+    "portuguese",
+    "dutch",
+    "turkish",
+    "swedish"
+  ],
+  "identity": {
+    "vocation_tags": [
+      "technology",
+      "environment",
+      "art",
+      "agriculture",
+      "community_learning",
+      "health_wellbeing",
+      "economics"
+    ],
+    "mission_keywords": [
+      "Civic engagement"
+    ],
+    "organizational_type": "nonprofit",
+    "stage": "incorporated",
+    "revenue_models": [
+      "space_or_asset_rental",
+      "services",
+      "memberships_subscriptions"
+    ],
+    "revenue_notes": "Mixed economic model: Membership, Coworking, Education, Space rental"
+  },
+  "spaces": [
+    {
+      "name": "Nave1",
+      "space_types": [
+        "coworking",
+        "event_space",
+        "kitchen",
+        "office",
+        "gallery"
+      ],
+      "host_capacity_day": 150,
+      "notes": "280m2 street level warehouse with 150m2 Open multipurpose space for events, workshops, classes, projections etc. and 120m2 closed spaces for offices, coworking and meetings."
+    },
+    {
+      "name": "Nave3",
+      "space_types": [
+        "coworking",
+        "workshop_space",
+        "event_space",
+        "studio",
+        "maker_space",
+        "residency_space",
+        "garden",
+        "outdoor_space"
+      ],
+      "host_capacity_day": 60,
+      "notes": "390m2 street level warehouse dedicated to material work, with private spaces for projects and common spaces including a fablab, a well equipped workshop, exterior 80m2 patio for gardening and a main open multipurpose space."
+    },
+    {
+      "name": "Green City Lab",
+      "space_types": [
+        "garden"
+      ],
+      "host_capacity_day": 150,
+      "notes": "Exterior public orchard adjacent our facilities, managed by one of Akasha Hub Community projects, GreenCity Lab.\nIt consists of 500m2 of soil and hosts neighbors and community projects for collective urban agriculture experimentation."
+    }
+  ],
+  "accommodation": {
+    "type": "outsourced",
+    "formats": [
+      "dormitory",
+      "shared_bathroom"
+    ],
+    "notes": "We partner with Giveth House for accomodations"
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-09-21T11:44:40.332Z",
+    "updated_at": "2026-09-21T14:38:40.044Z",
+    "submitted_by": "Carmen",
+    "creator_address": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
+    "language": "en"
+  },
+  "safeAddress": "0x611f99bd9eb34911bf3f660a0635231b98a37661",
+  "chainId": 11155111,
+  "network_id": "sepolia",
+  "hnBadgeStatus": "approved",
+  "hnBadgeApplication": {
+    "submittedAt": "2026-09-21T11:45:06.035Z",
+    "manifestoAccepted": true,
+    "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
+    "applicantAddress": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d"
+  },
+  "hnBadgeTokenId": "4",
+  "hnBadgeApprovedAt": "2026-09-21T14:38:40.044Z",
+  "hnBadgeApprovedBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "hnBadgeTxHash": "0x108ddd12a39418090cbcb2a5884c6f9ef1b8e57fc29e7427e4634df48f2f0a16"
+}

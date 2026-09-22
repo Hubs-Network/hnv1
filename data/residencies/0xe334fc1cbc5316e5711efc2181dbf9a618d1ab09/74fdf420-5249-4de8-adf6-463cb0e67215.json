@@ -1,0 +1,31 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0xe334fC1Cbc5316E5711EFc2181Dbf9A618D1ab09",
+  "hubName": "Casa Macedonia",
+  "title": "Paint the walls white",
+  "description": "help me paint my house, I host you for a long weekend.",
+  "isCalendarBound": true,
+  "startDate": "2026-10-02T00:00:00.000Z",
+  "endDate": "2026-10-05T00:00:00.000Z",
+  "applicationDeadline": "2026-09-22T15:00:00.000Z",
+  "milestones": [
+    "buy the paint and brush",
+    "cover the floor with newspapers",
+    "paint"
+  ],
+  "rewardedSkills": [
+    "painting_drawing",
+    "strategy",
+    "photography",
+    "product_design"
+  ],
+  "externalFormLink": "https://forms.gle/iCUMKiMfnmH9XGyS6",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xdc16d21032354605801ed4FAb93c02550FB05fd7",
+  "createdAt": "2026-09-22T10:58:12.260Z",
+  "draftId": "74fdf420-5249-4de8-adf6-463cb0e67215",
+  "residencyId": "3",
+  "txHash": "0xf01912ba1417292c16d06c5fb26dafe25734502c30a3f071e9f84a765636115e"
+}
