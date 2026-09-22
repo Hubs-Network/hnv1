@@ -27,7 +27,10 @@ import {
 import { getResidencyMetadata } from "@/lib/data/residencies";
 import { parseResidencyMetadataURI, type ResidencyMetadata } from "@/lib/schemas/residency";
 import { resolveSkillId, resolveSkillLabelByHash } from "@/lib/pilgrim-skills-catalog";
-import { getPassportOwner } from "@/lib/pilgrim-passport-sbt";
+import {
+  getPassportOwner,
+  hasActiveAttestation,
+} from "@/lib/pilgrim-passport-sbt";
 import { getPilgrimByWallet } from "@/lib/data/pilgrims";
 
 export interface ResidencySkillView {
@@ -66,6 +69,13 @@ export interface ResidencyApplicantView {
   nickname: string | null;
   isSelected: boolean;
   isAwarded: boolean;
+  /**
+   * Lowercased residency-skill hashes ALREADY actively attested to this passport
+   * by the residency's hub. Those cannot be awarded again by the same hub
+   * (PilgrimPassportSBT reverts with DuplicateAttestation), so the award UI hides
+   * them. Only computed for selected pilgrims (empty otherwise).
+   */
+  alreadyAttestedByHub: string[];
 }
 
 export function deriveUiStatus(
@@ -166,9 +176,13 @@ export async function listHubResidencyViews(
 export async function getResidencyApplicantViews(
   residencyId: bigint
 ): Promise<ResidencyApplicantView[]> {
-  const [applicants, selected] = await Promise.all([
+  const onChain = await getResidency(residencyId);
+  const hubSafe = onChain?.hubSafe ?? null;
+
+  const [applicants, selected, residencySkills] = await Promise.all([
     getResidencyApplicants(residencyId),
     getSelectedPilgrims(residencyId),
+    getResidencySkills(residencyId),
   ]);
   const selectedSet = new Set(selected.map((t) => t.toString()));
 
@@ -184,15 +198,32 @@ export async function getResidencyApplicantViews(
           nickname = null;
         }
       }
-      const awarded = selectedSet.has(tokenId.toString())
+      const isSelected = selectedSet.has(tokenId.toString());
+      const awarded = isSelected
         ? await readIsAwarded(residencyId, tokenId)
         : false;
+
+      // Only compute the "already attested by this hub" set for selected, not
+      // yet awarded pilgrims (that's when the award UI needs it).
+      let alreadyAttestedByHub: string[] = [];
+      if (isSelected && !awarded && hubSafe) {
+        const flags = await Promise.all(
+          residencySkills.map((hash) =>
+            hasActiveAttestation(tokenId, hash, hubSafe)
+          )
+        );
+        alreadyAttestedByHub = residencySkills
+          .filter((_, i) => flags[i])
+          .map((h) => h.toLowerCase());
+      }
+
       return {
         tokenId: tokenId.toString(),
         owner,
         nickname,
-        isSelected: selectedSet.has(tokenId.toString()),
+        isSelected,
         isAwarded: awarded,
+        alreadyAttestedByHub,
       };
     })
   );

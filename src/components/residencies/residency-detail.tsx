@@ -56,6 +56,7 @@ interface ApplicantView {
   nickname: string | null;
   isSelected: boolean;
   isAwarded: boolean;
+  alreadyAttestedByHub: string[];
 }
 interface Eligibility {
   hasPassport: boolean;
@@ -499,6 +500,16 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
                     .filter((a) => a.isSelected)
                     .map((a) => {
                       const chosen = awardSkills[a.tokenId] ?? new Set<string>();
+                      const attestedSet = new Set(
+                        (a.alreadyAttestedByHub ?? []).map((h) => h.toLowerCase())
+                      );
+                      // The same hub cannot re-attest a skill it already actively
+                      // attested (contract reverts DuplicateAttestation), so only
+                      // offer the residency skills this hub hasn't attested yet.
+                      const awardable = residency.skills.filter(
+                        (s) => s.id && !attestedSet.has(s.hash.toLowerCase())
+                      );
+                      const hiddenCount = residency.skills.length - awardable.length;
                       return (
                         <div
                           key={a.tokenId}
@@ -512,33 +523,42 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
                               <CheckCircle className="w-4 h-4" />
                               Awarded
                             </p>
+                          ) : awardable.length === 0 ? (
+                            <p className="text-sm text-muted">
+                              Your Hub has already attested all of this residency&apos;s
+                              skills to this Passport.
+                            </p>
                           ) : (
                             <>
                               <p className="text-xs text-muted mb-2">
                                 Choose skills to attest (subset of the residency skillset):
                               </p>
-                              <div className="flex flex-wrap gap-1.5 mb-3">
-                                {residency.skills
-                                  .filter((s) => s.id)
-                                  .map((s) => {
-                                    const on = chosen.has(s.id!);
-                                    return (
-                                      <button
-                                        key={s.hash}
-                                        type="button"
-                                        onClick={() => toggleAwardSkill(a.tokenId, s.id!)}
-                                        className={
-                                          "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors " +
-                                          (on
-                                            ? "bg-primary text-white border-primary"
-                                            : "bg-surface text-foreground border-border hover:bg-stone-50")
-                                        }
-                                      >
-                                        {s.label}
-                                      </button>
-                                    );
-                                  })}
+                              <div className="flex flex-wrap gap-1.5 mb-2">
+                                {awardable.map((s) => {
+                                  const on = chosen.has(s.id!);
+                                  return (
+                                    <button
+                                      key={s.hash}
+                                      type="button"
+                                      onClick={() => toggleAwardSkill(a.tokenId, s.id!)}
+                                      className={
+                                        "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors " +
+                                        (on
+                                          ? "bg-primary text-white border-primary"
+                                          : "bg-surface text-foreground border-border hover:bg-stone-50")
+                                      }
+                                    >
+                                      {s.label}
+                                    </button>
+                                  );
+                                })}
                               </div>
+                              {hiddenCount > 0 && (
+                                <p className="text-[11px] text-muted mb-3">
+                                  {hiddenCount} skill{hiddenCount === 1 ? "" : "s"} hidden —
+                                  already attested to this Passport by your Hub.
+                                </p>
+                              )}
                               <Button
                                 disabled={busy !== null || chosen.size === 0}
                                 onClick={() =>
