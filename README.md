@@ -673,6 +673,25 @@ Pilgrim Passport.
   `awardPilgrim`; skills appear on the Pilgrim Passport.
 - **Cancel** (open): the hub signs `CancelResidency`; relayer submits `cancelResidency`.
 
+**Awarding & attestation rule (important).** `PilgrimPassportSBT` allows only **one
+active attestation per (skill, hub)**: `_addSkillAttestation` reverts with
+`DuplicateAttestation` if the **same hub** already actively attested that skill to
+that Passport. A skill a Pilgrim already holds can still get an extra vouch, but
+only from a **different hub** (or from the same hub after revoking). Consequently:
+
+- The award selector only offers residency skills this hub has **not** already
+  attested to that Passport (`getResidencyApplicantViews` computes
+  `alreadyAttestedByHub` per selected pilgrim via `hasActiveAttestation`); already-
+  attested skills are hidden with a note, and the server also rejects them before
+  spending relayer gas.
+- If a Pilgrim applied with a skill this hub had previously attested (e.g. the
+  Passport was originally minted through this hub), that skill is simply not
+  re-awardable by the same hub — this is a contract constraint, not an app bug.
+
+The hub-signer UI also surfaces *"Selection opens after the application deadline
+({date})"* while a residency is still open, since the contract enforces
+`ApplicationDeadlineNotPassed` for selection.
+
 ### EIP-712 messages
 
 Domain: `EIP712("HubsNetworkResidencies", "1")`, Sepolia. (AttestSkills uses the
@@ -786,17 +805,26 @@ Some hubs created before the Safe migration use slug-based IDs and Neon Postgres
 
 ---
 
-## Hub Registration (Form Steps)
+## Hub Registration (streamlined)
 
-1. **Basic Info** — name, tagline, description *(required)*
-2. **Contact & Location** — website, location
-3. **Identity** — vocation, mission, organization type, revenue model
-4. **Spaces** — physical spaces with types and capacity
-5. **Accommodation** — hosting options
-6. **Challenges** — current needs with urgency (1=year+ / 5=month) and impact scores
-7. **Assets** — tools, infrastructure, resources
-8. **Network** — partner organizations
-9. **Review** — summary before submission
+Registration collects **only Basic Info** (hub name, tagline, description, city,
+country, website, contact name) so a hub can be created in a minute. On submit the
+app deploys the hub Safe (gas-sponsored) and lands the owner on the **hub
+dashboard** (`/hubs/[hubId]/edit`) to verify the hub, manage signers and complete
+the rest of the profile.
+
+> **Payload hygiene:** the registration form submits **only** the Basic Info
+> fields — all other sections are reset to empty defaults
+> (`buildRegistrationPayload`). This prevents stale/partial items left in a
+> `localStorage` draft (from the earlier multi-step flow) from failing full-schema
+> validation. The draft itself is also narrowed to Basic Info.
+
+The remaining sections are edited later from the dashboard's **Edit Hub Profile**
+(a 0–100% completeness bar shows what's missing):
+
+- **Contact & Location**, **Identity** (vocation, mission, org type, revenue model),
+  **Spaces**, **Accommodation**, **Challenges** (urgency/impact scores),
+  **Assets**, **Network**.
 
 ---
 
@@ -810,11 +838,21 @@ The codebase is prepared for [Holons](https://docs.holons.io/) bot integration:
 
 ---
 
-## Future Phases
+## Feature status
 
-- `/pilgrims` — skilled contributors applying to work at hubs
-- `/patrons` — entities supporting residencies and resources
-- `/residencies` — matching, tracking and evaluating residency programs
+Implemented and live (Sepolia):
+
+- **Hubs** — registration + Safe multisig + dashboard.
+- **Hubs Network Badge** — hub verification SBT + HN admin approval.
+- **Pilgrim Passport** — identity + skill attestations.
+- **Patrons** — organization SBT (1–10 skills).
+- **Residencies** — Bulletin Board, apply, select, award (see below).
+
+Future / not yet implemented:
+
+- **Holons** bot integration (scaffolding only).
+- Pilgrim-created intents, intent marketplace, stars/votes, XMTP, escrow/payments,
+  automated matching (explicitly out of scope for the Residencies pilot).
 
 ---
 
@@ -828,13 +866,111 @@ Required environment variables on Vercel:
 - `HUBS_NETWORK_BADGE_SBT_ADDRESS`
 - `PILGRIM_PASSPORT_SBT_ADDRESS` + `NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS`
 - `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` — must match the deployed contract's `appSigner`
+- `PATRON_SBT_ADDRESS` + `NEXT_PUBLIC_PATRON_SBT_ADDRESS`
+- `PATRON_SBT_APP_SIGNER_PRIVATE_KEY` — must match the Patron contract's `appSigner`
+- `HUBS_NETWORK_RESIDENCIES_ADDRESS` + `NEXT_PUBLIC_HUBS_NETWORK_RESIDENCIES_ADDRESS` — **no app signer**
 - `HN_DIRECTORS_SAFE_ADDRESS` (optional if using defaults)
 - `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
+
+> **Missing env = 500.** Every SBT flow fails server-side if its address / signer
+> key is not set in the deployment environment (and you must redeploy after adding
+> them on Vercel). The residency award additionally requires
+> `NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS` to equal the Passport the Residencies
+> contract points to (`pilgrimPassportSBT()`).
 
 Build settings:
 - Framework: Next.js
 - Build command: `npm run build`
 - Install command: `npm install`
+
+---
+
+## Mainnet readiness — critical points
+
+This is a Sepolia pilot. Before running the protocol on mainnet, the following
+should be addressed. They are grouped by risk area.
+
+### 1. Contracts & audit
+- **Independent security audit** of all four contracts (`HubsNetworkBadgeSBT`,
+  `PilgrimPassportSBT`, `HubsNetworkPatronSBT`, `HubsNetworkResidencies`) before
+  any mainnet deploy.
+- Redeploy on mainnet and update every address **and** EIP-712 domain
+  (`chainId` + `verifyingContract`) in `src/config/*`. Signatures are chain- and
+  contract-bound, so a wrong domain silently breaks signing.
+- Confirm the Residencies constructor points to the mainnet Passport + Badge
+  (`pilgrimPassportSBT()` / `hubBadgeSBT()`), otherwise apply/award revert.
+- **Attestation model decision:** the Passport allows only one active attestation
+  per (skill, hub). If the product wants stacking/weighted "+1" vouches from the
+  same hub, that requires a contract change (a counter or per-attestation records),
+  not an app change.
+
+### 2. Key management (highest priority)
+- `RELAYER_PRIVATE_KEY`, `PILGRIM_PASSPORT_APP_SIGNER_PRIVATE_KEY` and
+  `PATRON_SBT_APP_SIGNER_PRIVATE_KEY` are currently plain env vars. On mainnet move
+  them to a **KMS / HSM / secrets manager**, never expose to the client, rotate
+  regularly, and scope them.
+- **Relayer nonce management:** a single relayer submitting many txs concurrently
+  can hit nonce races. The current code sends and waits per request; under load add
+  a **serialized queue / nonce manager** (or multiple relayers) to avoid dropped or
+  stuck transactions.
+- **Relayer funding & monitoring:** fund with real ETH, add balance alerts and
+  automatic top-ups; every gasless action (create/apply/select/award/claim/mint)
+  spends relayer gas.
+
+### 3. Anti-abuse / gas griefing
+- Gasless writes let anyone make the relayer pay. Tighten server-side rate limiting
+  per wallet/IP, and keep the on-chain guards (verified hub, Passport ownership,
+  matching skill) as the primary gate.
+- Consider per-wallet daily caps on applications and residency creations.
+
+### 4. Data layer (GitHub JSON)
+- GitHub Contents API is **single-writer, rate-limited and public**. It is fine for
+  a pilot but risky at scale: concurrent writes can conflict (we use SHA-based
+  optimistic concurrency, but no retry/queue) and there is no privacy.
+- For mainnet consider a proper datastore (Postgres/Redis) or content-addressed
+  storage (IPFS/Arweave) for metadata, keeping the on-chain `metadataHash` as the
+  integrity anchor.
+- **Verify `metadataHash` on read.** Today the residency detail renders the JSON
+  without re-checking it against the on-chain hash; add verification so tampered or
+  swapped metadata is detected.
+- Never put private/sensitive data in JSON (contact fields are already treated as
+  non-public in the UI but the files themselves are public).
+
+### 5. Indexing & scale
+- `listResidencyViews()` enumerates `1..totalResidencies()` with several reads per
+  residency (plus per-applicant reads). This does not scale. Add a **subgraph /
+  event indexer** (`ResidencyCreated`, `ResidencyApplied`, `PilgrimSelected`,
+  `PilgrimAwarded`, `ResidencyClosed`, `ResidencyCancelled`) and cache
+  aggressively; batch reads via multicall (already used for the badge directory).
+- Use a **paid/dedicated RPC** (mainnet `eth_getLogs`/read limits are stricter than
+  the Alchemy free tier already worked around for Passport claims).
+
+### 6. Reorgs & finality
+- Writes currently accept the first receipt. On mainnet wait for **N confirmations**
+  before treating a tx as final and before persisting `residencyId`/`tokenId`,
+  and handle reorg-invalidated state.
+
+### 7. Signatures & UX
+- `signatureDeadline` is 10 min for residencies / 1 h elsewhere; account for wallet
+  clock skew and consider surfacing "signature expired, retry" consistently
+  (mapped errors already exist).
+- `signerNonces` is shared across all residency actions per signer; the client
+  refetches before signing, but two tabs / parallel actions can still collide —
+  serialize hub actions in the UI if needed.
+
+### 8. Governance / multisig semantics
+- Hub actions are authorized by **any single Safe owner's signature** (the contract
+  checks `ISafe.isOwner`), not by the Safe's threshold. Decide whether single-owner
+  authorization is acceptable for mainnet or whether a true multisig threshold /
+  module is required.
+- HN Director actions (badge/patron approve/reject/revoke, skill governance) rely on
+  the HN Directors Safe ownership; document and secure that Safe's ownership set.
+
+### 9. Testing & ops
+- Add integration/e2e tests for the full residency lifecycle and the SBT flows;
+  the current `test:*` scripts only cover hashing + EIP-712 shape.
+- Add monitoring/alerting for relayer failures, RPC errors and GitHub write
+  failures (which currently degrade silently in a few read paths).
 
 ---
 
