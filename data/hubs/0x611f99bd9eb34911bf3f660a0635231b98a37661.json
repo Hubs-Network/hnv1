@@ -3,7 +3,7 @@
   "hub_id": "0x611f99bd9eb34911bf3f660a0635231b98a37661",
   "name": "AKASHA Hub Barcelona",
   "tagline": "A civic infrastructure for social innovation",
-  "description": "We are a community made up of diverse professional profiles that connects people, projects and stakeholders to generate sustainable ideas, explore new possibilities for innovation, and develop solutions for society and for our environment at a glocal scale.",
+  "description": "We are a community of diverse professional profiles, that connects people, projects and stakeholders to generate sustainable ideas, explore new possibilities for innovation, and develop solutions for society and for our environment at a glocal scale.",
   "website": "https://akasha.barcelona",
   "contact": {
     "contact_name": "Carmen",
@@ -101,7 +101,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-09-21T11:44:40.332Z",
-    "updated_at": "2026-09-21T14:38:40.044Z",
+    "updated_at": "2026-09-28T11:52:47.826Z",
     "submitted_by": "Carmen",
     "creator_address": "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
     "language": "en"
