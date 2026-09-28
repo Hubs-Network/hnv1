@@ -6,6 +6,7 @@ import { useAuth } from "@/context/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Building2, ExternalLink } from "lucide-react";
+import { PatronAdminsManager } from "@/components/patrons/patron-admins-manager";
 
 interface MyPatron {
   applicationId: string;
@@ -17,6 +18,7 @@ interface MyPatron {
   website: string | null;
   contact: string | null;
   createdAt: string | null;
+  admins: string[];
   skills: { hash: string; label: string }[];
 }
 
@@ -34,10 +36,25 @@ const STATUS_LABEL: Record<MyPatron["status"], string> = {
   revoked: "Revoked",
 };
 
+interface ManagedPatron {
+  applicationId: string;
+  tokenId: string;
+  owner: string;
+  companyName: string | null;
+  description: string | null;
+  website: string | null;
+  skills: { hash: string; label: string }[];
+}
+
+function shortAddr(a: string): string {
+  return `${a.slice(0, 6)}…${a.slice(-4)}`;
+}
+
 export default function MyPatronsPage() {
   const { address, isAuthenticated, isLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [patrons, setPatrons] = useState<MyPatron[]>([]);
+  const [managed, setManaged] = useState<ManagedPatron[]>([]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -49,10 +66,17 @@ export default function MyPatronsPage() {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/patrons/mine?applicant=${address}`);
-        if (res.ok) {
-          const data = await res.json();
+        const [mineRes, managedRes] = await Promise.all([
+          fetch(`/api/patrons/mine?applicant=${address}`),
+          fetch(`/api/patrons/managed?wallet=${address}`),
+        ]);
+        if (mineRes.ok) {
+          const data = await mineRes.json();
           if (!cancelled) setPatrons(data.patrons || []);
+        }
+        if (managedRes.ok) {
+          const data = await managedRes.json();
+          if (!cancelled) setManaged(data.patrons || []);
         }
       } catch {
         // silent
@@ -97,7 +121,7 @@ export default function MyPatronsPage() {
         </Link>
       </div>
 
-      {patrons.length === 0 ? (
+      {patrons.length === 0 && managed.length === 0 ? (
         <Card className="p-10 text-center">
           <p className="text-sm text-muted mb-4">
             You have no Patron applications yet.
@@ -107,6 +131,8 @@ export default function MyPatronsPage() {
           </Link>
         </Card>
       ) : (
+        <>
+        {patrons.length > 0 && (
         <div className="space-y-3">
           {patrons.map((p) => (
             <Card key={p.applicationId} className="p-5">
@@ -168,9 +194,85 @@ export default function MyPatronsPage() {
                   </Link>
                 )}
               </div>
+
+              {p.status === "approved" && address && (
+                <PatronAdminsManager
+                  applicationId={p.applicationId}
+                  ownerAddress={address}
+                  initialAdmins={p.admins || []}
+                />
+              )}
             </Card>
           ))}
         </div>
+        )}
+
+        {managed.length > 0 && (
+          <div className="mt-10">
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              Patrons you manage
+            </h2>
+            <p className="text-sm text-muted mb-4">
+              You are a delegated admin of these Patrons. You can act on their
+              residencies on the owner&apos;s behalf.
+            </p>
+            <div className="space-y-3">
+              {managed.map((p) => (
+                <Card key={p.applicationId} className="p-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="min-w-0 space-y-1.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-foreground">
+                          {p.companyName || "Patron"}
+                        </h3>
+                        <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-primary-bg text-primary">
+                          Admin
+                        </span>
+                      </div>
+                      {p.description && (
+                        <p className="text-sm text-muted line-clamp-2">
+                          {p.description}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted">
+                        Owner: {shortAddr(p.owner)}
+                      </p>
+                      {p.website && (
+                        <a
+                          href={p.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          {p.website}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                      {p.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {p.skills.map((s) => (
+                            <span
+                              key={s.hash}
+                              className="px-2 py-0.5 rounded-full text-[11px] bg-primary-bg text-primary border border-primary/20"
+                            >
+                              {s.label}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <Link href={`/patrons/${p.tokenId}`} className="shrink-0">
+                      <Button size="sm" variant="secondary">
+                        View public page
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+        </>
       )}
     </div>
   );

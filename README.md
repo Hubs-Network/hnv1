@@ -736,6 +736,105 @@ contract was deployed against.
 
 ---
 
+## Patron admins & residency vouching
+
+Two **off-chain** features layered on top of the Patron SBT (no contract change).
+The Residencies contract has no knowledge of Patrons; all of this lives in GitHub
+JSON and is authorized via the existing wallet-address model.
+
+### Patron admins (delegated management)
+
+A verified Patron's **on-chain owner** can delegate management to other wallets by
+adding them to an off-chain `admins` list in the Patron JSON. The owner is always
+an implicit manager and is the only party allowed to edit the list.
+
+- Stored as `admins: string[]` on `data/patrons/<applicationId>.json`.
+- `GET/POST /api/patrons/applications/[applicationId]/admins` — owner-only edits
+  (add / remove). `POST /api/patrons/mine` returns `admins` for the owner UI;
+  `GET /api/patrons/managed?wallet=` lists Patrons a wallet **administers** (not
+  owns), and `GET /api/patrons/manageable?wallet=` lists active Patrons a wallet
+  can act as (owner **or** admin) — used to populate the vouch selector.
+- `src/lib/patron-admins.ts` exposes `resolvePatronOwner`, `getPatronAdmins`,
+  `isPatronOwner`, `isPatronManager` (owner OR admin) — the authorization
+  primitive reused by vouching.
+- UI: **My Patrons** shows a "Patron admins" manager (owner) and a "Patrons you
+  manage" section (delegated admins).
+
+### Residency vouching (Patron pledge)
+
+A **manager** (owner or delegated admin) of an **active** Patron can publicly
+**vouch** an **OPEN** residency: a non-binding pledge of support. It is a record
+only — **no on-chain transfer or escrow**.
+
+- A vouch has: amount, currency, purpose (≤ 250 chars) and an optional link.
+- **Currency** is a discriminated union: `fiat` (EUR/USD/GBP/CHF), `crypto`
+  (ETH/BTC/USDC/USDT), or a custom `token` (contract address + chain from
+  Ethereum/Arbitrum/Optimism/Base/Polygon/Gnosis, optional symbol).
+- **One active vouch per (patron, residency)** — one JSON file at
+  `data/vouches/<residencyId>/<patronApplicationId>.json`; re-submitting upserts,
+  and a manager can **withdraw** while the residency is OPEN.
+- Server checks on every write: residency status is `Open`, the Patron is active
+  on-chain, and the caller is a manager of that Patron (`isPatronManager`).
+- **Visibility:** vouches are shown to anyone who can open the residency detail,
+  and the Bulletin Board card shows a "supported by N patrons" count
+  (`ResidencyView.vouchCount`). The creator wallet is not exposed publicly.
+- A wallet that also holds a Pilgrim Passport sees **both** actions on the
+  residency page: apply (as pilgrim) and vouch (as Patron manager). Patron
+  managers can open the residency detail even if they are not pilgrims.
+
+### 🔭 Future direction: on-chain escrow settlement
+
+The current vouch is a **soft, off-chain pledge**. The intended evolution is to
+make it **binding and on-chain via a basic escrow**, settled by the residency
+lifecycle and the hub signer's evaluation/attestation:
+
+1. **Lock** — when a Patron vouches an OPEN residency, it deposits the pledged
+   amount (native or ERC-20) into an escrow contract, referencing the
+   `residencyId` (and optionally a specific Pilgrim / skill outcome).
+2. **Condition** — funds are held until the residency reaches settlement: the hub
+   signer **selects** and then **awards** Pilgrims (`awardPilgrim` →
+   `attestSkills`). The escrow release is tied to that same on-chain
+   evaluation/attestation event that already proves the residency was delivered.
+3. **Release / refund** — on award/attestation the escrow **releases** to the
+   agreed beneficiary (e.g. the hub, the awarded Pilgrim, or a split); if the
+   residency is **cancelled** or no award occurs by a deadline, the Patron is
+   **refunded**.
+
+This turns "supported by N patrons" from a declaration into **verifiable,
+conditional funding** without changing the Pilgrim/Hub identity model — the
+escrow would be a new contract that *reads* residency + attestation state, keeping
+the existing SBTs untouched. Design points to resolve before building it:
+
+- multi-currency / cross-chain settlement (the vouch currency model already
+  captures token + chain), fees, partial releases and split beneficiaries;
+- who is the release authority (hub-signer attestation vs. an arbiter / multisig)
+  and the refund/timeout policy;
+- relationship to the gasless model (who pays settlement gas) and audit
+  requirements before handling real funds.
+
+Until then, vouches remain **non-binding records** and no value is escrowed.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/patron-admins.ts` | Owner/manager resolution (on-chain owner + JSON admins) |
+| `src/config/vouch-currencies.ts` | Fiat/crypto/chain presets + `formatVouchCurrency` |
+| `src/lib/schemas/vouch.ts` | Vouch JSON + create-input Zod (currency union) |
+| `src/lib/data/residency-vouches.ts` | Per-`(residency, patron)` JSON store + active count |
+| `src/app/api/patrons/{managed,manageable}` | Administered / manageable Patron lookups |
+| `src/app/api/patrons/applications/[applicationId]/admins` | Owner-only admin edits |
+| `src/app/api/residencies/[residencyId]/vouches` | List + create/update/withdraw vouches |
+| `src/components/patrons/patron-admins-manager.tsx` | Owner admin editor (My Patrons) |
+| `src/components/residencies/residency-vouches.tsx` | Vouch list + form (residency detail) |
+
+> **Mainnet note:** like the rest of the pilot, vouch writes trust the submitted
+> `_wallet_address` after a manager check (no signature) and the JSON store is
+> public/single-writer. See [Mainnet readiness](#mainnet-readiness--critical-points)
+> — a per-vouch signature and a proper datastore are the hardening steps here.
+
+---
+
 ## Gas Sponsorship
 
 **No user ever pays gas.** Two mechanisms:

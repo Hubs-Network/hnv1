@@ -70,6 +70,7 @@ export async function GET(request: NextRequest) {
             website: profile?.website ?? null,
             contact: profile?.contact ?? null,
             createdAt: profile?.createdAt ?? null,
+            admins: profile?.admins ?? [],
             skills,
           };
         })

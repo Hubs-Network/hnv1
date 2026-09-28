@@ -12,7 +12,11 @@ import {
   awardPilgrim,
   cancelResidency,
 } from "@/lib/residencies-client";
-import type { ResidencyUiStatus } from "@/config/residencies";
+import {
+  ResidencyVouches,
+  type ManageablePatron,
+} from "./residency-vouches";
+import { RESIDENCY_STATUS, type ResidencyUiStatus } from "@/config/residencies";
 import {
   Loader2,
   ArrowLeft,
@@ -89,6 +93,7 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
 
   const [eligibility, setEligibility] = useState<Eligibility | null>(null);
   const [isHubSigner, setIsHubSigner] = useState(false);
+  const [manageablePatrons, setManageablePatrons] = useState<ManageablePatron[]>([]);
 
   const [busy, setBusy] = useState<string | null>(null);
   const [progress, setProgress] = useState<string | null>(null);
@@ -127,10 +132,11 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
       if (!isAuthenticated || !address || !residency) {
         setEligibility(null);
         setIsHubSigner(false);
+        setManageablePatrons([]);
         return;
       }
       try {
-        const [elig, adminRes] = await Promise.all([
+        const [elig, adminRes, manageableRes] = await Promise.all([
           fetch(
             `/api/residencies/${residencyId}/eligibility?owner=${address}`
           ).then((r) => r.json()),
@@ -144,14 +150,17 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
               safe_address: residency.hubSafe,
             }),
           }).then((r) => r.json()),
+          fetch(`/api/patrons/manageable?wallet=${address}`).then((r) => r.json()),
         ]);
         if (cancelled) return;
         setEligibility(elig?.error ? null : elig);
         setIsHubSigner(adminRes?.is_admin === true);
+        setManageablePatrons(manageableRes?.patrons ?? []);
       } catch {
         if (!cancelled) {
           setEligibility(null);
           setIsHubSigner(false);
+          setManageablePatrons([]);
         }
       }
     }
@@ -215,7 +224,9 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
     );
   }
 
-  const canView = isHubSigner || eligibility?.hasPassport;
+  const isPatronManager = manageablePatrons.length > 0;
+  const canView = isHubSigner || eligibility?.hasPassport || isPatronManager;
+  const canVouch = residency.status === RESIDENCY_STATUS.Open;
   const nowSec = Math.floor(Date.now() / 1000);
   const deadlinePassed = nowSec > residency.applicationDeadline;
 
@@ -484,6 +495,14 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
                 </div>
               )}
           </Card>
+
+          {/* Patron support (vouches) */}
+          <ResidencyVouches
+            residencyId={residencyId}
+            canVouch={canVouch}
+            manageablePatrons={manageablePatrons}
+            walletAddress={address ?? null}
+          />
 
           {/* Hub: award selected pilgrims (closed) */}
           {isHubSigner && residency.uiStatus === "closed" && (

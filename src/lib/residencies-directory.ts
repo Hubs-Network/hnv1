@@ -32,6 +32,7 @@ import {
   hasActiveAttestation,
 } from "@/lib/pilgrim-passport-sbt";
 import { getPilgrimByWallet } from "@/lib/data/pilgrims";
+import { countActiveVouches } from "@/lib/data/residency-vouches";
 
 export interface ResidencySkillView {
   hash: string;
@@ -60,6 +61,7 @@ export interface ResidencyView {
   externalFormLink: string | null;
   externalFormInstructions: string | null;
   applicantCount: number;
+  vouchCount: number;
   metadata: ResidencyMetadata | null;
 }
 
@@ -115,12 +117,14 @@ export async function getResidencyView(
   const onChain = await getResidency(residencyId);
   if (!onChain) return null;
 
-  const [skillHashes, applicants, applicationOpen, metadata] = await Promise.all([
-    getResidencySkills(residencyId),
-    getResidencyApplicants(residencyId),
-    readIsApplicationOpen(residencyId),
-    loadMetadata(onChain),
-  ]);
+  const [skillHashes, applicants, applicationOpen, metadata, vouchCount] =
+    await Promise.all([
+      getResidencySkills(residencyId),
+      getResidencyApplicants(residencyId),
+      readIsApplicationOpen(residencyId),
+      loadMetadata(onChain),
+      countActiveVouches(residencyId.toString()),
+    ]);
 
   const skills = await resolveSkills(skillHashes);
 
@@ -145,6 +149,7 @@ export async function getResidencyView(
     externalFormLink: metadata?.externalFormLink ?? null,
     externalFormInstructions: metadata?.externalFormInstructions ?? null,
     applicantCount: applicants.length,
+    vouchCount,
     metadata: metadata ?? null,
   };
 }

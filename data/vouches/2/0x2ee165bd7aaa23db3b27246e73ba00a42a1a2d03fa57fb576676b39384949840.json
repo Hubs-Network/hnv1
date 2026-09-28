@@ -1,0 +1,18 @@
+{
+  "vouchId": "c1898521-5e24-4a56-83a1-e785e6795763",
+  "residencyId": "2",
+  "patronApplicationId": "0x2ee165bd7aaa23db3b27246e73ba00a42a1a2d03fa57fb576676b39384949840",
+  "patronTokenId": "1",
+  "patronName": "SpaghettETH",
+  "createdBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "amount": "0.001",
+  "currency": {
+    "kind": "crypto",
+    "symbol": "ETH"
+  },
+  "purpose": "stick/spray/draw a SpaghettETH logo on the bike",
+  "link": "https://spaghett-eth.com",
+  "status": "active",
+  "createdAt": "2026-09-28T14:54:50.399Z",
+  "updatedAt": "2026-09-28T14:54:50.399Z"
+}

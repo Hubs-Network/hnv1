@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { MapPin, Users } from "lucide-react";
+import { MapPin, Users, HandHeart } from "lucide-react";
 import { ResidencyStatusBadge } from "./residency-status-badge";
 import type { ResidencyView } from "@/lib/residencies-directory";
 
@@ -55,6 +55,13 @@ export function ResidencyCard({ residency }: { residency: ResidencyView }) {
             {residency.applicantCount} applicant
             {residency.applicantCount === 1 ? "" : "s"}
           </span>
+          {residency.vouchCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <HandHeart className="w-3 h-3" />
+              supported by {residency.vouchCount} patron
+              {residency.vouchCount === 1 ? "" : "s"}
+            </span>
+          )}
         </div>
       </Card>
     </Link>

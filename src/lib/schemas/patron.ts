@@ -54,6 +54,13 @@ export const patronProfileSchema = z.object({
   revocationTxHash: hex.optional(),
 
   updatedAt: z.string().optional(),
+
+  /**
+   * Off-chain, owner-managed admin addresses for THIS Patron. Not on-chain: the
+   * SBT owner (applicant) can delegate management of the Patron's residency
+   * actions to these wallets. The owner is always an implicit manager.
+   */
+  admins: z.array(address).optional(),
 });
 
 export type PatronProfile = z.infer<typeof patronProfileSchema>;

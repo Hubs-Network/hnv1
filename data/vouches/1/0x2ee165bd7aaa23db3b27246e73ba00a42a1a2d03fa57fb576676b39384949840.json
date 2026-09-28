@@ -1,0 +1,18 @@
+{
+  "vouchId": "ee07e7ef-8cd1-41b7-a4c9-0312ad3cfaaa",
+  "residencyId": "1",
+  "patronApplicationId": "0x2ee165bd7aaa23db3b27246e73ba00a42a1a2d03fa57fb576676b39384949840",
+  "patronTokenId": "1",
+  "patronName": "SpaghettETH",
+  "createdBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "amount": "500",
+  "currency": {
+    "kind": "crypto",
+    "symbol": "USDC"
+  },
+  "purpose": "include GearSurfing P2P music instrument rental as engagement tool for the social game.",
+  "link": "https://gearsurfing.xyz",
+  "status": "active",
+  "createdAt": "2026-09-28T14:57:29.384Z",
+  "updatedAt": "2026-09-28T14:57:29.384Z"
+}
