@@ -172,7 +172,7 @@ export async function listActiveVouches(residencyId: string): Promise<Vouch[]> {
   );
 }
 
-/** Count of active vouches for a residency (used by the Bulletin Board card). */
+/** Count of active vouches for a residency (used by the Residencies list card). */
 export async function countActiveVouches(residencyId: string): Promise<number> {
   return (await listActiveVouches(residencyId)).length;
 }

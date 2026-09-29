@@ -5,7 +5,7 @@ import { ResidencyStatusBadge } from "./residency-status-badge";
 import type { ResidencyView } from "@/lib/residencies-directory";
 
 /**
- * Bulletin Board card preview. Shows only: hub name, title, skills and status.
+ * Residencies list card preview. Shows only: hub name, title, skills and status.
  * Full details (and the apply flow) live on the residency detail page, which is
  * gated to Pilgrim Passport holders / hub signers.
  */

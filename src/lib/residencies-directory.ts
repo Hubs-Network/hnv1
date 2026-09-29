@@ -2,7 +2,7 @@
  * Residency directory helpers (SERVER ONLY).
  *
  * Assembles a UI-friendly "ResidencyView" from on-chain data (authoritative)
- * + off-chain metadata JSON + resolved skill labels. Used by the Bulletin Board,
+ * + off-chain metadata JSON + resolved skill labels. Used by the Residencies list,
  * the residency detail page and the hub dashboard.
  *
  * The contract is the source of truth for status, skills, applicants, selection
@@ -154,7 +154,7 @@ export async function getResidencyView(
   };
 }
 
-/** Enumerate all residencies for the Bulletin Board (ids 1..totalResidencies). */
+/** Enumerate all residencies for the Residencies list (ids 1..totalResidencies). */
 export async function listResidencyViews(): Promise<ResidencyView[]> {
   const total = await getTotalResidencies();
   const n = Number(total);

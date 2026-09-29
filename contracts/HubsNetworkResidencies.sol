@@ -860,7 +860,7 @@ contract HubsNetworkResidencies is Ownable, EIP712 {
     }
 
     /// @notice Returns the total number of residencies created so far.
-    /// @dev Useful for a Bulletin Board UI to enumerate all residencies (ids 1 … totalResidencies()).
+    /// @dev Useful for a Residencies list UI to enumerate all residencies (ids 1 … totalResidencies()).
     /// @return The count of residencies created.
     function totalResidencies() external view returns (uint256) {
         return _nextResidencyId - 1;

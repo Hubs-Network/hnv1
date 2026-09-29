@@ -20,7 +20,7 @@ function toUnix(iso: string): bigint {
   return BigInt(Math.floor(Date.parse(iso) / 1000));
 }
 
-/** GET /api/residencies — list all residencies for the Bulletin Board. */
+/** GET /api/residencies — list all residencies for the Residencies list. */
 export async function GET() {
   try {
     const residencies = await listResidencyViews();

@@ -5,11 +5,11 @@ import { ScrollText } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Bulletin Board — Hubs Network",
+  title: "Residencies — Hubs Network",
   description: "Open residencies across the Hubs Network.",
 };
 
-export default async function BulletinBoardPage() {
+export default async function ResidenciesPage() {
   const residencies = await listResidencyViews();
 
   return (
@@ -17,7 +17,7 @@ export default async function BulletinBoardPage() {
       <div className="flex items-center gap-3 mb-2">
         <ScrollText className="w-7 h-7 text-primary" />
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Bulletin Board
+          Residencies
         </h1>
       </div>
       <p className="text-sm text-muted mb-8 max-w-2xl">

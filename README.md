@@ -732,7 +732,7 @@ contract was deployed against.
 | `src/lib/data/residencies.ts` | GitHub/filesystem JSON store (`data/residencies/<hubSafe>/<draftId>.json`) |
 | `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, eligibility, nonce, hub |
 | `src/components/residencies/*` | Card, status badge, detail, hub section |
-| `src/app/bulletin-board`, `src/app/residencies/[residencyId]` | Public routes |
+| `src/app/residencies`, `src/app/residencies/[residencyId]` | Public routes (list + detail) |
 
 ---
 
@@ -776,7 +776,7 @@ only — **no on-chain transfer or escrow**.
 - Server checks on every write: residency status is `Open`, the Patron is active
   on-chain, and the caller is a manager of that Patron (`isPatronManager`).
 - **Visibility:** vouches are shown to anyone who can open the residency detail,
-  and the Bulletin Board card shows a "supported by N patrons" count
+  and the Residencies list card shows a "supported by N patrons" count
   (`ResidencyView.vouchCount`). The creator wallet is not exposed publicly.
 - A wallet that also holds a Pilgrim Passport sees **both** actions on the
   residency page: apply (as pilgrim) and vouch (as Patron manager). Patron
@@ -945,7 +945,7 @@ Implemented and live (Sepolia):
 - **Hubs Network Badge** — hub verification SBT + HN admin approval.
 - **Pilgrim Passport** — identity + skill attestations.
 - **Patrons** — organization SBT (1–10 skills).
-- **Residencies** — Bulletin Board, apply, select, award (see below).
+- **Residencies** — residencies list, apply, select, award (see below).
 
 Future / not yet implemented:
 

@@ -15,7 +15,7 @@ export function Header() {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Hubs", href: "/hubs" },
-    { name: "Bulletin Board", href: "/bulletin-board" },
+    { name: "Residencies", href: "/residencies" },
     { name: "Register Hub", href: "/register/hub" },
     { name: "Pilgrims", href: "/pilgrims" },
     { name: "Patrons", href: "/patrons" },

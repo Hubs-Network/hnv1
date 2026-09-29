@@ -217,8 +217,8 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
     return (
       <div className="text-center py-20">
         <p className="text-muted">Residency not found.</p>
-        <Link href="/bulletin-board" className="text-primary hover:underline text-sm mt-2 inline-block">
-          Back to Bulletin Board
+        <Link href="/residencies" className="text-primary hover:underline text-sm mt-2 inline-block">
+          Back to Residencies
         </Link>
       </div>
     );
@@ -233,11 +233,11 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
   return (
     <div>
       <Link
-        href="/bulletin-board"
+        href="/residencies"
         className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        Bulletin Board
+        Residencies
       </Link>
 
       <div className="flex items-start justify-between gap-4 mb-1">
