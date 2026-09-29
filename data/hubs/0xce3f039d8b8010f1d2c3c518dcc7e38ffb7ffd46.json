@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xce3f039d8b8010f1d2c3c518dcc7e38ffb7ffd46",
+  "name": "El Pantano",
+  "tagline": "El Pantano: a living hub for regeneration, learning, and collective imagination.",
+  "description": "El Pantano is a living hub in the Paraná Delta where nature, culture, learning, and collective action come together. It is a place to slow down, reconnect with the territory, and experiment with more regenerative ways of living, creating, and organizing.\nThrough gatherings, residencies, educational experiences, retreats, art, permaculture, and simple time by the river, El Pantano brings diverse people into meaningful contact: people with ideas, skills, questions, and a desire to care for what is shared. It is both a refuge and a laboratory—a place to imagine and practice futures rooted in reciprocity, biodiversity, community, and care",
+  "website": "http://www.ElPatano.org",
+  "contact": {
+    "contact_name": "Daniel Carpi",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Buenos Aires",
+    "region": "",
+    "country": "Argentina",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-09-29T14:09:39.294Z",
+    "updated_at": "2026-09-29T14:09:39.294Z",
+    "submitted_by": "Daniel Carpi",
+    "creator_address": "0xc6a34ec25f3a39d949222ecfa2bee774fb4bba17",
+    "language": "en"
+  },
+  "safeAddress": "0xce3f039d8b8010f1d2c3c518dcc7e38ffb7ffd46",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
