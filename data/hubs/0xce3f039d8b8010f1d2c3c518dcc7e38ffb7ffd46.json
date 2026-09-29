@@ -38,7 +38,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-09-29T14:09:39.294Z",
-    "updated_at": "2026-09-29T14:10:21.767Z",
+    "updated_at": "2026-09-29T14:11:25.163Z",
     "submitted_by": "Daniel Carpi",
     "creator_address": "0xc6a34ec25f3a39d949222ecfa2bee774fb4bba17",
     "language": "en"
@@ -48,7 +48,7 @@
   "network_id": "sepolia",
   "hnBadgeStatus": "pending",
   "hnBadgeApplication": {
-    "submittedAt": "2026-09-29T14:10:21.767Z",
+    "submittedAt": "2026-09-29T14:11:25.163Z",
     "manifestoAccepted": true,
     "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
     "applicantAddress": "0xc6a34ec25f3a39d949222ecfa2bee774fb4bba17"
