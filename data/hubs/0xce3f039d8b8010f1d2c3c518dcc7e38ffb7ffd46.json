@@ -38,12 +38,19 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-09-29T14:09:39.294Z",
-    "updated_at": "2026-09-29T14:09:39.294Z",
+    "updated_at": "2026-09-29T14:10:21.767Z",
     "submitted_by": "Daniel Carpi",
     "creator_address": "0xc6a34ec25f3a39d949222ecfa2bee774fb4bba17",
     "language": "en"
   },
   "safeAddress": "0xce3f039d8b8010f1d2c3c518dcc7e38ffb7ffd46",
   "chainId": 11155111,
-  "network_id": "sepolia"
+  "network_id": "sepolia",
+  "hnBadgeStatus": "pending",
+  "hnBadgeApplication": {
+    "submittedAt": "2026-09-29T14:10:21.767Z",
+    "manifestoAccepted": true,
+    "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
+    "applicantAddress": "0xc6a34ec25f3a39d949222ecfa2bee774fb4bba17"
+  }
 }
