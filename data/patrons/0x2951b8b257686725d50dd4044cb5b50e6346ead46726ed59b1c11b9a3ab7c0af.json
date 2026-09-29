@@ -7,8 +7,12 @@
   "contact": "Niko testing",
   "chainId": 11155111,
   "contractAddress": "0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326",
-  "status": "pending",
+  "status": "approved",
   "createdAt": "2026-09-29T08:52:30.599Z",
   "applicationTxHash": "0xcd2dd8ec1adde0020502f4b1a1bf4408165953b231c214700334c3b3e0018679",
-  "updatedAt": "2026-09-29T08:52:30.599Z"
+  "updatedAt": "2026-09-29T08:53:27.273Z",
+  "tokenId": "3",
+  "approvedAt": "2026-09-29T08:53:27.273Z",
+  "approvedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "approvalTxHash": "0x497334ffb302fb5a2757c6d90ab348609393e1672bbccbb7cc7c8d057f0e34ec"
 }
