@@ -1,0 +1,18 @@
+{
+  "vouchId": "4a6775ec-9d7c-4003-a3ea-51dd70f1c935",
+  "residencyId": "1",
+  "patronApplicationId": "0x2951b8b257686725d50dd4044cb5b50e6346ead46726ed59b1c11b9a3ab7c0af",
+  "patronTokenId": "3",
+  "patronName": "University of the Commons (test patron)",
+  "createdBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "amount": "10",
+  "currency": {
+    "kind": "fiat",
+    "code": "EUR"
+  },
+  "purpose": "to test",
+  "link": "https://nikoline.github.io/arns/",
+  "status": "active",
+  "createdAt": "2026-09-29T10:20:02.365Z",
+  "updatedAt": "2026-09-29T10:20:02.365Z"
+}
