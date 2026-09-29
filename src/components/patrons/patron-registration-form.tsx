@@ -162,6 +162,7 @@ export function PatronRegistrationForm() {
             onChange={setSkills}
             max={PATRON_SKILL_MAX}
             disabled={submitting}
+            canonicalOnly
           />
         </div>
 

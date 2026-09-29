@@ -80,6 +80,35 @@ export interface ResidencyApplicantView {
   alreadyAttestedByHub: string[];
 }
 
+/** Sort rank: open first, then applications-closed, closed, cancelled last. */
+function statusRank(uiStatus: ResidencyUiStatus): number {
+  switch (uiStatus) {
+    case "open":
+      return 0;
+    case "applications_closed":
+      return 1;
+    case "closed":
+      return 2;
+    case "cancelled":
+      return 3;
+    default:
+      return 4;
+  }
+}
+
+/**
+ * Ordering: OPEN residencies on top (soonest application deadline first), then
+ * applications-closed, then closed, then cancelled. Within the non-open groups,
+ * most recent first.
+ */
+export function compareResidencyViews(a: ResidencyView, b: ResidencyView): number {
+  const ra = statusRank(a.uiStatus);
+  const rb = statusRank(b.uiStatus);
+  if (ra !== rb) return ra - rb;
+  if (ra === 0) return a.applicationDeadline - b.applicationDeadline;
+  return Number(b.id) - Number(a.id);
+}
+
 export function deriveUiStatus(
   status: number,
   applicationOpen: boolean
@@ -163,7 +192,7 @@ export async function listResidencyViews(): Promise<ResidencyView[]> {
   const views = await Promise.all(ids.map((id) => getResidencyView(id)));
   return views
     .filter((v): v is ResidencyView => v !== null)
-    .sort((a, b) => Number(b.id) - Number(a.id));
+    .sort(compareResidencyViews);
 }
 
 /** Residencies created by a specific hub Safe. */
@@ -174,7 +203,7 @@ export async function listHubResidencyViews(
   const views = await Promise.all(ids.map((id) => getResidencyView(id)));
   return views
     .filter((v): v is ResidencyView => v !== null)
-    .sort((a, b) => Number(b.id) - Number(a.id));
+    .sort(compareResidencyViews);
 }
 
 /** Applicants for a residency, enriched with owner + pilgrim nickname. */

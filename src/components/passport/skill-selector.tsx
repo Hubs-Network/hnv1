@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { PILGRIM_SKILL_CATEGORIES } from "@/config/pilgrim-skill-categories";
+import { getSkillLabel } from "@/lib/pilgrim-skills";
 import { useSkillCatalog } from "@/lib/use-skill-catalog";
 
 interface SkillSelectorProps {
@@ -14,6 +15,13 @@ interface SkillSelectorProps {
   disabled?: boolean;
   /** When true, the helper text asks for EXACTLY `max` skills (Patron flow). */
   exact?: boolean;
+  /**
+   * When true, offer ONLY the canonical skills hardcoded at deploy time
+   * (static taxonomy), ignoring HN-admin custom skills from the runtime catalog.
+   * Used by the Patron flow: HubsNetworkPatronSBT only knows its deploy-time
+   * skills, so custom Passport skills would fail its on-chain `validSkill` check.
+   */
+  canonicalOnly?: boolean;
 }
 
 /**
@@ -26,8 +34,13 @@ export function SkillSelector({
   availableSkillIds,
   disabled = false,
   exact = false,
+  canonicalOnly = false,
 }: SkillSelectorProps) {
   const { categories: catalogCategories, labelOf } = useSkillCatalog();
+
+  // Canonical-only ignores the runtime catalog (no custom skills) and resolves
+  // labels from the static taxonomy.
+  const resolveLabel = canonicalOnly ? getSkillLabel : labelOf;
 
   const allowed = useMemo(
     () => (availableSkillIds ? new Set(availableSkillIds) : null),
@@ -37,6 +50,14 @@ export function SkillSelector({
   // Use the live catalog (static + custom skills) once loaded; fall back to the
   // static taxonomy while it's loading so the picker is never empty.
   const baseCategories = useMemo(() => {
+    // Patron flow: always use the static, deploy-time canonical taxonomy.
+    if (canonicalOnly) {
+      return PILGRIM_SKILL_CATEGORIES.map((cat) => ({
+        id: cat.id,
+        label: cat.label,
+        skills: [...cat.skills] as string[],
+      }));
+    }
     if (catalogCategories.length > 0) {
       return catalogCategories.map((cat) => ({
         id: cat.id,
@@ -49,7 +70,7 @@ export function SkillSelector({
       label: cat.label,
       skills: [...cat.skills] as string[],
     }));
-  }, [catalogCategories]);
+  }, [catalogCategories, canonicalOnly]);
 
   const categories = useMemo(() => {
     return baseCategories
@@ -98,7 +119,7 @@ export function SkillSelector({
                     (disabled || atLimit) && "opacity-50 cursor-not-allowed"
                   )}
                 >
-                  {labelOf(skillId)}
+                  {resolveLabel(skillId)}
                 </button>
               );
             })}
