@@ -135,7 +135,7 @@ export default async function HomePage() {
                 icon: Layers,
                 title: "Patrons",
                 desc: "Supporters and funders who enable residencies and resource flows.",
-                active: false,
+                active: true,
               },
               {
                 icon: Database,
