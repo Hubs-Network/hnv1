@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x9c735971762e285b4a20668fc0df99ee0bd85e4a",
+  "name": "The Giveth House",
+  "tagline": "Web 3 space for good",
+  "description": "Web 3 space for good",
+  "website": "https://x.com/GivethHouse",
+  "contact": {
+    "contact_name": "Franco",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Barcelona",
+    "region": "",
+    "country": "Spain",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-10-02T08:51:15.033Z",
+    "updated_at": "2026-10-02T08:51:15.033Z",
+    "submitted_by": "Franco",
+    "creator_address": "0xca43134e0b96d7adeed9d1b9bdff655a5bd4bf67",
+    "language": "en"
+  },
+  "safeAddress": "0x9c735971762e285b4a20668fc0df99ee0bd85e4a",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
