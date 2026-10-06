@@ -5,25 +5,34 @@ import Link from "next/link";
 import { ScrollText } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
+import type { HNBadgeStatus } from "@/types";
 
 interface Props {
   hubId: string;
-  /** Only hubs that hold the HN Badge SBT can publish residencies. */
-  hasBadge: boolean;
+  /** On-chain HN Badge SBT status. Only "approved" hubs can publish. */
+  badgeStatus?: HNBadgeStatus;
 }
 
 /**
  * Shortcut shown on a hub's public page that lets an authorized manager jump
  * straight to the residency creation module (which lives in the hub dashboard).
- * Renders nothing unless the hub is verified AND the viewer is a hub admin.
+ *
+ * - Verified hub ("approved"): active button linking to the create form.
+ * - Claimed but not yet minted ("pending"): disabled button making it explicit
+ *   that publishing isn't available yet.
+ * - Otherwise (never claimed / rejected): renders nothing.
+ *
+ * Always gated on the viewer being a hub admin.
  */
-export function HubResidencyShortcut({ hubId, hasBadge }: Props) {
+export function HubResidencyShortcut({ hubId, badgeStatus }: Props) {
   const { address, isAuthenticated } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  const relevant = badgeStatus === "approved" || badgeStatus === "pending";
+
   useEffect(() => {
-    if (!hasBadge || !isAuthenticated || !address) {
+    if (!relevant || !isAuthenticated || !address) {
       setIsAdmin(false);
       setChecked(true);
       return;
@@ -54,9 +63,28 @@ export function HubResidencyShortcut({ hubId, hasBadge }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [hubId, hasBadge, isAuthenticated, address]);
+  }, [hubId, relevant, isAuthenticated, address]);
 
-  if (!hasBadge || !checked || !isAdmin) return null;
+  if (!relevant || !checked || !isAdmin) return null;
+
+  // SBT claimed but not minted yet — show a disabled, explanatory button.
+  if (badgeStatus === "pending") {
+    return (
+      <Button
+        variant="secondary"
+        size="sm"
+        className="gap-1.5 opacity-60 cursor-not-allowed"
+        onClick={() =>
+          alert(
+            "Your Hub's SBT verification is still pending, please retry later"
+          )
+        }
+      >
+        <ScrollText className="w-3.5 h-3.5" />
+        Create Residency (SBT claim pending…)
+      </Button>
+    );
+  }
 
   return (
     <Link href={`/hubs/${hubId}/edit#hub-residencies`}>

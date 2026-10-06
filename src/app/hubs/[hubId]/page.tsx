@@ -124,7 +124,7 @@ export default async function HubDetailPage({ params }: PageProps) {
           <HubEditButton hubId={hub.hub_id} />
           <HubResidencyShortcut
             hubId={hub.hub_id}
-            hasBadge={hub.hnBadgeStatus === "approved"}
+            badgeStatus={hub.hnBadgeStatus}
           />
         </div>
 
