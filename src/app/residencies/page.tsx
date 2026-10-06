@@ -1,5 +1,6 @@
 import { listResidencyViews } from "@/lib/residencies-directory";
 import { ResidencyCard } from "@/components/residencies/residency-card";
+import { ResidenciesPublishCTA } from "@/components/residencies/residencies-publish-cta";
 import { ScrollText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,8 @@ export default async function ResidenciesPage() {
         Residencies posted by verified Hubs Network hubs. Open a card to see the
         details and apply. You need a Pilgrim Passport to apply.
       </p>
+
+      <ResidenciesPublishCTA />
 
       {residencies.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-border rounded-xl">

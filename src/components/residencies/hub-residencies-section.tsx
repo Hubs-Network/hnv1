@@ -65,6 +65,16 @@ export function HubResidenciesSection({
     load();
   }, [load]);
 
+  // Deep-link support: shortcuts elsewhere point here with #hub-residencies to
+  // scroll into view and open the create form directly.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#hub-residencies") return;
+    setShowForm(true);
+    const el = document.getElementById("hub-residencies");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   function setMilestone(i: number, v: string) {
     setMilestones((prev) => prev.map((m, idx) => (idx === i ? v : m)));
   }
@@ -132,7 +142,7 @@ export function HubResidenciesSection({
   }
 
   return (
-    <Card className="space-y-4">
+    <Card id="hub-residencies" className="space-y-4 scroll-mt-24">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <ScrollText className="w-5 h-5 text-primary" />

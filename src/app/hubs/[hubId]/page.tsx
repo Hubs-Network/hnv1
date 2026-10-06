@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { HubEditButton } from "@/components/hubs/edit-button";
 import { HubPassportSection } from "@/components/passport/hub-passport-section";
+import { HubResidencyShortcut } from "@/components/residencies/hub-residency-shortcut";
 
 interface PageProps {
   params: Promise<{ hubId: string }>;
@@ -121,6 +122,10 @@ export default async function HubDetailPage({ params }: PageProps) {
             </span>
           )}
           <HubEditButton hubId={hub.hub_id} />
+          <HubResidencyShortcut
+            hubId={hub.hub_id}
+            hasBadge={hub.hnBadgeStatus === "approved"}
+          />
         </div>
 
         <p className="text-lg text-muted leading-relaxed max-w-3xl">
