@@ -183,7 +183,12 @@ export async function getResidencyView(
   };
 }
 
-/** Enumerate all residencies for the Residencies list (ids 1..totalResidencies). */
+/**
+ * Enumerate all residencies for the public Residencies board (ids
+ * 1..totalResidencies). Cancelled residencies are hidden from this list; they
+ * remain reachable by direct link (getResidencyView) and visible to their hub
+ * in the dashboard (listHubResidencyViews).
+ */
 export async function listResidencyViews(): Promise<ResidencyView[]> {
   const total = await getTotalResidencies();
   const n = Number(total);
@@ -192,6 +197,7 @@ export async function listResidencyViews(): Promise<ResidencyView[]> {
   const views = await Promise.all(ids.map((id) => getResidencyView(id)));
   return views
     .filter((v): v is ResidencyView => v !== null)
+    .filter((v) => v.uiStatus !== "cancelled")
     .sort(compareResidencyViews);
 }
 
