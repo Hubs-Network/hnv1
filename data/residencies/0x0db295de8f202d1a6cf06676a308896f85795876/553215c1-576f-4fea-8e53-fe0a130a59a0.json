@@ -1,0 +1,33 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x0Db295dE8F202D1A6Cf06676a308896F85795876",
+  "hubName": "Commons Hub Brussels",
+  "title": "Media content and Social media Management",
+  "description": "Create quality Media content during the Open source village and share on the socials to generate hype and document the event for after engagement. \n\nSet strategy previously with the Commons Hub Brussels team. \n\nExchange: \nFree entry to the full event \ncommitment of 4 hours a day.\nAutonomous, with previous meeting with the team and coordinate on strategy.\n\nAccommodation is not included, and travel costs are not covered.",
+  "isCalendarBound": true,
+  "startDate": "2027-01-26T00:00:00.000Z",
+  "endDate": "2027-02-05T00:00:00.000Z",
+  "applicationDeadline": "2026-12-01T10:46:00.000Z",
+  "milestones": [
+    "Coordinate with the team and propose a nice realistic strategy.",
+    "Library of quality content for future use.",
+    "Increase in engagement on social media."
+  ],
+  "rewardedSkills": [
+    "audiovisual_production",
+    "photography",
+    "storytelling",
+    "coordination",
+    "strategy",
+    "marketing",
+    "group_care",
+    "design_research"
+  ],
+  "externalFormLink": "https://forms.gle/y9CvKtK7nPPKDSNq6",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x9dE0c4bcC1FB8fAaB56Aa04C2E18fB3D8B694bBb",
+  "createdAt": "2026-10-06T09:59:12.535Z",
+  "draftId": "553215c1-576f-4fea-8e53-fe0a130a59a0"
+}
