@@ -1,0 +1,32 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x611F99bd9eB34911BF3F660A0635231b98a37661",
+  "hubName": "AKASHA Hub Barcelona",
+  "title": "Design Common Space at NAVE 3 of AKASHA Hub",
+  "description": "Design Common Space at NAVE 3 of AKASHA Hub",
+  "isCalendarBound": true,
+  "startDate": "2026-10-12T00:00:00.000Z",
+  "endDate": "2026-10-31T00:00:00.000Z",
+  "applicationDeadline": "2026-10-29T08:35:00.000Z",
+  "milestones": [
+    "approval Design"
+  ],
+  "rewardedSkills": [
+    "fabrication_maker_skills",
+    "design_research",
+    "coordination",
+    "community_organizing",
+    "safety_coordination",
+    "communications",
+    "regenerative_practices",
+    "waste_reduction",
+    "urban_farming"
+  ],
+  "externalFormLink": "https://akasha.barcelona",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x4CfB1174b69F32a8abB42B8F608C81Fe6Ec96EfC",
+  "createdAt": "2026-10-06T19:41:02.764Z",
+  "draftId": "b33259e6-3ab2-44ac-8f8d-e3618fd7ff60"
+}
