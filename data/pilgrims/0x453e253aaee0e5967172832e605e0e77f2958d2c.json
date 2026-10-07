@@ -1,8 +1,29 @@
 {
   "wallet": "0x453e253aaee0e5967172832e605e0e77f2958d2c",
-  "createdAt": "2026-10-07T07:42:28.376Z",
-  "updatedAt": "2026-10-07T11:38:25.831Z",
   "nickname": "Ally",
   "tagline": "",
-  "link": ""
+  "link": "",
+  "passportTokenId": "12",
+  "published": true,
+  "skills": [
+    {
+      "hash": "0x95555ca9abde03f460aaaf57b4286ab93e2f6c360ae335ad74be500a7840728c",
+      "label": "Prototyping"
+    },
+    {
+      "hash": "0xc6a44f368acdb0cfda9ef1b5509927ae624f16073c31f864d118f15c9bffe16b",
+      "label": "Interaction Design"
+    },
+    {
+      "hash": "0xdaffbb67c7e40eb60d0a770c72752d6681adc9cc840b44f4895fc67dddf8b3b6",
+      "label": "Team Facilitation"
+    },
+    {
+      "hash": "0xb028bed73a2ce5c327491fe67f6e28cad19466ab7c8c7790b464089f3d760f9b",
+      "label": "Regenerative Practices"
+    }
+  ],
+  "createdAt": "2026-10-07T07:42:28.376Z",
+  "updatedAt": "2026-10-07T11:38:27.312Z",
+  "publishedAt": "2026-10-07T11:38:27.312Z"
 }
