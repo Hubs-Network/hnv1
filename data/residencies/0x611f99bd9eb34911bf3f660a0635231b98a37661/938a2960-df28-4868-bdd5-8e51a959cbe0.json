@@ -29,5 +29,7 @@
   "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
   "createdBy": "0x4CfB1174b69F32a8abB42B8F608C81Fe6Ec96EfC",
   "createdAt": "2026-10-08T18:04:52.408Z",
-  "draftId": "938a2960-df28-4868-bdd5-8e51a959cbe0"
+  "draftId": "938a2960-df28-4868-bdd5-8e51a959cbe0",
+  "residencyId": "9",
+  "txHash": "0xfc8adac6d0eeeab1838b192c631ff7edc644585fde9fd7196ae354a2b05ac88c"
 }
