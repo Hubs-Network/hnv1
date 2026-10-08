@@ -1,0 +1,33 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x611F99bd9eB34911BF3F660A0635231b98a37661",
+  "hubName": "AKASHA Hub Barcelona",
+  "title": "Assistant Fab Space at NAVE 3 of AKASHA Hub",
+  "description": "Fab tasks",
+  "isCalendarBound": true,
+  "startDate": "2026-10-08T00:00:00.000Z",
+  "endDate": "2026-12-28T00:00:00.000Z",
+  "applicationDeadline": "2026-11-23T19:00:00.000Z",
+  "milestones": [
+    "Complete fab manager system"
+  ],
+  "rewardedSkills": [
+    "hardware_hacking",
+    "electronics",
+    "fabrication_maker_skills",
+    "workshop_facilitation",
+    "circular_economy",
+    "cooking",
+    "prototyping",
+    "research",
+    "design_research",
+    "space_management"
+  ],
+  "externalFormLink": "https://forms.gle/cS6Qpb2si7y6o43v8",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x4CfB1174b69F32a8abB42B8F608C81Fe6Ec96EfC",
+  "createdAt": "2026-10-08T18:04:52.408Z",
+  "draftId": "938a2960-df28-4868-bdd5-8e51a959cbe0"
+}
