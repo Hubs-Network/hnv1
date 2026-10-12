@@ -14,7 +14,10 @@ export function PilgrimCard({ pilgrim }: { pilgrim: PilgrimProfile }) {
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-foreground flex items-center gap-1.5 min-w-0">
           <BadgeCheck className="w-4 h-4 text-primary shrink-0" />
-          <span className="truncate">{pilgrim.nickname || "Pilgrim"}</span>
+          <span className="truncate">
+            {pilgrim.title ? `${pilgrim.title} ` : ""}
+            {pilgrim.nickname || "Pilgrim"}
+          </span>
         </h3>
         {pilgrim.passportTokenId && (
           <Link
@@ -25,6 +28,10 @@ export function PilgrimCard({ pilgrim }: { pilgrim: PilgrimProfile }) {
           </Link>
         )}
       </div>
+
+      {pilgrim.affiliation && (
+        <p className="text-xs text-foreground truncate">{pilgrim.affiliation}</p>
+      )}
 
       {pilgrim.tagline && (
         <p className="text-sm text-muted line-clamp-3">{pilgrim.tagline}</p>

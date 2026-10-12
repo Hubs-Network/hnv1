@@ -69,6 +69,8 @@ export async function POST(
       wallet,
       nickname: existing?.nickname,
       tagline: existing?.tagline,
+      title: existing?.title,
+      affiliation: existing?.affiliation,
       link: existing?.link,
       passportTokenId: tokenId.toString(),
       published: true,

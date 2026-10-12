@@ -190,6 +190,10 @@ export interface PilgrimProfile {
   wallet: string;
   nickname?: string;
   tagline?: string;
+  /** Optional honorific / professional title (e.g. "Dr.", "PhD", "Researcher"). */
+  title?: string;
+  /** Optional institutional affiliation (e.g. university, lab, organization). */
+  affiliation?: string;
   /** Optional external URL (personal site, portfolio, socials). */
   link?: string;
   /** Set on publish, after on-chain ownership verification. */

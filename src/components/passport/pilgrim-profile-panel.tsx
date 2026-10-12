@@ -30,6 +30,8 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState("");
   const [tagline, setTagline] = useState("");
+  const [title, setTitle] = useState("");
+  const [affiliation, setAffiliation] = useState("");
   const [link, setLink] = useState("");
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -45,6 +47,8 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
       setProfile(p);
       setNickname(p?.nickname || "");
       setTagline(p?.tagline || "");
+      setTitle(p?.title || "");
+      setAffiliation(p?.affiliation || "");
       setLink(p?.link || "");
     } catch {
       // ignore
@@ -68,7 +72,14 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
       const res = await fetch("/api/pilgrims", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ _wallet_address: address, nickname, tagline, link }),
+        body: JSON.stringify({
+          _wallet_address: address,
+          nickname,
+          tagline,
+          title,
+          affiliation,
+          link,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -94,7 +105,14 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
       await fetch("/api/pilgrims", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ _wallet_address: address, nickname, tagline, link }),
+        body: JSON.stringify({
+          _wallet_address: address,
+          nickname,
+          tagline,
+          title,
+          affiliation,
+          link,
+        }),
       });
       const res = await fetch(`/api/pilgrims/${owner}/publish`, {
         method: "POST",
@@ -130,15 +148,26 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
 
   // Public read-only view (non-owner). Only render if published with content.
   if (!isOwner) {
-    if (!isPublished || (!profile?.nickname && !profile?.tagline && !profile?.link)) {
+    if (
+      !isPublished ||
+      (!profile?.nickname &&
+        !profile?.tagline &&
+        !profile?.title &&
+        !profile?.affiliation &&
+        !profile?.link)
+    ) {
       return null;
     }
     return (
       <Card padding="md" className="space-y-2">
         <h3 className="font-semibold text-foreground flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
+          {profile?.title ? `${profile.title} ` : ""}
           {profile?.nickname || "Pilgrim"}
         </h3>
+        {profile?.affiliation && (
+          <p className="text-sm text-foreground">{profile.affiliation}</p>
+        )}
         {profile?.tagline && (
           <p className="text-sm text-muted">{profile.tagline}</p>
         )}
@@ -187,6 +216,22 @@ export function PilgrimProfilePanel({ tokenId, owner }: Props) {
         placeholder="e.g. wandering.dev"
         value={nickname}
         onChange={(e) => setNickname(e.target.value)}
+      />
+      <Input
+        label="Title"
+        name="title"
+        placeholder="e.g. Dr., PhD, Researcher, Architect"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        hint="Optional — your honorific or professional title"
+      />
+      <Input
+        label="Affiliation"
+        name="affiliation"
+        placeholder="e.g. MIT Media Lab, University of Bologna"
+        value={affiliation}
+        onChange={(e) => setAffiliation(e.target.value)}
+        hint="Optional — your institution, university or organization"
       />
       <div>
         <Textarea

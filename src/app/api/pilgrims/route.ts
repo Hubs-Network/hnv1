@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
 
     const nickname = clean(body.nickname, 40);
     const tagline = clean(body.tagline, 140);
+    const title = clean(body.title, 60);
+    const affiliation = clean(body.affiliation, 120);
     const link = clean(body.link, 300);
 
     if (link && link.length > 0 && !/^https?:\/\/.+/i.test(link)) {
@@ -63,6 +65,8 @@ export async function POST(request: NextRequest) {
       updatedAt: now,
       nickname: nickname ?? existing?.nickname,
       tagline: tagline ?? existing?.tagline,
+      title: title ?? existing?.title,
+      affiliation: affiliation ?? existing?.affiliation,
       link: link ?? existing?.link,
     };
 
