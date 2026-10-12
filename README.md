@@ -835,6 +835,58 @@ Until then, vouches remain **non-binding records** and no value is escrowed.
 
 ---
 
+## Notifications
+
+Lightweight, **read-only** notifications surfaced in the top-right user menu and
+the pilgrim's passport section. Nothing is persisted server-side: the current
+set is derived on demand from existing authoritative sources (hub profiles,
+on-chain passport claims, on-chain residency selection), so the feature adds
+**zero coupling** to the existing registration / mint / residency flows.
+
+### Cases
+
+| # | Notification | Audience | Channel | Clears when… |
+|---|--------------|----------|---------|--------------|
+| 1 | **Hub SBT minted** | Hub manager (Safe owner) | user menu | seen once (client-side) |
+| 2 | **Passport minted** | Claim applicant | user menu | seen once (client-side) |
+| 3 | **Hub SBT claim pending** | HN admins (Directors Safe owners) | user menu | state-driven — hub leaves `pending` (minted by anyone) |
+| 4 | **Selected for a residency** | Selected pilgrim | passport section | standing while selected (owner-gated) |
+
+### How it works
+
+- **Server** — `getNotificationsForWallet(owner)` (`src/lib/notifications.ts`)
+  computes all four categories. Each category is isolated in `try/catch`, and
+  the top-level call returns `[]` on any failure, so a flaky RPC/data source can
+  never break the menu or the passport page. Case 3 only runs for HN admins and
+  case 4 only when the wallet holds a passport, to bound on-chain reads.
+- **API** — `GET /api/notifications?owner=0x...` (`force-dynamic`) always returns
+  `{ notifications: [] }` rather than erroring.
+- **Client** — `useNotifications(owner)` (`src/hooks/use-notifications.ts`)
+  fetches the list and applies "seen once" dismissal for `dismissible` items,
+  persisted per-browser in `localStorage` (`hn:notif:seen`). Dismissible
+  notifications (cases 1–2) stay visible while the dropdown is open and are
+  committed as seen when it closes; state-driven ones (case 3) are never stored
+  and vanish on their own once the underlying condition clears.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/types/notifications.ts` | Shared `AppNotification` type (pure, no runtime imports) |
+| `src/lib/notifications.ts` | Server aggregator (read-only, per-category `try/catch`) |
+| `src/app/api/notifications/route.ts` | `GET /api/notifications?owner=` (never fails the client) |
+| `src/hooks/use-notifications.ts` | Fetch + `localStorage` "seen once" dismissal |
+| `src/components/auth/user-wallet-badge.tsx` | Menu notifications block + attention dot |
+| `src/components/passport/passport-residency-notices.tsx` | Case 4 notice (owner-gated) |
+
+> **Mainnet note:** dismissal is per-browser (`localStorage`), not per-account,
+> and the aggregator scans hubs/residencies per request. The hardening path is
+> the same [indexer / datastore](#mainnet-readiness--critical-points) work noted
+> elsewhere: back notifications with an indexed event store and per-account
+> read state instead of on-demand scans.
+
+---
+
 ## Gas Sponsorship
 
 **No user ever pays gas.** Two mechanisms:
@@ -946,6 +998,7 @@ Implemented and live (Sepolia):
 - **Pilgrim Passport** — identity + skill attestations.
 - **Patrons** — organization SBT (1–10 skills).
 - **Residencies** — residencies list, apply, select, award (see below).
+- **Notifications** — read-only user-menu + passport notices (see [Notifications](#notifications)).
 
 Future / not yet implemented:
 

@@ -9,10 +9,12 @@ import {
   ShieldCheck,
   BadgeCheck,
   Landmark,
+  Bell,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useNotifications } from "@/hooks/use-notifications";
 
 function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
@@ -25,6 +27,20 @@ export function UserWalletBadge() {
   const [passportTokenId, setPassportTokenId] = useState<string | null>(null);
   const [needsPublish, setNeedsPublish] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const { visible: notifications, markVisibleSeen } = useNotifications(address);
+  const menuNotifications = notifications.filter((n) => n.channel === "menu");
+  const passportSelected = notifications.filter(
+    (n) => n.channel === "passport" && n.type === "residency_selected"
+  );
+
+  // Dismissible notifications disappear "after being seen once": commit the
+  // seen state when the dropdown is closed again.
+  const prevMenuOpen = useRef(false);
+  useEffect(() => {
+    if (prevMenuOpen.current && !menuOpen) markVisibleSeen();
+    prevMenuOpen.current = menuOpen;
+  }, [menuOpen, markVisibleSeen]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -125,6 +141,10 @@ export function UserWalletBadge() {
     authProvider === "magic" ? "Magic wallet" : "External wallet";
 
   const showPublishDot = needsPublish && !!passportTokenId;
+  const hasAttention =
+    showPublishDot ||
+    menuNotifications.length > 0 ||
+    passportSelected.length > 0;
 
   return (
     <div className="relative" ref={ref}>
@@ -142,10 +162,10 @@ export function UserWalletBadge() {
           <Wallet className="w-3.5 h-3.5" />
         )}
         {displayName}
-        {showPublishDot && (
+        {hasAttention && (
           <span
             className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white"
-            aria-label="Your passport is ready to publish"
+            aria-label="You have new notifications"
           />
         )}
       </button>
@@ -166,6 +186,47 @@ export function UserWalletBadge() {
               {providerLabel}
             </p>
           </div>
+
+          {menuNotifications.length > 0 && (
+            <div className="p-2 border-b border-border-light bg-stone-50/60">
+              <p className="flex items-center gap-1.5 px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                <Bell className="w-3 h-3" />
+                Notifications
+              </p>
+              <div className="space-y-1">
+                {menuNotifications.map((n) => {
+                  const inner = (
+                    <>
+                      <p className="text-xs font-medium text-foreground">
+                        {n.title}
+                      </p>
+                      <p className="text-[11px] text-muted leading-snug mt-0.5">
+                        {n.message}
+                      </p>
+                    </>
+                  );
+                  return n.href ? (
+                    <Link
+                      key={n.id}
+                      href={n.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-2 py-1.5 rounded-md bg-surface border border-border hover:border-primary/40 transition-colors"
+                    >
+                      {inner}
+                    </Link>
+                  ) : (
+                    <div
+                      key={n.id}
+                      className="px-2 py-1.5 rounded-md bg-surface border border-border"
+                    >
+                      {inner}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="p-1 space-y-0.5">
             {passportTokenId && (
               <Link
@@ -175,12 +236,17 @@ export function UserWalletBadge() {
               >
                 <BadgeCheck className="w-4 h-4" />
                 My Passport
-                {showPublishDot && (
+                {showPublishDot ? (
                   <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-red-600">
                     <span className="w-2 h-2 rounded-full bg-red-500" />
                     Ready
                   </span>
-                )}
+                ) : passportSelected.length > 0 ? (
+                  <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-primary">
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                    Selected
+                  </span>
+                ) : null}
               </Link>
             )}
             <Link

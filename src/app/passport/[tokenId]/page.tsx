@@ -13,6 +13,7 @@ import { resolveSkillLabelByHash } from "@/lib/pilgrim-skills-catalog";
 import { NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS } from "@/config/pilgrim-passport";
 import type { SkillHash } from "@/lib/pilgrim-passport-message";
 import { PilgrimProfilePanel } from "@/components/passport/pilgrim-profile-panel";
+import { PassportResidencyNotices } from "@/components/passport/passport-residency-notices";
 
 export const dynamic = "force-dynamic";
 
@@ -71,6 +72,8 @@ export default async function PassportPage({ params }: PageProps) {
         <ArrowLeft className="w-4 h-4" />
         Back to directory
       </Link>
+
+      <PassportResidencyNotices owner={owner} />
 
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-2">
