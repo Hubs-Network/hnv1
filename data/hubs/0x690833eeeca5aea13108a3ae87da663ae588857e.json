@@ -38,7 +38,7 @@
   "admins": [],
   "metadata": {
     "submitted_at": "2026-10-12T10:46:38.443Z",
-    "updated_at": "2026-10-12T10:46:56.510Z",
+    "updated_at": "2026-10-12T10:47:03.154Z",
     "submitted_by": "Franco Ruiz",
     "creator_address": "0xb6989f472bef8931e6ca882b1f875539b7d5da19",
     "language": "en"
@@ -48,7 +48,7 @@
   "network_id": "sepolia",
   "hnBadgeStatus": "pending",
   "hnBadgeApplication": {
-    "submittedAt": "2026-10-12T10:46:56.510Z",
+    "submittedAt": "2026-10-12T10:47:03.154Z",
     "manifestoAccepted": true,
     "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
     "applicantAddress": "0xb6989f472bef8931e6ca882b1f875539b7d5da19"
