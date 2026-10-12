@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x690833eeeca5aea13108a3ae87da663ae588857e",
+  "name": "Giveth House",
+  "tagline": "A Home for Web3 Builders and Communities",
+  "description": "The physical home of the Giveth Galaxy in Barcelona's Sants neighbourhood a shared living space, coworking hub, and gathering point for the blockchain4good community, open since 2017.",
+  "website": "https://giveth.house/",
+  "contact": {
+    "contact_name": "Franco Ruiz",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Barcelona",
+    "region": "",
+    "country": "Spain",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-10-12T10:46:38.443Z",
+    "updated_at": "2026-10-12T10:47:49.239Z",
+    "submitted_by": "Franco Ruiz",
+    "creator_address": "0xb6989f472bef8931e6ca882b1f875539b7d5da19",
+    "language": "en"
+  },
+  "safeAddress": "0x690833eeeca5aea13108a3ae87da663ae588857e",
+  "chainId": 11155111,
+  "network_id": "sepolia",
+  "hnBadgeStatus": "approved",
+  "hnBadgeApplication": {
+    "submittedAt": "2026-10-12T10:47:03.154Z",
+    "manifestoAccepted": true,
+    "manifestoUrl": "https://www.hubsnetwork.org/manifesto",
+    "applicantAddress": "0xb6989f472bef8931e6ca882b1f875539b7d5da19"
+  },
+  "hnBadgeTokenId": "7",
+  "hnBadgeApprovedAt": "2026-10-12T10:47:49.239Z",
+  "hnBadgeApprovedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "hnBadgeTxHash": "0xf25b3a38996ca8483a5020ae62e96497d5a0e8d6a555692c86ca19e4ee6eb12e"
+}

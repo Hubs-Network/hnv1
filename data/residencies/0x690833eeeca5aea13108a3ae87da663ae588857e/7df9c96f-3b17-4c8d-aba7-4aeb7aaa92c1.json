@@ -1,0 +1,33 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x690833EEECa5aea13108a3AE87DA663Ae588857E",
+  "hubName": "Giveth House",
+  "title": "Beautify our Spa/Laundry common area",
+  "description": "Help us transform our Spa/Laundry common area into a calm, beautiful space the whole house loves to use. Through design, art, plants, lighting, and smart organization, you’ll turn a purely functional corner into a place that feels like a true retreat. Artists, designers, makers, and anyone with an eye for space are welcome to apply.\n\nYou’ll deliver: a quick design concept, regular check-ins with housemates, and a finished transformation with before-and-after photos.\n\nWe offer: accomodation, a materials budget, on-site tools, and a supportive community.",
+  "isCalendarBound": true,
+  "startDate": "2027-01-22T00:00:00.000Z",
+  "endDate": "2027-02-05T00:00:00.000Z",
+  "applicationDeadline": "2026-12-31T11:50:00.000Z",
+  "milestones": [
+    "Fix the floor",
+    "Clean up",
+    "Collaborative self-organized teamwork"
+  ],
+  "rewardedSkills": [
+    "community_organizing",
+    "coordination",
+    "group_care",
+    "space_management",
+    "plumbing",
+    "fabrication_maker_skills"
+  ],
+  "externalFormLink": "https://forms.gle/fsUes3w67rP2UVyF7",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xB6989F472Bef8931e6Ca882b1f875539b7D5DA19",
+  "createdAt": "2026-10-12T10:58:00.387Z",
+  "draftId": "7df9c96f-3b17-4c8d-aba7-4aeb7aaa92c1",
+  "residencyId": "10",
+  "txHash": "0xc252970f53798e6d2b510838a720aeef079fc9758149f0a024c6b288d122e8bd"
+}
