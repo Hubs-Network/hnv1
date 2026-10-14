@@ -1,0 +1,32 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x0Db295dE8F202D1A6Cf06676a308896F85795876",
+  "hubName": "Commons Hub Brussels",
+  "title": "Media Content Creator – Open Source Village 🎥",
+  "description": "Media Content Creator – Open Source Village 🎥\nHelp us bring Open Source Village to life! We’re looking for creative people to capture the event, create quality photo and video content, and share it on social media to generate hype, showcase the community, and document the experience for post-event engagement.\n\nWhat you’ll do\n\nCreate and share engaging media content throughout the event.\nCoordinate with the Commons Hub Brussels team on a content strategy in a preparatory meeting.\nWork autonomously while staying aligned with the team.\nCommitment & Exchange\n\nFree entry to the full event.\nAn average commitment of 4 hours per day, flexible depending on the event’s momentum. There will also be free days to rest, explore, and enjoy the event!\nAccommodation & Travel Accommodation and travel costs are not covered. By applying for a residency, you’ll be invited to the Commons Hub Brussels community on Discord, where you can connect with others and coordinate possible shared stays.\n\nCome share your creativity, connect with the community, and help us make Open Source Village memorable! 🌱\n\nMore info about the open-source village: https://opensourcevillage.org/",
+  "isCalendarBound": true,
+  "startDate": "2027-01-25T00:00:00.000Z",
+  "endDate": "2027-02-05T00:00:00.000Z",
+  "applicationDeadline": "2026-12-01T11:22:00.000Z",
+  "milestones": [
+    "Succesful event launch of the artwork.",
+    "Harmonious and efficient coordination between the group."
+  ],
+  "rewardedSkills": [
+    "data_analysis",
+    "interaction_design",
+    "digital_art",
+    "installations",
+    "coordination",
+    "event_hosting",
+    "event_production",
+    "group_care"
+  ],
+  "externalFormLink": "https://forms.gle/AWDAXhJS7pcYhXBD6",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x9dE0c4bcC1FB8fAaB56Aa04C2E18fB3D8B694bBb",
+  "createdAt": "2026-10-14T10:25:56.019Z",
+  "draftId": "c3a5c82a-8f7b-4bca-a56c-3f1161504312"
+}
