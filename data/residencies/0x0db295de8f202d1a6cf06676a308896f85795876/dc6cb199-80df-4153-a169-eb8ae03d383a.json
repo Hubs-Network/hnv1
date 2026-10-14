@@ -1,0 +1,34 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x0Db295dE8F202D1A6Cf06676a308896F85795876",
+  "hubName": "Commons Hub Brussels",
+  "title": "Open Call for Artists – Open Source Village",
+  "description": "Open Call for Artists – Open Source Village\n\nWe’re inviting a group of 2 to 4 artists to come together at the Open Source Village and collaboratively develop one shared artwork. Working collectively and autonomously, you’ll have the freedom to explore different approaches and interpretations, creating either a visualization or a performance inspired by one or more of the following themes:\n\n- FOSDEM philosophy\n- The real life impact of Open-source\n\n\nThe residency is an opportunity to experiment, exchange ideas, and create something together. The final project will be showcased in a public space or at the Commons Hub, sharing your work and ideas with the wider community.\n\n### What We Offer\n\nAs part of the residency, you’ll receive:\n\n- Free entry to the full event\n- A dedicated worktable to develop your project\n\n### Accommodation & Travel\n\nAccommodation and travel costs are not covered by the residency. However, by applying, you’ll be invited to join the Commons Hub Brussels community on Discord, where you can connect with fellow participants, exchange ideas, and coordinate possible shared stays.\n\nMore info about the open-source village: https://opensourcevillage.org/",
+  "isCalendarBound": true,
+  "startDate": "2027-01-25T00:00:00.000Z",
+  "endDate": "2027-02-05T00:00:00.000Z",
+  "applicationDeadline": "2026-12-01T11:30:00.000Z",
+  "milestones": [
+    "Succesful event launch of the artwork.",
+    "Harmonious and efficient coordination between the group."
+  ],
+  "rewardedSkills": [
+    "data_analysis",
+    "interaction_design",
+    "design_research",
+    "prototyping",
+    "digital_art",
+    "coordination",
+    "event_hosting",
+    "group_care",
+    "event_production",
+    "field_research"
+  ],
+  "externalFormLink": "https://forms.gle/AWDAXhJS7pcYhXBD6",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x9dE0c4bcC1FB8fAaB56Aa04C2E18fB3D8B694bBb",
+  "createdAt": "2026-10-14T10:32:33.249Z",
+  "draftId": "dc6cb199-80df-4153-a169-eb8ae03d383a"
+}
