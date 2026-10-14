@@ -669,8 +669,10 @@ Pilgrim Passport.
   skill; the relayer submits `applyToResidency`.
 - **Select** (after deadline): the hub signs `SelectPilgrims`; relayer submits
   `selectPilgrimsAndClose` (residency → Closed).
-- **Award** (closed): the hub signs `AwardPilgrim` + `AttestSkills`; relayer submits
-  `awardPilgrim`; skills appear on the Pilgrim Passport.
+- **Award** (closed): gated behind the [Milestone Dashboard](#residency-milestone-dashboard)
+  — only once every milestone is validated by both sides. The hub then signs
+  `AwardPilgrim` + `AttestSkills`; the relayer submits `awardPilgrim`; skills appear
+  on the Pilgrim Passport. The award API enforces the milestone gate server-side.
 - **Cancel** (open): the hub signs `CancelResidency`; relayer submits `cancelResidency`.
 
 **Awarding & attestation rule (important).** `PilgrimPassportSBT` allows only **one
@@ -733,6 +735,80 @@ contract was deployed against.
 | `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, eligibility, nonce, hub |
 | `src/components/residencies/*` | Card, status badge, detail, hub section |
 | `src/app/residencies`, `src/app/residencies/[residencyId]` | Public routes (list + detail) |
+
+---
+
+## Residency Milestone Dashboard
+
+An **off-chain coordination layer** that sits between on-chain **selection** and
+on-chain **award**. It is a pilot workflow — it lives entirely in the app + JSON
+store and gates the award flow at the UI **and** API level. The on-chain contract
+is unchanged and remains the source of truth for selection/award.
+
+> **Mainnet note.** This milestone layer is an off-chain pilot gate only. It does
+> **not** enforce anything on-chain; a hub signer with a valid signature could still
+> call the contract directly. Before mainnet, decide whether to keep this as a UX
+> gate or promote it to a contract-level constraint.
+
+### Flow
+
+1. **Selection** (on-chain) makes a (residency, pilgrim passport) pair *active*
+   (`selected && !awarded`).
+2. The **pilgrim** proposes up to **10** milestones (title + optional description),
+   reorders/edits them as a `draft`, then **submits** → `submitted`. The draft is
+   **pre-filled** with the milestones the hub defined on the residency (off-chain
+   metadata only — the contract anchors just the metadata hash); the pilgrim may
+   keep, reorder, edit or delete them. Nothing is persisted until the first save,
+   so existing residencies are untouched.
+3. A **hub signer** reviews, may edit, then **confirms** → `confirmed`.
+4. For each milestone, **both** the pilgrim and a hub signer mark it done. A
+   milestone is `validated` only when both sides agree.
+5. When **all** milestones are validated the plan becomes `all_validated` and the
+   hub can **award skills** (the normal two-signature `awardPilgrim` flow). The
+   award API refuses otherwise. On success the plan is marked `awarded`.
+
+### Plan state machine
+
+`none → draft → submitted → confirmed → all_validated → awarded`
+(a plan can fall back `all_validated → confirmed` if a done flag is unticked).
+Per-milestone done status: `open → pilgrim_done | hub_done → validated`.
+
+### Authorization
+
+`resolveMilestoneAccess` derives the caller role (`pilgrim` / `hubSigner` / `both`
+/ `none`) from on-chain reads (passport ownership + `isHubAdmin`). Every API route
+re-checks the role and plan status **server-side** — hidden buttons are never the
+only guard. Editing is role- and status-scoped (pilgrim in `none`/`draft`, hub in
+`submitted`), and all mutations 409 once the plan is `awarded`.
+
+### Key files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/schemas/residency-milestones.ts` | Zod schemas, state enums, derive/validate helpers (tested by `npm run test:milestones`) |
+| `src/lib/data/residency-milestones.ts` | GitHub/filesystem JSON store (`data/residency-milestones/<residencyId>/<tokenId>.json`) |
+| `src/lib/residency-milestones-authz.ts` | `resolveMilestoneAccess` + `computeMilestonePermissions` |
+| `src/lib/residency-milestones-directory.ts` | Active-residency lists for pilgrim + hub |
+| `src/app/api/residencies/[residencyId]/milestones/[pilgrimPassportTokenId]/*` | GET/PUT + submit/confirm/done |
+| `src/app/api/residencies/active/{pilgrim,hub}` | Active-residency read APIs |
+| `src/components/residencies/milestone-dashboard.tsx` | Role-aware dashboard orchestrator |
+| `src/components/residencies/milestone-list-editor.tsx` | Draft milestone editor (reorder/add/edit) |
+| `src/components/residencies/milestone-done-checklist.tsx` | Mutual done checklist |
+| `src/components/residencies/pilgrim-active-residencies.tsx` | Passport-page entry points |
+| `src/components/residencies/hub-active-residencies-section.tsx` | Hub-dashboard entry points |
+| `src/app/residencies/[residencyId]/milestones/[pilgrimPassportTokenId]` | Dashboard route |
+
+### Manual test checklist
+
+- [ ] Select a pilgrim for a residency; open the dashboard as the pilgrim.
+- [ ] Add 1–10 milestones, reorder, save (`draft`), then submit (`submitted`).
+- [ ] As a hub signer, review/edit and confirm (`confirmed`).
+- [ ] Toggle done from both sides; a milestone shows `validated` only when both agree.
+- [ ] With one milestone not validated, the award button is disabled and
+      `POST …/award` returns 409 with the milestone-gate message.
+- [ ] Validate all milestones (`all_validated`); the hub can award (two signatures)
+      and the plan flips to `awarded`.
+- [ ] Confirm non-signers / non-pilgrims get 403 from every milestone route.
 
 ---
 
@@ -998,6 +1074,8 @@ Implemented and live (Sepolia):
 - **Pilgrim Passport** — identity + skill attestations.
 - **Patrons** — organization SBT (1–10 skills).
 - **Residencies** — residencies list, apply, select, award (see below).
+- **Milestone Dashboard** — off-chain milestone coordination that gates the award
+  (see [Residency Milestone Dashboard](#residency-milestone-dashboard)).
 - **Notifications** — read-only user-menu + passport notices (see [Notifications](#notifications)).
 
 Future / not yet implemented:

@@ -15,6 +15,11 @@ import {
 } from "@/lib/residencies-message";
 import { verifyHubSigner, verifyTypedSigner } from "@/lib/residencies-verify";
 import { RESIDENCY_STATUS, MAX_AWARD_SKILLS } from "@/config/residencies";
+import {
+  getMilestonePlan,
+  markMilestonePlanAwarded,
+} from "@/lib/data/residency-milestones";
+import { allMilestonesValidated } from "@/lib/schemas/residency-milestones";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +109,27 @@ export async function POST(
     if (await isAwarded(id, tokenId)) {
       return NextResponse.json(
         { error: "This Pilgrim has already been awarded for this residency." },
+        { status: 409 }
+      );
+    }
+
+    // ── Milestone gate (off-chain pilot coordination layer) ───────────────
+    // The on-chain contract does NOT know about milestones; this app/API-level
+    // gate ensures skills are only attested after the mutually-validated
+    // milestone plan is complete. (Trustless enforcement would need a contract
+    // change — see src/lib/schemas/residency-milestones.ts mainnet warning.)
+    const plan = await getMilestonePlan(residencyId, tokenId.toString());
+    const milestonesComplete =
+      !!plan &&
+      plan.status === "all_validated" &&
+      plan.milestones.length >= 1 &&
+      allMilestonesValidated(plan.milestones);
+    if (!milestonesComplete) {
+      return NextResponse.json(
+        {
+          error:
+            "All residency milestones must be validated by both Pilgrim and Hub before skill attestation.",
+        },
         { status: 409 }
       );
     }
@@ -204,6 +230,13 @@ export async function POST(
       residencyHubSignature as Hex,
       passportHubSignature as Hex
     );
+
+    // Record the award on the off-chain milestone plan (best-effort).
+    try {
+      await markMilestonePlanAwarded(residencyId, tokenId.toString(), txHash);
+    } catch (markErr) {
+      console.error("failed to mark milestone plan awarded:", markErr);
+    }
 
     return NextResponse.json({ success: true, txHash });
   } catch (err) {

@@ -9,7 +9,6 @@ import { ResidencyStatusBadge } from "./residency-status-badge";
 import {
   applyToResidency,
   selectPilgrims,
-  awardPilgrim,
   cancelResidency,
 } from "@/lib/residencies-client";
 import {
@@ -84,7 +83,7 @@ function shortAddr(a: string): string {
 }
 
 export function ResidencyDetail({ residencyId }: { residencyId: string }) {
-  const { address, authProvider, isAuthenticated } = useAuth();
+  const { address, authProvider, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [residency, setResidency] = useState<ResidencyView | null>(null);
   const [applicants, setApplicants] = useState<ApplicantView[]>([]);
@@ -100,9 +99,8 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  // Hub selection + award local state
+  // Hub selection local state (award happens in the Milestone Dashboard)
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [awardSkills, setAwardSkills] = useState<Record<string, Set<string>>>({});
 
   const loadResidency = useCallback(async () => {
     try {
@@ -129,6 +127,10 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
   useEffect(() => {
     let cancelled = false;
     async function loadViewer() {
+      // Wait for the auth session to settle so we don't key viewer-specific
+      // reads (eligibility, hub-signer check) on a stale address during an
+      // account switch / optimistic restore.
+      if (authLoading) return;
       if (!isAuthenticated || !address || !residency) {
         setEligibility(null);
         setIsHubSigner(false);
@@ -168,7 +170,7 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, address, residency, residencyId]);
+  }, [isAuthenticated, authLoading, address, residency, residencyId]);
 
   function toggleSelected(tokenId: string) {
     setSelected((prev) => {
@@ -176,15 +178,6 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
       if (next.has(tokenId)) next.delete(tokenId);
       else next.add(tokenId);
       return next;
-    });
-  }
-
-  function toggleAwardSkill(tokenId: string, skillId: string) {
-    setAwardSkills((prev) => {
-      const cur = new Set(prev[tokenId] ?? []);
-      if (cur.has(skillId)) cur.delete(skillId);
-      else cur.add(skillId);
-      return { ...prev, [tokenId]: cur };
     });
   }
 
@@ -504,110 +497,50 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
             walletAddress={address ?? null}
           />
 
-          {/* Hub: award selected pilgrims (closed) */}
+          {/* Hub: selected pilgrims → Milestone Dashboard (closed) */}
           {isHubSigner && residency.uiStatus === "closed" && (
             <Card className="p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center gap-2">
                 <Award className="w-4 h-4 text-primary" />
-                Award selected Pilgrims
+                Selected Pilgrims
               </h3>
+              <p className="text-xs text-muted mb-3">
+                Skills are attested from each Pilgrim&apos;s Milestone Dashboard,
+                once all milestones are validated by both sides.
+              </p>
               {applicants.filter((a) => a.isSelected).length === 0 ? (
                 <p className="text-sm text-muted">No selected pilgrims.</p>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {applicants
                     .filter((a) => a.isSelected)
-                    .map((a) => {
-                      const chosen = awardSkills[a.tokenId] ?? new Set<string>();
-                      const attestedSet = new Set(
-                        (a.alreadyAttestedByHub ?? []).map((h) => h.toLowerCase())
-                      );
-                      // The same hub cannot re-attest a skill it already actively
-                      // attested (contract reverts DuplicateAttestation), so only
-                      // offer the residency skills this hub hasn't attested yet.
-                      const awardable = residency.skills.filter(
-                        (s) => s.id && !attestedSet.has(s.hash.toLowerCase())
-                      );
-                      const hiddenCount = residency.skills.length - awardable.length;
-                      return (
-                        <div
-                          key={a.tokenId}
-                          className="p-3 rounded-lg border border-border"
-                        >
-                          <p className="text-sm font-medium text-foreground mb-1">
+                    .map((a) => (
+                      <div
+                        key={a.tokenId}
+                        className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">
                             {a.nickname || `Passport #${a.tokenId}`}
                           </p>
-                          {a.isAwarded ? (
-                            <p className="text-sm text-green-700 flex items-center gap-2">
-                              <CheckCircle className="w-4 h-4" />
-                              Awarded
-                            </p>
-                          ) : awardable.length === 0 ? (
-                            <p className="text-sm text-muted">
-                              Your Hub has already attested all of this residency&apos;s
-                              skills to this Passport.
-                            </p>
-                          ) : (
-                            <>
-                              <p className="text-xs text-muted mb-2">
-                                Choose skills to attest (subset of the residency skillset):
-                              </p>
-                              <div className="flex flex-wrap gap-1.5 mb-2">
-                                {awardable.map((s) => {
-                                  const on = chosen.has(s.id!);
-                                  return (
-                                    <button
-                                      key={s.hash}
-                                      type="button"
-                                      onClick={() => toggleAwardSkill(a.tokenId, s.id!)}
-                                      className={
-                                        "px-2.5 py-1 rounded-full text-xs font-medium border transition-colors " +
-                                        (on
-                                          ? "bg-primary text-white border-primary"
-                                          : "bg-surface text-foreground border-border hover:bg-stone-50")
-                                      }
-                                    >
-                                      {s.label}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                              {hiddenCount > 0 && (
-                                <p className="text-[11px] text-muted mb-3">
-                                  {hiddenCount} skill{hiddenCount === 1 ? "" : "s"} hidden —
-                                  already attested to this Passport by your Hub.
-                                </p>
-                              )}
-                              <Button
-                                disabled={busy !== null || chosen.size === 0}
-                                onClick={() =>
-                                  run(`award-${a.tokenId}`, () =>
-                                    awardPilgrim({
-                                      residencyId,
-                                      hubSafe: residency.hubSafe,
-                                      signer: address!,
-                                      pilgrimPassportTokenId: a.tokenId,
-                                      skillIds: [...chosen],
-                                      authProvider,
-                                      onStep: setProgress,
-                                    })
-                                  )
-                                }
-                                className="gap-2"
-                              >
-                                {busy === `award-${a.tokenId}` && (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                )}
-                                Award skills
-                              </Button>
-                              {progress && busy === `award-${a.tokenId}` && (
-                                <p className="text-xs text-muted mt-2">{progress}</p>
-                              )}
-                            </>
-                          )}
+                          <p className="text-xs text-muted">Passport #{a.tokenId}</p>
                         </div>
-                      );
-                    })}
+                        {a.isAwarded ? (
+                          <span className="text-sm text-green-700 inline-flex items-center gap-1.5 shrink-0">
+                            <CheckCircle className="w-4 h-4" />
+                            Awarded
+                          </span>
+                        ) : (
+                          <Link
+                            href={`/residencies/${residencyId}/milestones/${a.tokenId}`}
+                            className="inline-flex items-center gap-1 text-sm text-primary hover:underline shrink-0"
+                          >
+                            Open milestones
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+                      </div>
+                    ))}
                 </div>
               )}
             </Card>

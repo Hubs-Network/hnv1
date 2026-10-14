@@ -23,6 +23,8 @@ export function ResidenciesPublishCTA() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    // Wait for the auth session to settle so we don't query with a stale address.
+    if (isLoading) return;
     if (!isAuthenticated || !address) {
       setHubs([]);
       setLoaded(true);
@@ -56,7 +58,7 @@ export function ResidenciesPublishCTA() {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, address]);
+  }, [isAuthenticated, isLoading, address]);
 
   // Nothing to show until we know the viewer manages a verified hub.
   if (isLoading || !loaded || hubs.length === 0) return null;

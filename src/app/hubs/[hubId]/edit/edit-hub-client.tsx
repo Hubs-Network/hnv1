@@ -31,6 +31,7 @@ import { AdminPanel } from "@/components/hubs/admin-panel";
 import { PendingTransactions } from "@/components/hubs/pending-transactions";
 import { HNBadgeCard } from "@/components/hubs/hn-badge-card";
 import { HubResidenciesSection } from "@/components/residencies/hub-residencies-section";
+import { HubActiveResidenciesSection } from "@/components/residencies/hub-active-residencies-section";
 import { CompletenessBar } from "@/components/hubs/completeness-bar";
 import { computeHubCompleteness } from "@/lib/hub-completeness";
 import { describeIssues, type ValidationIssue } from "@/components/forms/hub-registration/validation-issues";
@@ -336,6 +337,9 @@ export function EditHubClient() {
             hubSafe={hub.safeAddress || hubId}
             hubName={hub.name}
           />
+
+          {/* Active residencies (selected pilgrims → milestone dashboards) */}
+          <HubActiveResidenciesSection hubSafe={hub.safeAddress || hubId} />
 
           {/* Edit Hub Profile + completeness */}
           <Card className="space-y-4">

@@ -25,13 +25,15 @@ interface Props {
  * Always gated on the viewer being a hub admin.
  */
 export function HubResidencyShortcut({ hubId, badgeStatus }: Props) {
-  const { address, isAuthenticated } = useAuth();
+  const { address, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [checked, setChecked] = useState(false);
 
   const relevant = badgeStatus === "approved" || badgeStatus === "pending";
 
   useEffect(() => {
+    // Wait for the auth session to settle so we don't admin-check a stale address.
+    if (authLoading) return;
     if (!relevant || !isAuthenticated || !address) {
       setIsAdmin(false);
       setChecked(true);
@@ -63,7 +65,7 @@ export function HubResidencyShortcut({ hubId, badgeStatus }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [hubId, relevant, isAuthenticated, address]);
+  }, [hubId, relevant, isAuthenticated, authLoading, address]);
 
   if (!relevant || !checked || !isAdmin) return null;
 

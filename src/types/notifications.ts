@@ -8,7 +8,17 @@ export type NotificationType =
   | "hub_sbt_minted"
   | "passport_minted"
   | "admin_hub_claim"
-  | "residency_selected";
+  | "residency_selected"
+  // Milestone dashboard — pilgrim side
+  | "milestones_required"
+  | "milestones_confirmed"
+  | "milestone_waiting_pilgrim_done"
+  | "residency_ready_for_attestation"
+  | "residency_awarded"
+  // Milestone dashboard — hub signer side
+  | "milestones_pending_hub_review"
+  | "milestone_waiting_hub_done"
+  | "milestones_ready_to_award";
 
 /**
  * Where a notification is surfaced:

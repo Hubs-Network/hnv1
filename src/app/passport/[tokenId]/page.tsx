@@ -14,6 +14,7 @@ import { NEXT_PUBLIC_PILGRIM_PASSPORT_SBT_ADDRESS } from "@/config/pilgrim-passp
 import type { SkillHash } from "@/lib/pilgrim-passport-message";
 import { PilgrimProfilePanel } from "@/components/passport/pilgrim-profile-panel";
 import { PassportResidencyNotices } from "@/components/passport/passport-residency-notices";
+import { PilgrimActiveResidencies } from "@/components/residencies/pilgrim-active-residencies";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,8 @@ export default async function PassportPage({ params }: PageProps) {
       </Link>
 
       <PassportResidencyNotices owner={owner} />
+
+      <PilgrimActiveResidencies owner={owner} />
 
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-2">

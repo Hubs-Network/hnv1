@@ -1,0 +1,29 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x74f06139BFd0Eeb1e7e33d8d05f1699e52270863",
+  "hubName": "Sanr3mo",
+  "title": "Test Residency: Milestone Flow",
+  "description": "a test residency for the milestone flow",
+  "isCalendarBound": false,
+  "applicationDeadline": "2026-10-14T12:15:00.000Z",
+  "milestones": [
+    "clear up",
+    "design",
+    "implement"
+  ],
+  "rewardedSkills": [
+    "software_development",
+    "electronics",
+    "devops",
+    "performance"
+  ],
+  "externalFormLink": "https://test.net/form.html",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
+  "createdAt": "2026-10-14T12:05:43.398Z",
+  "draftId": "868cf1f9-b995-4bb9-a1c7-a2f8247ba7ef",
+  "residencyId": "14",
+  "txHash": "0x2a9a6a925fca6aeb5cd915a4c4e629cb57bf8edc99a9c1b31d5a4eb6d533f367"
+}

@@ -1,0 +1,80 @@
+{
+  "residencyId": 14,
+  "hubSafe": "0x74f06139bfd0eeb1e7e33d8d05f1699e52270863",
+  "pilgrimPassportTokenId": 1,
+  "pilgrimAddress": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+  "status": "awarded",
+  "milestones": [
+    {
+      "id": "7a71e899-40b4-4960-9f03-c965b066a52c",
+      "title": "clear up",
+      "order": 0,
+      "pilgrimDone": true,
+      "hubDone": true,
+      "hubDoneAt": "2026-10-14T12:19:10.422Z",
+      "hubDoneBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+      "pilgrimDoneAt": "2026-10-14T12:19:45.807Z",
+      "pilgrimDoneBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+      "validatedAt": "2026-10-14T12:19:45.807Z"
+    },
+    {
+      "id": "31d730df-b6c5-4930-9a9e-0d84fb874fdb",
+      "title": "design",
+      "order": 1,
+      "pilgrimDone": true,
+      "hubDone": true,
+      "hubDoneAt": "2026-10-14T12:18:59.634Z",
+      "hubDoneBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+      "pilgrimDoneAt": "2026-10-14T12:19:47.221Z",
+      "pilgrimDoneBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+      "validatedAt": "2026-10-14T12:19:47.221Z"
+    },
+    {
+      "id": "4e2072c3-a4e0-436f-8c9e-3c649c788b6b",
+      "title": "implement",
+      "order": 2,
+      "pilgrimDone": true,
+      "hubDone": true,
+      "hubDoneAt": "2026-10-14T12:19:00.995Z",
+      "hubDoneBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+      "pilgrimDoneAt": "2026-10-14T12:19:48.385Z",
+      "pilgrimDoneBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+      "validatedAt": "2026-10-14T12:19:48.385Z"
+    },
+    {
+      "id": "78d75801-b4b3-49ef-973d-242e6c7941b1",
+      "title": "test",
+      "order": 3,
+      "pilgrimDone": true,
+      "hubDone": true,
+      "hubDoneAt": "2026-10-14T12:19:02.358Z",
+      "hubDoneBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+      "pilgrimDoneAt": "2026-10-14T12:19:50.384Z",
+      "pilgrimDoneBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+      "validatedAt": "2026-10-14T12:19:50.384Z"
+    },
+    {
+      "id": "7ca7bbf3-cb99-4484-a3d8-29dcec975fa7",
+      "title": "showcase",
+      "order": 4,
+      "pilgrimDone": true,
+      "hubDone": true,
+      "hubDoneAt": "2026-10-14T12:19:03.860Z",
+      "hubDoneBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+      "pilgrimDoneAt": "2026-10-14T12:19:54.101Z",
+      "pilgrimDoneBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+      "validatedAt": "2026-10-14T12:19:54.101Z"
+    }
+  ],
+  "createdAt": "2026-10-14T12:16:52.167Z",
+  "createdBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+  "updatedAt": "2026-10-14T12:32:02.781Z",
+  "updatedBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+  "revision": 17,
+  "submittedAt": "2026-10-14T12:16:53.765Z",
+  "submittedBy": "0xdc16d21032354605801ed4fab93c02550fb05fd7",
+  "confirmedAt": "2026-10-14T12:18:49.415Z",
+  "confirmedBy": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+  "awardedAt": "2026-10-14T12:32:02.781Z",
+  "awardTxHash": "0x0469f257b6b4d1e4a73a192b4addd189b7ce67d535646c36da3519d0dd309d6c"
+}
