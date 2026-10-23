@@ -196,7 +196,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
       {/* Not logged in */}
       {!isLoading && !isAuthenticated && (
         <p className="text-sm text-muted">
-          Log in or connect a wallet to claim a Pilgrim Passport from this hub.
+          Log in or connect a wallet to request a Pilgrim Passport from this hub.
         </p>
       )}
 
@@ -240,7 +240,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
           ) : (
             <div className="space-y-3">
               <p className="text-sm text-muted">
-                Claim your Pilgrim Passport from this hub. Tell the hub who you
+                Request your Pilgrim Passport from this hub. Tell the hub who you
                 are, then select the skills you propose to be attested.
               </p>
 
@@ -284,7 +284,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
                 onClick={handleClaim}
                 disabled={submitting || selected.length < 1 || !nickname.trim()}
               >
-                {submitting ? "Submitting…" : "Claim Pilgrim Passport"}
+                {submitting ? "Submitting…" : "Request Pilgrim Passport"}
               </Button>
             </div>
           )}

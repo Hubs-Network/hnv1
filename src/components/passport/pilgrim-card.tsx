@@ -24,7 +24,7 @@ export function PilgrimCard({ pilgrim }: { pilgrim: PilgrimProfile }) {
             href={`/passport/${pilgrim.passportTokenId}`}
             className="text-xs text-primary hover:underline shrink-0"
           >
-            #{pilgrim.passportTokenId}
+            Passport #{pilgrim.passportTokenId}
           </Link>
         )}
       </div>

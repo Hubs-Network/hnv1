@@ -38,7 +38,7 @@ export function ClaimHubPicker({ hubs }: { hubs: ClaimHubItem[] }) {
     <div>
       <div className="flex flex-wrap gap-3">
         <Button size="lg" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
-          Claim your Passport
+          Request your Passport
           <ChevronDown
             className={cn(
               "w-4 h-4 transition-transform",
@@ -46,11 +46,6 @@ export function ClaimHubPicker({ hubs }: { hubs: ClaimHubItem[] }) {
             )}
           />
         </Button>
-        <Link href="/hubs">
-          <Button variant="secondary" size="lg">
-            Browse Hubs
-          </Button>
-        </Link>
       </div>
 
       {open && (

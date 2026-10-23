@@ -5,14 +5,14 @@ import { getAllHubs, getHubById } from "@/lib/data/hubs";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScoreBar } from "@/components/ui/score-bar";
-import { formatLabel, formatDate } from "@/lib/utils";
+import { formatLabel } from "@/lib/utils";
 import { CHALLENGE_AREA_LABELS } from "@/config/vocabularies";
-import { CompletenessBar } from "@/components/hubs/completeness-bar";
+import { HubCompletenessGate } from "@/components/hubs/hub-completeness-gate";
 import { computeHubCompleteness } from "@/lib/hub-completeness";
 import {
   MapPin,
   Globe,
-  Mail,
+  User,
   Building2,
   Bed,
   Wrench,
@@ -159,11 +159,15 @@ export default async function HubDetailPage({ params }: PageProps) {
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
+          {hub.contact?.contact_name && (
+            <span className="flex items-center gap-1.5">
+              <User className="w-4 h-4" />
+              Contact: {hub.contact.contact_name}
+            </span>
+          )}
         </div>
 
-        <div className="mt-5 max-w-md">
-          <CompletenessBar percent={completeness.percent} />
-        </div>
+        <HubCompletenessGate hubId={hub.hub_id} percent={completeness.percent} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -342,39 +346,6 @@ export default async function HubDetailPage({ params }: PageProps) {
               />
             )}
 
-          {/* Contact */}
-          {hub.contact && (hub.contact.contact_name || hub.contact.email || hub.contact.telegram) && (
-            <Card padding="md">
-              <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                Contact
-              </h3>
-              <div className="space-y-2 text-sm">
-                {hub.contact.contact_name && (
-                  <p className="text-foreground">{hub.contact.contact_name}</p>
-                )}
-                {hub.contact.email && (
-                  <a
-                    href={`mailto:${hub.contact.email}`}
-                    className="text-primary hover:underline block"
-                  >
-                    {hub.contact.email}
-                  </a>
-                )}
-                {hub.contact.telegram && (
-                  <p className="text-muted">Telegram: {hub.contact.telegram}</p>
-                )}
-                {hub.contact.preferred_contact && hub.contact.preferred_contact.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {hub.contact.preferred_contact.map((m) => (
-                      <Badge key={m} label={m} size="sm" variant="outline" />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </Card>
-          )}
-
           {/* Languages */}
           {hub.languages && hub.languages.length > 0 && (
             <Card padding="md">
@@ -490,37 +461,6 @@ export default async function HubDetailPage({ params }: PageProps) {
             </Card>
           )}
 
-          {/* Metadata */}
-          <Card padding="sm" className="bg-stone-50">
-            <div className="text-xs text-muted space-y-1">
-              <p>
-                Submitted: {formatDate(hub.metadata.submitted_at)} by{" "}
-                {hub.metadata.submitted_by}
-              </p>
-              <p>Schema: v{hub.schema_version}</p>
-              <p className="break-all">ID: {hub.hub_id}</p>
-              {hub.hnBadgeStatus === "approved" && (
-                <>
-                  {hub.hnBadgeTokenId && (
-                    <p>HN Badge token: #{hub.hnBadgeTokenId}</p>
-                  )}
-                  {hub.hnBadgeTxHash && (
-                    <p className="break-all">
-                      Mint tx:{" "}
-                      <a
-                        href={`https://sepolia.etherscan.io/tx/${hub.hnBadgeTxHash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        {hub.hnBadgeTxHash.slice(0, 10)}…
-                      </a>
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </Card>
         </div>
       </div>
     </div>
