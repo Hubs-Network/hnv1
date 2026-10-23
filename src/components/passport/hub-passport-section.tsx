@@ -251,6 +251,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 disabled={submitting}
+                required
                 hint="Shown to the hub and on your public card. Required."
               />
               <Textarea
@@ -277,6 +278,7 @@ export function HubPassportSection({ hubId, hubSafe }: Props) {
                 onChange={setSelected}
                 max={MAX_INITIAL_SKILLS}
                 disabled={submitting}
+                collapsible
               />
               {error && <p className="text-xs text-danger">{error}</p>}
               <Button

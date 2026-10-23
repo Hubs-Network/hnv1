@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import {
+  ArrowDown,
   BadgeCheck,
   ShieldCheck,
   Sparkles,
@@ -94,6 +95,15 @@ export default async function PilgrimsPage() {
                 organizer, maker, strategist, educator, or any other kind of
                 contributor willing to work with a hub on a concrete challenge.
               </p>
+              <p className="mt-4">
+                <a
+                  href="#what-is-passport"
+                  className="inline-flex items-center gap-1 text-sm sm:text-base font-medium text-primary hover:underline"
+                >
+                  What is a Pilgrim Passport?
+                  <ArrowDown className="w-4 h-4" />
+                </a>
+              </p>
               <div className="mt-8">
                 <ClaimHubPicker hubs={claimHubs} />
               </div>
@@ -150,7 +160,7 @@ export default async function PilgrimsPage() {
       <section>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 space-y-14">
           {/* What is a Pilgrim Passport */}
-          <div>
+          <div id="what-is-passport" className="scroll-mt-24">
             <div className="flex items-center gap-2 mb-3">
               <BadgeCheck className="w-5 h-5 text-primary" />
               <h2 className="text-xl sm:text-2xl font-bold text-foreground">
