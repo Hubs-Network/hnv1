@@ -1,0 +1,35 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x27701648eda279dEa46FEd38A3bDbBc984Cb3bC4",
+  "hubName": "Commons Hub",
+  "title": "Hack the Hub: Automaton",
+  "description": "Before the 2027 season starts, we’re spending December rebuilding the Hub’s digital backbone. Builders, tinkerers and commons nerds come together to automate the boring parts, so the people here can put their energy into community instead of admin.\n\nWhat we’re building\n\nWebsite and event pages\nBooking and ticketing\nBookkeeping\nA shared database as one source of truth\nSocial media\n\nWork-for-stay\nPut in about 4 hours a day and your bed and food are free.\n\nWinter at the Hub\n\nChristmas cookies, a warm house, shared celebrations\n19–21 Dec: winter solstice, a wholesome celebration that includes a gong night\n\nAfter the hack\nSome of us head straight on to CCC, the Chaos Communication Congress in Hamburg, from 27-30th of Dec, where we’re part of the Intersect habitat, so you can hack here and carry on there. After that, back to the Hub, for a 5 day holistic new year party from 30th Dec to 3rd Jan.",
+  "isCalendarBound": true,
+  "startDate": "2026-12-13T00:00:00.000Z",
+  "endDate": "2026-12-26T00:00:00.000Z",
+  "applicationDeadline": "2026-12-06T12:19:00.000Z",
+  "milestones": [
+    "reset the WIFI network",
+    "build an automated Hub & Valley Wiki + info agent",
+    "build an agentic ecosystem that automates admin work for the Hub: Accounting, Ticketing, Occupancy Plan, Social Media / Newsletter, etc",
+    "prep our input to CCC"
+  ],
+  "rewardedSkills": [
+    "software_development",
+    "ai_ml",
+    "group_care",
+    "cooking",
+    "ui_ux",
+    "dance",
+    "storytelling",
+    "communications",
+    "marketing"
+  ],
+  "externalFormLink": "https://forms.gle/PbUYbDTav7Fm5tQW9",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x6a44D537c9b9dD7fEa601c6C413c62681c386Dc7",
+  "createdAt": "2026-10-26T13:24:22.415Z",
+  "draftId": "d4f9d81e-23a5-4d6d-8ab8-579f8b4ce93a"
+}
