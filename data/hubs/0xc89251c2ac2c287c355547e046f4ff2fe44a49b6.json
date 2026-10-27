@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xc89251c2ac2c287c355547e046f4ff2fe44a49b6",
+  "name": "PULSIN Virtual Hub",
+  "tagline": "Connecting Hubs, skills, and people to turn needs into impact.",
+  "description": "PULSIN Virtual Hub is the digital home of PULSIN Network — a borderless space connecting Hubs to their communities, innovators, and like-minded organizations through collaborative residencies.\n\nAs the network's coordination and experimentation hub, we facilitate connections between Hubs, Pilgrims, and Patrons, support emerging projects, and develop open tools for decentralized collaboration, skill sharing, and collective governance.\n\nOur mission is to transform local challenges into opportunities for global collaboration, turning distributed knowledge and talent into tangible social, cultural, and environmental impact.",
+  "website": "https://pulsin.org",
+  "contact": {
+    "contact_name": "Lorenzo, Nikoline or Justina",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Barcelona",
+    "region": "",
+    "country": "Spain",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-10-27T15:16:14.909Z",
+    "updated_at": "2026-10-27T15:16:14.909Z",
+    "submitted_by": "Lorenzo, Nikoline or Justina",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0xc89251c2ac2c287c355547e046f4ff2fe44a49b6",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
