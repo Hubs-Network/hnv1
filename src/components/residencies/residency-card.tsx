@@ -21,7 +21,10 @@ export function ResidencyCard({ residency }: { residency: ResidencyView }) {
             {residency.hubName && (
               <p className="text-xs text-muted flex items-center gap-1 truncate">
                 <MapPin className="w-3 h-3 shrink-0" />
-                {residency.hubName}
+                <span className="truncate">
+                  {residency.hubName}
+                  {residency.hubCity ? ` · ${residency.hubCity}` : ""}
+                </span>
               </p>
             )}
             <h3 className="text-base font-semibold text-foreground mt-0.5 line-clamp-2">
@@ -50,11 +53,13 @@ export function ResidencyCard({ residency }: { residency: ResidencyView }) {
         )}
 
         <div className="flex items-center gap-3 mt-4 text-xs text-muted">
-          <span className="inline-flex items-center gap-1">
-            <Users className="w-3 h-3" />
-            {residency.applicantCount} applicant
-            {residency.applicantCount === 1 ? "" : "s"}
-          </span>
+          {residency.applicantCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {residency.applicantCount} applicant
+              {residency.applicantCount === 1 ? "" : "s"}
+            </span>
+          )}
           {residency.vouchCount > 0 && (
             <span className="inline-flex items-center gap-1">
               <HandHeart className="w-3 h-3" />

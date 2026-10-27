@@ -14,6 +14,17 @@ export interface ClaimHubItem {
 }
 
 /**
+ * PULSIN is the core-team hub that mints Passports directly. In production we
+ * send users to the canonical production URL; in local/dev we keep it internal
+ * so the link resolves within the current environment.
+ */
+const PULSIN_HUB_ID = "0xc89251c2ac2c287c355547e046f4ff2fe44a49b6";
+const PULSIN_HUB_HREF =
+  process.env.NODE_ENV === "production"
+    ? `https://app.hubsnetwork.org/hubs/${PULSIN_HUB_ID}`
+    : `/hubs/${PULSIN_HUB_ID}`;
+
+/**
  * "Claim your Passport" CTA that expands an inline, scrollable list of approved
  * hubs (name + city, country) instead of dumping the pilgrim on the full hub
  * directory. Picking a hub takes them to that hub's page, where the claim flow
@@ -52,7 +63,14 @@ export function ClaimHubPicker({ hubs }: { hubs: ClaimHubItem[] }) {
         <div className="mt-5 rounded-2xl border border-border bg-surface overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <p className="text-sm font-medium text-foreground mb-2">
-              Choose a hub to claim your Passport from
+              Choose a hub to claim your Passport or{" "}
+              <Link
+                href={PULSIN_HUB_HREF}
+                className="text-primary hover:underline"
+              >
+                ask PULSIN
+              </Link>{" "}
+              directly
             </p>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-light" />

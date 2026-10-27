@@ -32,6 +32,7 @@ import {
   hasActiveAttestation,
 } from "@/lib/pilgrim-passport-sbt";
 import { getPilgrimByWallet } from "@/lib/data/pilgrims";
+import { getHubById } from "@/lib/data/hubs";
 import { countActiveVouches } from "@/lib/data/residency-vouches";
 
 export interface ResidencySkillView {
@@ -44,6 +45,7 @@ export interface ResidencyView {
   id: string;
   hubSafe: string;
   hubName: string | null;
+  hubCity: string | null;
   title: string | null;
   description: string | null;
   metadataURI: string;
@@ -146,13 +148,14 @@ export async function getResidencyView(
   const onChain = await getResidency(residencyId);
   if (!onChain) return null;
 
-  const [skillHashes, applicants, applicationOpen, metadata, vouchCount] =
+  const [skillHashes, applicants, applicationOpen, metadata, vouchCount, hub] =
     await Promise.all([
       getResidencySkills(residencyId),
       getResidencyApplicants(residencyId),
       readIsApplicationOpen(residencyId),
       loadMetadata(onChain),
       countActiveVouches(residencyId.toString()),
+      getHubById(onChain.hubSafe.toLowerCase()),
     ]);
 
   const skills = await resolveSkills(skillHashes);
@@ -161,6 +164,7 @@ export async function getResidencyView(
     id: residencyId.toString(),
     hubSafe: onChain.hubSafe,
     hubName: metadata?.hubName ?? null,
+    hubCity: hub?.location?.city ?? null,
     title: metadata?.title ?? null,
     description: metadata?.description ?? null,
     metadataURI: onChain.metadataURI,
