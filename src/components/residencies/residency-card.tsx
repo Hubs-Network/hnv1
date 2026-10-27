@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { MapPin, Users, HandHeart } from "lucide-react";
+import { MapPin, Users, HandHeart, Clock } from "lucide-react";
 import { ResidencyStatusBadge } from "./residency-status-badge";
 import type { ResidencyView } from "@/lib/residencies-directory";
+
+function fmtDate(unix: number): string {
+  return new Date(unix * 1000).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
 
 /**
  * Residencies list card preview. Shows only: hub name, title, skills and status.
@@ -52,7 +60,13 @@ export function ResidencyCard({ residency }: { residency: ResidencyView }) {
           </div>
         )}
 
-        <div className="flex items-center gap-3 mt-4 text-xs text-muted">
+        <div className="flex flex-wrap items-center gap-3 mt-4 text-xs text-muted">
+          <span className="inline-flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {residency.applicationDeadline > 0
+              ? `Apply by ${fmtDate(residency.applicationDeadline)}`
+              : "Ongoing"}
+          </span>
           {residency.applicantCount > 0 && (
             <span className="inline-flex items-center gap-1">
               <Users className="w-3 h-3" />
