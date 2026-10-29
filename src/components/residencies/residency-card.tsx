@@ -16,9 +16,10 @@ function fmtDate(unix: number): string {
 }
 
 /**
- * Residencies list card preview. Shows only: hub name, title, skills and status.
- * Full details (and the apply flow) live on the residency detail page, which is
- * gated to Pilgrim Passport holders / hub signers.
+ * Residencies list card preview: hub name + city, title, skills, status, and a
+ * deadline / "Ongoing" line (plus applicant and patron counts when > 0). Full
+ * details live on the residency detail page, which anyone can read; only Pilgrim
+ * Passport holders can apply from there.
  */
 export function ResidencyCard({ residency }: { residency: ResidencyView }) {
   const skills = residency.skills.slice(0, 6);

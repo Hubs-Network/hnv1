@@ -666,10 +666,20 @@ Pilgrim Passport.
 
 ### Flows
 
+- **Browse** (`/residencies`): the server lists every non-cancelled residency.
+  **Closed** residencies move to a collapsed section; open / applications-closed
+  stay in the main grid. The page is public — **anyone can read**. A logged-in
+  Pilgrim whose Passport has ≥1 attested skill also gets a *"Show only Residencies
+  for my Skills"* checkbox (client-side filter over the lists, fed by
+  `GET /api/pilgrims/[wallet]/passport-skills`).
 - **Create** (hub dashboard → Residencies): `POST /api/residencies/prepare`
   persists the draft metadata + returns the signing params (metadataHash, skill
   hashes, deadlines, nonce); the hub signs `CreateResidency`; `POST /api/residencies`
   re-verifies and relays `createResidency`, then writes back `residencyId` + `txHash`.
+- **Read detail** (residency detail): **public — anyone can open and read** a
+  residency (description, skills, benefits, milestones, how-to-apply). Only the
+  **apply** action is gated to Passport holders; non-Pilgrims see a *"Become a
+  Pilgrim"* prompt instead of the apply button.
 - **Apply** (residency detail): a Pilgrim signs `ApplyToResidency` with one matching
   skill; the relayer submits `applyToResidency`.
 - **Select** (after deadline): the hub signs `SelectPilgrims`; relayer submits
@@ -738,7 +748,8 @@ contract was deployed against.
 | `src/lib/schemas/residency.ts` | Metadata Zod schema + canonical hash + URI scheme |
 | `src/lib/data/residencies.ts` | GitHub/filesystem JSON store (`data/residencies/<hubSafe>/<draftId>.json`) |
 | `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, eligibility, nonce, hub |
-| `src/components/residencies/*` | Card, status badge, detail, hub section |
+| `src/app/api/pilgrims/[wallet]/passport-skills` | Read-only on-chain skill hashes for a wallet's Passport (feeds the board's "my skills" filter) |
+| `src/components/residencies/*` | Card, status badge, detail, hub section, board (`residencies-board` + `collapsible-section` for the public list, closed-section collapse and skill filter) |
 | `src/app/residencies`, `src/app/residencies/[residencyId]` | Public routes (list + detail) |
 
 ---
