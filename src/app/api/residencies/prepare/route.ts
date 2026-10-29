@@ -7,6 +7,7 @@ import {
   buildResidencyMetadataURI,
   EXTERNAL_FORM_INSTRUCTIONS,
   RESIDENCY_METADATA_SCHEMA_ID,
+  EMPTY_BENEFITS,
   type ResidencyMetadata,
 } from "@/lib/schemas/residency";
 import {
@@ -92,6 +93,7 @@ export async function POST(request: NextRequest) {
       endDate: input.isCalendarBound ? input.endDate : undefined,
       applicationDeadline: input.applicationDeadline,
       milestones: input.milestones,
+      benefits: input.benefits ?? EMPTY_BENEFITS,
       rewardedSkills: skills,
       externalFormLink: input.externalFormLink,
       externalFormInstructions: EXTERNAL_FORM_INSTRUCTIONS,

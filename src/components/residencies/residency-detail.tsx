@@ -25,7 +25,10 @@ import {
   ListChecks,
   Award,
   CheckCircle,
-  Lock,
+  Home,
+  Utensils,
+  Coins,
+  Gift,
 } from "lucide-react";
 
 // ── Local shapes (mirror the API responses; no server imports in the client) ──
@@ -49,6 +52,11 @@ interface ResidencyView {
   endDate: number;
   skills: SkillView[];
   milestones: string[];
+  benefits?: {
+    accommodation: boolean;
+    meals: boolean;
+    stipend: boolean;
+  };
   externalFormLink: string | null;
   externalFormInstructions: string | null;
   applicantCount: number;
@@ -81,6 +89,16 @@ function fmtDate(unix: number): string {
 function shortAddr(a: string): string {
   return `${a.slice(0, 6)}…${a.slice(-4)}`;
 }
+
+const BENEFIT_ITEMS: {
+  key: "accommodation" | "meals" | "stipend";
+  label: string;
+  icon: typeof Home;
+}[] = [
+  { key: "accommodation", label: "Accommodation", icon: Home },
+  { key: "meals", label: "Meals", icon: Utensils },
+  { key: "stipend", label: "Stipend", icon: Coins },
+];
 
 export function ResidencyDetail({ residencyId }: { residencyId: string }) {
   const { address, authProvider, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -217,11 +235,16 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
     );
   }
 
-  const isPatronManager = manageablePatrons.length > 0;
-  const canView = isHubSigner || eligibility?.hasPassport || isPatronManager;
   const canVouch = residency.status === RESIDENCY_STATUS.Open;
   const nowSec = Math.floor(Date.now() / 1000);
   const deadlinePassed = nowSec > residency.applicationDeadline;
+  // Everyone can read the residency; only Passport holders can apply. Wait for
+  // eligibility to resolve (for authenticated users) before deciding, so we
+  // don't flash the "Become a Pilgrim" prompt to an actual Pilgrim.
+  const eligibilityResolved = !isAuthenticated || eligibility !== null;
+  const offeredBenefits = BENEFIT_ITEMS.filter(
+    (b) => residency.benefits?.[b.key]
+  );
 
   return (
     <div>
@@ -264,22 +287,8 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
         )}
       </div>
 
-      {/* Gate: non-pilgrims (and non-signers) cannot see the details */}
-      {!canView ? (
-        <Card className="p-8 text-center">
-          <Lock className="w-10 h-10 text-muted mx-auto mb-3" />
-          <h2 className="text-lg font-semibold mb-1">Pilgrims only</h2>
-          <p className="text-sm text-muted mb-4">
-            {isAuthenticated
-              ? "Claim a Pilgrim Passport first to explore and apply to residencies."
-              : "Sign in and claim a Pilgrim Passport to explore and apply to residencies."}
-          </p>
-          <Link href="/pilgrims">
-            <Button>Become a Pilgrim</Button>
-          </Link>
-        </Card>
-      ) : (
-        <div className="space-y-6">
+      {/* Everyone can read the residency details below; applying is gated. */}
+      <div className="space-y-6">
           {/* Description */}
           {residency.description && (
             <Card className="p-5">
@@ -306,6 +315,27 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
               ))}
             </div>
           </Card>
+
+          {/* Benefits (only when the residency offers any) */}
+          {offeredBenefits.length > 0 && (
+            <Card className="p-5">
+              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Gift className="w-4 h-4 text-primary" />
+                Benefits
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {offeredBenefits.map(({ key, label, icon: Icon }) => (
+                  <span
+                    key={key}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary-bg text-primary border border-primary/15"
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* Milestones */}
           {residency.milestones.length > 0 && (
@@ -390,6 +420,20 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
                   {progress && busy === "apply" && (
                     <p className="text-xs text-muted mt-2">{progress}</p>
                   )}
+                </div>
+              )}
+
+              {/* Non-pilgrims can read everything but need a Passport to apply */}
+              {eligibilityResolved && !eligibility?.hasPassport && (
+                <div className="mt-4 pt-4 border-t border-border flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-sm text-muted">
+                    {isAuthenticated
+                      ? "You need a Pilgrim Passport to apply to this residency."
+                      : "Sign in and claim a Pilgrim Passport to apply to this residency."}
+                  </p>
+                  <Link href="/pilgrims">
+                    <Button size="sm">Become a Pilgrim</Button>
+                  </Link>
                 </div>
               )}
             </Card>
@@ -587,7 +631,6 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }

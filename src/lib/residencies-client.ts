@@ -10,6 +10,7 @@
  * The signatureDeadline is now + 10 minutes (per the Residencies spec).
  */
 import { getAddress, type Hex } from "viem";
+import type { ResidencyBenefits } from "./schemas/residency";
 import { getSigner, signTypedDataV4 } from "./pilgrim-passport-client";
 import { toEip712Json } from "./pilgrim-passport-message";
 import { computeSkillHash } from "./pilgrim-skills";
@@ -75,6 +76,7 @@ export interface CreateResidencyInput {
   endDate?: string;
   applicationDeadline: string;
   milestones: string[];
+  benefits: ResidencyBenefits;
   rewardedSkills: string[];
   externalFormLink: string;
   authProvider: string | null;
@@ -110,6 +112,7 @@ export async function createResidency(
     endDate: input.endDate,
     applicationDeadline: input.applicationDeadline,
     milestones: input.milestones,
+    benefits: input.benefits,
     rewardedSkills: input.rewardedSkills,
     externalFormLink: input.externalFormLink,
     createdBy: signer,

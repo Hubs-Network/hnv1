@@ -639,9 +639,14 @@ Pilgrim Passport.
   Passport owner** for apply. The contract checks `isApprovedHub` + `ISafe.isOwner`
   / passport ownership; the relayer submits every tx (gasless).
 - **Contract is authoritative** — status, skills, applicants, selection and awards
-  are read from chain. GitHub JSON only anchors title/description/milestones/form
+  are read from chain. GitHub JSON only anchors title/description/milestones/benefits/form
   link via `metadataURI` + `metadataHash` (the contract signs the **hash**, not the
   URI).
+- **Benefits are off-chain & optional** — `benefits` (`accommodation`, `meals`,
+  `stipend` booleans) is purely metadata; no contract change. It is appended to the
+  canonical JSON **only when present**, so residencies published before this field
+  keep producing their original `metadataHash` byte-for-byte. Readers default a
+  missing value to `EMPTY_BENEFITS` ("no benefits selected").
 - **Shared nonce** — `signerNonces(signer)` is shared across all residency actions;
   the client fetches it immediately before signing (`GET /api/residencies/nonce`).
 - **Award = two signatures** — `awardPilgrim` internally calls

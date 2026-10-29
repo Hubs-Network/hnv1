@@ -1,7 +1,6 @@
 import { listResidencyViews } from "@/lib/residencies-directory";
-import { ResidencyCard } from "@/components/residencies/residency-card";
 import { ResidenciesPublishCTA } from "@/components/residencies/residencies-publish-cta";
-import { CollapsibleSection } from "@/components/residencies/collapsible-section";
+import { ResidenciesBoard } from "@/components/residencies/residencies-board";
 import { ScrollText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -42,32 +41,10 @@ export default async function ResidenciesPage() {
           <p className="text-muted">No residencies posted yet.</p>
         </div>
       ) : (
-        <div className="space-y-8">
-          {openResidencies.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {openResidencies.map((r) => (
-                <ResidencyCard key={r.id} residency={r} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 border border-dashed border-border rounded-xl">
-              <p className="text-muted">No open residencies right now.</p>
-            </div>
-          )}
-
-          {closedResidencies.length > 0 && (
-            <CollapsibleSection
-              title="Closed residencies"
-              count={closedResidencies.length}
-            >
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {closedResidencies.map((r) => (
-                  <ResidencyCard key={r.id} residency={r} />
-                ))}
-              </div>
-            </CollapsibleSection>
-          )}
-        </div>
+        <ResidenciesBoard
+          openResidencies={openResidencies}
+          closedResidencies={closedResidencies}
+        />
       )}
     </div>
   );

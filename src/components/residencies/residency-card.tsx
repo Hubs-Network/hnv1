@@ -5,10 +5,13 @@ import { ResidencyStatusBadge } from "./residency-status-badge";
 import type { ResidencyView } from "@/lib/residencies-directory";
 
 function fmtDate(unix: number): string {
-  return new Date(unix * 1000).toLocaleDateString(undefined, {
+  // Fixed locale + timeZone so the server-rendered HTML and the client render
+  // produce the same string (otherwise React throws a hydration mismatch).
+  return new Date(unix * 1000).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 

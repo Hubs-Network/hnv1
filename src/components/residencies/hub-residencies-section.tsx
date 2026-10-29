@@ -11,9 +11,33 @@ import { SkillSelector } from "@/components/passport/skill-selector";
 import { ResidencyStatusBadge } from "./residency-status-badge";
 import { createResidency } from "@/lib/residencies-client";
 import type { ResidencyUiStatus } from "@/config/residencies";
-import { EXTERNAL_FORM_INSTRUCTIONS } from "@/lib/schemas/residency";
+import {
+  EXTERNAL_FORM_INSTRUCTIONS,
+  EMPTY_BENEFITS,
+  type ResidencyBenefits,
+} from "@/lib/schemas/residency";
 import { MAX_RESIDENCY_SKILLS } from "@/config/residencies";
-import { Loader2, Plus, X, ScrollText, ExternalLink } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  X,
+  ScrollText,
+  ExternalLink,
+  Home,
+  Utensils,
+  Coins,
+} from "lucide-react";
+
+const BENEFIT_OPTIONS: {
+  key: keyof ResidencyBenefits;
+  label: string;
+  desc: string;
+  icon: typeof Home;
+}[] = [
+  { key: "accommodation", label: "Accommodation", desc: "A place to stay is provided", icon: Home },
+  { key: "meals", label: "Meals", desc: "Food is provided", icon: Utensils },
+  { key: "stipend", label: "Stipend", desc: "A stipend is provided", icon: Coins },
+];
 
 interface HubResidencyRow {
   id: string;
@@ -43,6 +67,7 @@ export function HubResidenciesSection({
   const [endDate, setEndDate] = useState("");
   const [applicationDeadline, setApplicationDeadline] = useState("");
   const [milestones, setMilestones] = useState<string[]>([""]);
+  const [benefits, setBenefits] = useState<ResidencyBenefits>(EMPTY_BENEFITS);
   const [skills, setSkills] = useState<string[]>([]);
   const [externalFormLink, setExternalFormLink] = useState("");
 
@@ -85,6 +110,10 @@ export function HubResidenciesSection({
     setMilestones((prev) => prev.filter((_, idx) => idx !== i));
   }
 
+  function toggleBenefit(key: keyof ResidencyBenefits) {
+    setBenefits((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
   const cleanMilestones = milestones.map((m) => m.trim()).filter(Boolean);
   const skillsOk = skills.length >= 1 && skills.length <= MAX_RESIDENCY_SKILLS;
   const canSubmit =
@@ -115,6 +144,7 @@ export function HubResidenciesSection({
         endDate: isCalendarBound ? new Date(endDate).toISOString() : undefined,
         applicationDeadline: new Date(applicationDeadline).toISOString(),
         milestones: cleanMilestones,
+        benefits,
         rewardedSkills: skills,
         externalFormLink: externalFormLink.trim(),
         authProvider,
@@ -129,6 +159,7 @@ export function HubResidenciesSection({
       setEndDate("");
       setApplicationDeadline("");
       setMilestones([""]);
+      setBenefits(EMPTY_BENEFITS);
       setSkills([]);
       setExternalFormLink("");
       setShowForm(false);
@@ -309,6 +340,54 @@ export function HubResidenciesSection({
             >
               <Plus className="w-3.5 h-3.5" /> Add milestone
             </button>
+          </div>
+
+          {/* Benefits */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Benefits
+            </label>
+            <p className="text-xs text-muted mb-2">
+              Optional. Let pilgrims know what this residency provides.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {BENEFIT_OPTIONS.map(({ key, label, desc, icon: Icon }) => {
+                const active = benefits[key];
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleBenefit(key)}
+                    disabled={submitting}
+                    aria-pressed={active}
+                    className={
+                      "flex items-start gap-2.5 p-3 rounded-lg border text-left transition-colors " +
+                      (active
+                        ? "bg-primary-bg border-primary/40"
+                        : "bg-surface border-border hover:border-primary/30")
+                    }
+                  >
+                    <Icon
+                      className={
+                        "w-4 h-4 mt-0.5 shrink-0 " +
+                        (active ? "text-primary" : "text-muted")
+                      }
+                    />
+                    <span className="min-w-0">
+                      <span
+                        className={
+                          "block text-sm font-medium " +
+                          (active ? "text-primary" : "text-foreground")
+                        }
+                      >
+                        {label}
+                      </span>
+                      <span className="block text-xs text-muted">{desc}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Rewarded skills */}

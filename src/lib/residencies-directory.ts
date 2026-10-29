@@ -25,7 +25,12 @@ import {
   type OnChainResidency,
 } from "@/lib/residencies-contract";
 import { getResidencyMetadata } from "@/lib/data/residencies";
-import { parseResidencyMetadataURI, type ResidencyMetadata } from "@/lib/schemas/residency";
+import {
+  parseResidencyMetadataURI,
+  EMPTY_BENEFITS,
+  type ResidencyMetadata,
+  type ResidencyBenefits,
+} from "@/lib/schemas/residency";
 import { resolveSkillId, resolveSkillLabelByHash } from "@/lib/pilgrim-skills-catalog";
 import {
   getPassportOwner,
@@ -60,6 +65,7 @@ export interface ResidencyView {
   endDate: number;
   skills: ResidencySkillView[];
   milestones: string[];
+  benefits: ResidencyBenefits;
   externalFormLink: string | null;
   externalFormInstructions: string | null;
   applicantCount: number;
@@ -179,6 +185,8 @@ export async function getResidencyView(
     endDate: onChain.endDate,
     skills,
     milestones: metadata?.milestones ?? [],
+    // Residencies published before the benefits field default to "none".
+    benefits: metadata?.benefits ?? EMPTY_BENEFITS,
     externalFormLink: metadata?.externalFormLink ?? null,
     externalFormInstructions: metadata?.externalFormInstructions ?? null,
     applicantCount: applicants.length,

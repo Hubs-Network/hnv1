@@ -14,6 +14,27 @@ import { RESIDENCIES_CHAIN_ID } from "@/config/residencies";
 
 export const RESIDENCY_METADATA_SCHEMA_ID = "hubs-network-residency-v1" as const;
 
+/**
+ * Optional off-chain "benefits" offered by the residency. Purely metadata — the
+ * contract never sees these. Older residencies created before this field was
+ * introduced simply omit it; readers must treat a missing value as "no benefits
+ * selected" (see EMPTY_BENEFITS).
+ */
+export const residencyBenefitsSchema = z.object({
+  accommodation: z.boolean(),
+  meals: z.boolean(),
+  stipend: z.boolean(),
+});
+
+export type ResidencyBenefits = z.infer<typeof residencyBenefitsSchema>;
+
+/** Neutral default used for residencies that never specified benefits. */
+export const EMPTY_BENEFITS: ResidencyBenefits = {
+  accommodation: false,
+  meals: false,
+  stipend: false,
+};
+
 /** Persisted metadata JSON (data/residencies/<hubSafe>/<draftId>.json). */
 export const residencyMetadataSchema = z.object({
   schema: z.literal(RESIDENCY_METADATA_SCHEMA_ID),
@@ -29,6 +50,7 @@ export const residencyMetadataSchema = z.object({
   endDate: z.string().optional(),
   applicationDeadline: z.string(),
   milestones: z.array(z.string().min(1)).min(1),
+  benefits: residencyBenefitsSchema.optional(),
   rewardedSkills: z.array(z.string().min(1)).min(1).max(10),
   externalFormLink: z.string().url(),
   externalFormInstructions: z.string(),
@@ -72,6 +94,17 @@ export function canonicalResidencyJson(
     createdBy: meta.createdBy.toLowerCase(),
     createdAt: meta.createdAt,
     draftId: meta.draftId,
+    // Appended last and ONLY when present, so residencies created before the
+    // benefits field keep producing their original hash byte-for-byte.
+    ...(meta.benefits
+      ? {
+          benefits: {
+            accommodation: meta.benefits.accommodation,
+            meals: meta.benefits.meals,
+            stipend: meta.benefits.stipend,
+          },
+        }
+      : {}),
   };
   return JSON.stringify(ordered);
 }
@@ -111,6 +144,7 @@ export const createResidencyInputSchema = z
     endDate: z.string().optional(),
     applicationDeadline: z.string().min(1),
     milestones: z.array(z.string().min(1)).min(1),
+    benefits: residencyBenefitsSchema.optional(),
     rewardedSkills: z.array(z.string().min(1)).min(1).max(10),
     externalFormLink: z.string().url(),
     createdBy: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
