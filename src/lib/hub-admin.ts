@@ -2,7 +2,8 @@
  * Hub admin helpers — Safe-based.
  *
  * A Hub admin is any wallet that is a Safe owner on the Hub's Safe (Sepolia).
- * The first owner (deployer) is conceptually the "owner" with threshold=1.
+ * All Safe owners are equal — there is no single privileged "owner". Every owner
+ * has the same permissions (add/remove owners, change threshold, manage the hub).
  *
  * For legacy hubs (no safeAddress), falls back to Neon Postgres if available.
  */
@@ -41,15 +42,13 @@ export async function checkHubAdmin({
     // Read directly from chain for always-fresh data (bypasses TX Service cache)
     const info = await getHubSafeInfoOnChain(target) || await getHubSafeInfo(target);
 
-    // Determine role: first owner = "owner", others = "admin"
-    const normalizedWallet = walletAddress.toLowerCase();
-    const isFirstOwner = info
-      ? info.owners.length > 0 && info.owners[0].toLowerCase() === normalizedWallet
-      : true; // If no info yet, assume creator is owner
-
+    // Every Safe owner is an equal signer with identical permissions. We do NOT
+    // derive a single "owner" from owners[0]: Safe's getOwners() returns owners
+    // newest-first, so that made the last-added signer wrongly take over as the
+    // sole manager. All owners get role "owner".
     return {
       isAdmin: true,
-      role: isFirstOwner ? "owner" : "admin",
+      role: "owner",
       safeInfo: info || undefined,
     };
   }
@@ -89,9 +88,10 @@ export async function listHubAdmins({
     // Always read directly from chain for fresh data
     const info = await getHubSafeInfoOnChain(target) || await getHubSafeInfo(target);
     if (info) {
-      return info.owners.map((addr, i) => ({
+      // All Safe owners are equal signers with the same permissions.
+      return info.owners.map((addr) => ({
         wallet_address: addr,
-        role: i === 0 ? "owner" : "admin",
+        role: "owner",
       }));
     }
     return [];

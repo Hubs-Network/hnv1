@@ -289,7 +289,11 @@ Registration does **not** grant the Hubs Network Badge. After registration, the 
 ### Admin Permissions
 
 - A wallet that is a **Safe owner** can edit the hub profile
-- The first owner (deployer) is labeled "owner"; others are "admin"
+- **All Safe owners are equal signers** — there is no single privileged "owner".
+  Every owner has the same permissions: edit the hub, add/remove owners, change
+  the threshold, and delete the hub. (The app does **not** derive a sole "owner"
+  from `getOwners()[0]`; Safe returns owners newest-first, so that previously made
+  the last-added signer wrongly take over as the only manager.)
 - Permissions are verified server-side by reading the Safe contract directly on-chain
 
 ### Admin Operations (threshold=1)
