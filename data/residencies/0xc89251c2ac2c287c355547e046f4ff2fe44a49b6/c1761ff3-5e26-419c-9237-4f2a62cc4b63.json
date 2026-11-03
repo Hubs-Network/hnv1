@@ -1,0 +1,39 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0xC89251c2aC2c287C355547e046F4FF2Fe44a49B6",
+  "hubName": "PULSIN Virtual Hub",
+  "title": "Existing skills attestation event",
+  "description": "Needs of attesting initial skills",
+  "isCalendarBound": true,
+  "startDate": "2026-11-03T00:00:00.000Z",
+  "endDate": "2026-11-06T00:00:00.000Z",
+  "applicationDeadline": "2026-11-03T16:06:00.000Z",
+  "milestones": [
+    "Apply",
+    "Attest the skills"
+  ],
+  "benefits": {
+    "accommodation": true,
+    "meals": false,
+    "stipend": false
+  },
+  "rewardedSkills": [
+    "research",
+    "knowledge_management",
+    "scientific_communication",
+    "fermentation",
+    "business_development",
+    "coordination",
+    "workshop_facilitation",
+    "field_research"
+  ],
+  "externalFormLink": "https://www.hubsnetwork.org/",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x263567fcFD9f0a2d5Cd4b8dD8A57404c66baABa5",
+  "createdAt": "2026-11-03T15:06:13.517Z",
+  "draftId": "c1761ff3-5e26-419c-9237-4f2a62cc4b63",
+  "residencyId": "16",
+  "txHash": "0x52fe583569408c254cf6d17d5c4185f9507d89112b4cc17ae2233a44bac29cbb"
+}
