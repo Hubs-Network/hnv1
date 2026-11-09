@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0x98d6915dc4c62c2403f7c60832ffddbb3bf72e79",
+  "name": "Traditional Dream Factory",
+  "tagline": "A regenerative village in Portugal ",
+  "description": "We are building a place where land is held in common, community is intentional, and belonging is not left to chance.",
+  "website": "https://www.traditionaldreamfactory.com/",
+  "contact": {
+    "contact_name": "Tonya",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Abela",
+    "region": "",
+    "country": "Portugal",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-11-09T13:13:50.435Z",
+    "updated_at": "2026-11-09T13:13:50.435Z",
+    "submitted_by": "Tonya",
+    "creator_address": "0x263567fcfd9f0a2d5cd4b8dd8a57404c66baaba5",
+    "language": "en"
+  },
+  "safeAddress": "0x98d6915dc4c62c2403f7c60832ffddbb3bf72e79",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
