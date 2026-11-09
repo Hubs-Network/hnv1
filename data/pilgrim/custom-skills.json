@@ -7,5 +7,14 @@
     "addedBy": "0xC3F6e18b429b6BAf1bD31B1E504aee7827C7AAb5",
     "addedAt": "2026-06-28T16:20:02.058Z",
     "txHash": "0x54e5cbc70b9225f1f024976b0b838f5147361db3a9a3413b45db9f4d1d5ff5cf"
+  },
+  {
+    "id": "carpentry",
+    "label": "Carpentry",
+    "categoryId": "technology",
+    "hash": "0xc0ade8a001a3f6cdce564ec923d08fc8353bae67f08c7154b7f418b7cefd0f5e",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:16:50.185Z",
+    "txHash": "0xfa3193e9e8f610b3b669b3301341a25a0589617228c39d3b8f23ec800c867e0c"
   }
 ]
