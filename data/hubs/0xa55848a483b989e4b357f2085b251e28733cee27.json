@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.3",
+  "hub_id": "0xa55848a483b989e4b357f2085b251e28733cee27",
+  "name": "Test Hub November",
+  "tagline": "a hub for testing",
+  "description": "this is only a test for testin",
+  "website": "https://testhuby.xyz",
+  "contact": {
+    "contact_name": "alex",
+    "email": "",
+    "telegram": "",
+    "preferred_contact": []
+  },
+  "location": {
+    "city": "Turin",
+    "region": "",
+    "country": "Italy",
+    "timezone": ""
+  },
+  "languages": [],
+  "identity": {
+    "vocation_tags": [],
+    "mission_keywords": [],
+    "organizational_type": "nonprofit",
+    "stage": "informal",
+    "revenue_models": [],
+    "revenue_notes": ""
+  },
+  "spaces": [],
+  "accommodation": {
+    "type": "none",
+    "formats": [],
+    "notes": ""
+  },
+  "assets": [],
+  "network": [],
+  "challenges": [],
+  "admins": [],
+  "metadata": {
+    "submitted_at": "2026-11-09T12:57:51.777Z",
+    "updated_at": "2026-11-09T12:57:51.777Z",
+    "submitted_by": "alex",
+    "creator_address": "0xc3f6e18b429b6baf1bd31b1e504aee7827c7aab5",
+    "language": "en"
+  },
+  "safeAddress": "0xa55848a483b989e4b357f2085b251e28733cee27",
+  "chainId": 11155111,
+  "network_id": "sepolia"
+}
