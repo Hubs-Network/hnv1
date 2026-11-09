@@ -88,5 +88,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:25:15.504Z",
     "txHash": "0x9f24ab291d81f7b68bdcad71a8437c7c13c4f951a7bb397d63741514fa8c909d"
+  },
+  {
+    "id": "yoga_teaching",
+    "label": "Yoga Teaching",
+    "categoryId": "wellbeing_care",
+    "hash": "0x63dddef8b92a9ff4720b61d734d9009710abf933d74b136b475871457ff1a98f",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:25:37.071Z",
+    "txHash": "0x7a91465e96f6f010429967a1163b4ed1bf09e48d8e1ed8b111e5f1c793ab2730"
   }
 ]
