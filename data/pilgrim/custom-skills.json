@@ -34,5 +34,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:18:04.785Z",
     "txHash": "0x1bf6098f7e350dd56024bab006e89f410edda764dd52d9126ee07f0d81d91910"
+  },
+  {
+    "id": "renovation_and_painting",
+    "label": "Renovation and Painting",
+    "categoryId": "technology",
+    "hash": "0xf38ba8b79d1e612a9842ce2fa42ec6173901bde2e8af9b7e947a69a80cfc271f",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:21:41.185Z",
+    "txHash": "0x080a2d49150dc7117deaa71c76b8f15df876cea17e00cc439987a071bc52bca7"
   }
 ]
