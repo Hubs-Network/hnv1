@@ -124,5 +124,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:27:16.664Z",
     "txHash": "0xd540a9fa873028cece525b4a18a64323d964524aae1d3de0af54d2eb54f0a2a1"
+  },
+  {
+    "id": "herbalism",
+    "label": "Herbalism",
+    "categoryId": "wellbeing_care",
+    "hash": "0xa2675a76e2ec72ecd71762282b619fe356370226d22fd5c444e77aff536878a5",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:27:51.222Z",
+    "txHash": "0x191b0e3cd8097c82880a2aebf76aabb72b1b593e4182247b33998f54a4ced391"
   }
 ]
