@@ -151,5 +151,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:28:38.408Z",
     "txHash": "0xec64ef10c41e043b61918c036428d3baee7fc865a03899a90408fd19d844c214"
+  },
+  {
+    "id": "social_media_management",
+    "label": "Social Media Management",
+    "categoryId": "arts_media",
+    "hash": "0xc37fbbd7ba1c815d0105699cf4b96f463c0cab4f50bd9a9563a90443cf40e3b8",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:29:15.326Z",
+    "txHash": "0x9c4f312ea6059632c1c1ec2af894b9d8d242caf0106dc7c3d9e04911e0f338b2"
   }
 ]
