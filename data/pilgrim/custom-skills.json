@@ -43,5 +43,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:21:41.185Z",
     "txHash": "0x080a2d49150dc7117deaa71c76b8f15df876cea17e00cc439987a071bc52bca7"
+  },
+  {
+    "id": "bike_repair",
+    "label": "Bike Repair",
+    "categoryId": "technology",
+    "hash": "0x39056b50395e68688d018ef5f3b3f2de32aec54b67d5c78a6b8d1ead63b4a70e",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:23:02.812Z",
+    "txHash": "0x3bba277b1d825b3707c57c236690862019bfe9d5e2a2a67a6a2eaa6a0dc5b47c"
   }
 ]
