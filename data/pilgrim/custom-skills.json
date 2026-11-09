@@ -133,5 +133,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:27:51.222Z",
     "txHash": "0x191b0e3cd8097c82880a2aebf76aabb72b1b593e4182247b33998f54a4ced391"
+  },
+  {
+    "id": "language_teaching",
+    "label": "Language Teaching",
+    "categoryId": "education_knowledge",
+    "hash": "0x2aa8bd4b3ce26b5a36b3a8a72e63161c8904a64f608ed61569f7539113b7ee9d",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:28:13.647Z",
+    "txHash": "0x8c7a4bca46f094733c7536d44dc596c181a12226effc33a096fa725cf713a69a"
   }
 ]
