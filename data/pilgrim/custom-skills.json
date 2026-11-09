@@ -61,5 +61,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:23:39.016Z",
     "txHash": "0xd0226bc62bedd74ca0e60e5ecd9432444584c6d540fc56e11901ef3bf9566bc7"
+  },
+  {
+    "id": "childcare",
+    "label": "Childcare",
+    "categoryId": "wellbeing_care",
+    "hash": "0x3341e9d17d937e4eaf7a8d94516c30f2d65381a6c51e56f3f298fd505120e429",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:24:29.127Z",
+    "txHash": "0x38c9acc0b5d2af229c474592b91ddb435c3bd6c8c8d8a213ecb2300d43b9fcf3"
   }
 ]
