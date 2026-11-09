@@ -160,5 +160,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:29:15.326Z",
     "txHash": "0x9c4f312ea6059632c1c1ec2af894b9d8d242caf0106dc7c3d9e04911e0f338b2"
+  },
+  {
+    "id": "mycology",
+    "label": "mycology",
+    "categoryId": "food_agriculture",
+    "hash": "0x7b96bfa924fdad5b257c28d258663f9751c16b3317429077b9849f1609aea52f",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T19:19:26.567Z",
+    "txHash": "0x6c17b2aa020bf2209b020b14bb81b71bf6bf5bfc8fcbf6f81b3d797c53380394"
   }
 ]
