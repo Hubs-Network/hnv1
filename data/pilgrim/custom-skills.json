@@ -70,5 +70,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:24:29.127Z",
     "txHash": "0x38c9acc0b5d2af229c474592b91ddb435c3bd6c8c8d8a213ecb2300d43b9fcf3"
+  },
+  {
+    "id": "elder_care",
+    "label": "Elder Care",
+    "categoryId": "wellbeing_care",
+    "hash": "0xd43dcdf2743c5599d28587dee0d07e85b17b4de951794baf188e734fec51a043",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:24:52.997Z",
+    "txHash": "0xfc58d1eed1f21a06ae228b622a19bc73695bb3fca24f3e5d4a54a996da1d1d8a"
   }
 ]
