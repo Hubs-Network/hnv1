@@ -142,5 +142,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:28:13.647Z",
     "txHash": "0x8c7a4bca46f094733c7536d44dc596c181a12226effc33a096fa725cf713a69a"
+  },
+  {
+    "id": "graphic_design",
+    "label": "Graphic design",
+    "categoryId": "design",
+    "hash": "0x809198247e3dcb96f296a289c9a5821ea68711c836a88956ed948c9a3fb60d4e",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:28:38.408Z",
+    "txHash": "0xec64ef10c41e043b61918c036428d3baee7fc865a03899a90408fd19d844c214"
   }
 ]
