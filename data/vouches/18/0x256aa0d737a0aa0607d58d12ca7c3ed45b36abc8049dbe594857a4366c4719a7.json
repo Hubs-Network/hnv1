@@ -1,0 +1,18 @@
+{
+  "vouchId": "1f44e893-577d-4262-bfcf-f5823e0cc418",
+  "residencyId": "18",
+  "patronApplicationId": "0x256aa0d737a0aa0607d58d12ca7c3ed45b36abc8049dbe594857a4366c4719a7",
+  "patronTokenId": "4",
+  "patronName": "PULSIN Hubs Network",
+  "createdBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "amount": "500",
+  "currency": {
+    "kind": "fiat",
+    "code": "EUR"
+  },
+  "purpose": "Travel and food expenses for 1 Pilgrim",
+  "link": "",
+  "status": "active",
+  "createdAt": "2026-11-09T19:18:31.039Z",
+  "updatedAt": "2026-11-09T19:18:31.039Z"
+}
