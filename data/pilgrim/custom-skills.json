@@ -52,5 +52,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:23:02.812Z",
     "txHash": "0x3bba277b1d825b3707c57c236690862019bfe9d5e2a2a67a6a2eaa6a0dc5b47c"
+  },
+  {
+    "id": "volunteer_coordination",
+    "label": "Volunteer Coordination",
+    "categoryId": "wellbeing_care",
+    "hash": "0xa61fa7148068e6c67c18011c0fb9f6e8c87a30c5ec50a9166aea7acf2c68496d",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:23:39.016Z",
+    "txHash": "0xd0226bc62bedd74ca0e60e5ecd9432444584c6d540fc56e11901ef3bf9566bc7"
   }
 ]
