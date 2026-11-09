@@ -16,5 +16,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:16:50.185Z",
     "txHash": "0xfa3193e9e8f610b3b669b3301341a25a0589617228c39d3b8f23ec800c867e0c"
+  },
+  {
+    "id": "electrical_installation",
+    "label": "Electrical Installation",
+    "categoryId": "technology",
+    "hash": "0x885bee97ac966aa07ba36eca5cc07ed4dcb8d0b8272bfd357bc4996cbbf6fd32",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:17:15.516Z",
+    "txHash": "0x7363c15d89cf39f76ce1b9d1cee3024e49d4789abd56ed44c844e841a4507938"
   }
 ]
