@@ -1,0 +1,35 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0xB8D328e1BdA33d72cc7A46925C4f0D547E7caCf8",
+  "hubName": "Astral Ship",
+  "title": "Strategy & Structure Facilitator",
+  "description": "# Open Call: Strategy & Structure Facilitator – Astral Ship\n\nAs we prepare for the upcoming season, we are opening a call for a skilled facilitator with experience in strategy, organisational development and planning to join Astral Ship for a short residency of up to five days. \n\nThe purpose is to work closely with **Liza and Liam, supporting them in setting up the strategic direction, organisational structure and goals for Astral Ship’s upcoming season and 2027**. \n\nThrough a series of focused, collaborative workshops, the resident will help them bring clarity to their ideas, define shared priorities, establish a basic organisational framework, and translate broader ambitions into tangible goals that volunteers and the wider community can work towards. \n\nThe process will also look at planning future voyages and outreach activities, as well as clarifying the relationship and potential synergies between Astral Ship and Engedi. The aim is not to deliver a complete long-term strategy within five days, but to give Liza and Liam the tools, structure and initial roadmap to carry this process forward. \n\n**Residency conditions:** Free accommodation and €50 per day towards food and utilities.",
+  "isCalendarBound": true,
+  "startDate": "2026-11-09T00:00:00.000Z",
+  "endDate": "2026-11-13T00:00:00.000Z",
+  "applicationDeadline": "2026-11-09T13:41:00.000Z",
+  "milestones": [
+    "Workshop for goal setting",
+    "Define Relation between Engedi and Astral Ship"
+  ],
+  "benefits": {
+    "accommodation": false,
+    "meals": false,
+    "stipend": false
+  },
+  "rewardedSkills": [
+    "coordination",
+    "team_facilitation",
+    "strategy",
+    "group_care",
+    "partnerships",
+    "impact_measurement"
+  ],
+  "externalFormLink": "https://astralshipcrewlist.framer.website/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcAVen8BleHRuA2FlbQIxMQBwZG9mAnNydGMGYXBwX2lkDzU2NzA2NzM0MzM1MjQyNwABp_7A2xyhIeWIeF4kYMErYSkw2Buw2TaKU2Dg-nfAs_Y7cy7lZLb9dHyAGoLR_aem_ZTJ6LPxBlf4Cdp_bdjZqgQ",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "createdAt": "2026-11-09T12:47:37.827Z",
+  "draftId": "47eb4129-0873-4e78-949b-8a3525f29561"
+}
