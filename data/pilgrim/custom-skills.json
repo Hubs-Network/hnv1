@@ -106,5 +106,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:26:13.658Z",
     "txHash": "0x81cd41cfd755d6ab426775c4d38c04d71ce6cb7753750423886f7888abb5d680"
+  },
+  {
+    "id": "gardening",
+    "label": "Gardening",
+    "categoryId": "regenerative_environment",
+    "hash": "0x78d812a7e950c9e85aad399e6d61f9185afc530204835592b224816f759f40d7",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:26:50.531Z",
+    "txHash": "0x46b8730bb563a67c363715d77e3b9887b77d8f469ea972a97f000061010c01bc"
   }
 ]
