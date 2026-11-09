@@ -115,5 +115,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:26:50.531Z",
     "txHash": "0x46b8730bb563a67c363715d77e3b9887b77d8f469ea972a97f000061010c01bc"
+  },
+  {
+    "id": "animal_care",
+    "label": "Animal Care",
+    "categoryId": "wellbeing_care",
+    "hash": "0x6dde75e37f901928538f8bf825d9fe1b209a0293d702f2af0c66ba25a2509072",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:27:16.664Z",
+    "txHash": "0xd540a9fa873028cece525b4a18a64323d964524aae1d3de0af54d2eb54f0a2a1"
   }
 ]
