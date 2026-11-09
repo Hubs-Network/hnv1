@@ -97,5 +97,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:25:37.071Z",
     "txHash": "0x7a91465e96f6f010429967a1163b4ed1bf09e48d8e1ed8b111e5f1c793ab2730"
+  },
+  {
+    "id": "harm_reduction",
+    "label": "Harm Reduction",
+    "categoryId": "wellbeing_care",
+    "hash": "0x3838e9cc1125de6d014c3ad1ffea19bca3a89d3dcd2e19290881bac1c5f6040b",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:26:13.658Z",
+    "txHash": "0x81cd41cfd755d6ab426775c4d38c04d71ce6cb7753750423886f7888abb5d680"
   }
 ]
