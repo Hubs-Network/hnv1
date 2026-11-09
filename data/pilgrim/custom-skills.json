@@ -25,5 +25,14 @@
     "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
     "addedAt": "2026-11-09T12:17:15.516Z",
     "txHash": "0x7363c15d89cf39f76ce1b9d1cee3024e49d4789abd56ed44c844e841a4507938"
+  },
+  {
+    "id": "natural_building",
+    "label": "Natural Building",
+    "categoryId": "technology",
+    "hash": "0x7e46aafb1df95d4516ffe3947370e448f7e466cded4873d6ff77788e7cc4a0f7",
+    "addedBy": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+    "addedAt": "2026-11-09T12:18:04.785Z",
+    "txHash": "0x1bf6098f7e350dd56024bab006e89f410edda764dd52d9126ee07f0d81d91910"
   }
 ]
