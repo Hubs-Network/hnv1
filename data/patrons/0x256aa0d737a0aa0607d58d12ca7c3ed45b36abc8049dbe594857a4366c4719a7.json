@@ -1,0 +1,14 @@
+{
+  "applicationId": "0x256aa0d737a0aa0607d58d12ca7c3ed45b36abc8049dbe594857a4366c4719a7",
+  "applicant": "0xca43134E0b96D7adeEd9d1B9BDfF655a5bD4bF67",
+  "companyName": "PULSIN Hubs Network",
+  "description": "Collaborative network for social impact that creates and connects Multidisciplinary spaces that acts and sets impulses to reinvent society futures.",
+  "website": "https://pulsin.network/",
+  "contact": "niko@hubsnetwork.org",
+  "chainId": 11155111,
+  "contractAddress": "0x75F0764AF4466bf77CB325C7c4a5DF4ee44C3326",
+  "status": "pending",
+  "createdAt": "2026-11-09T14:01:27.595Z",
+  "applicationTxHash": "0xb1715e8b76ae42fe18b435e6592b8079a5aa521f5b8e180f75e44fc1d66a1ab4",
+  "updatedAt": "2026-11-09T14:01:27.595Z"
+}
