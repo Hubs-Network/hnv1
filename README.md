@@ -692,7 +692,20 @@ Pilgrim Passport.
   — only once every milestone is validated by both sides. The hub then signs
   `AwardPilgrim` + `AttestSkills`; the relayer submits `awardPilgrim`; skills appear
   on the Pilgrim Passport. The award API enforces the milestone gate server-side.
-- **Cancel** (open): the hub signs `CancelResidency`; relayer submits `cancelResidency`.
+- **Cancel** (on-chain status still `Open` — i.e. UI `open` **or** `applications_closed`,
+  before selection): the hub signs `CancelResidency`; relayer submits `cancelResidency`
+  (status → `Cancelled`, which also drops it from the public board). The contract
+  gate is `status == Open`, independent of the application deadline.
+- **Hide / show** (UI `closed`): a Closed residency can no longer be cancelled
+  on-chain, so a hub signer can toggle an **off-chain** `hidden` flag via
+  `POST /api/residencies/[residencyId]/visibility` to remove a mistaken posting
+  from the public listings. This is purely cosmetic and reversible: no transaction,
+  no signature, the signed `metadataHash` is unchanged (`hidden` is excluded from
+  `canonicalResidencyJson`), and the residency stays on-chain, reachable by direct
+  link, and listed in the hub's own dashboard so it can be un-hidden. Authorization
+  mirrors other off-chain hub mutations (current Safe owner of the approved hub).
+  `listResidencyViews` omits both `cancelled` and `hidden` residencies; pilgrim/hub
+  Milestone Dashboard lists read by `residencyId` on-chain and are unaffected.
 
 **Awarding & attestation rule (important).** `PilgrimPassportSBT` allows only **one
 active attestation per (skill, hub)**: `_addSkillAttestation` reverts with
@@ -751,7 +764,7 @@ contract was deployed against.
 | `src/lib/residencies-client.ts` | Client signing + flow orchestration |
 | `src/lib/schemas/residency.ts` | Metadata Zod schema + canonical hash + URI scheme |
 | `src/lib/data/residencies.ts` | GitHub/filesystem JSON store (`data/residencies/<hubSafe>/<draftId>.json`) |
-| `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, eligibility, nonce, hub |
+| `src/app/api/residencies/*` | prepare, create/list, detail, apply, select, award, cancel, visibility (off-chain hide/show), eligibility, nonce, hub |
 | `src/app/api/pilgrims/[wallet]/passport-skills` | Read-only on-chain skill hashes for a wallet's Passport (feeds the board's "my skills" filter) |
 | `src/components/residencies/*` | Card, status badge, detail, hub section, board (`residencies-board` + `collapsible-section` for the public list, closed-section collapse and skill filter) |
 | `src/app/residencies`, `src/app/residencies/[residencyId]` | Public routes (list + detail) |

@@ -29,6 +29,8 @@ import {
   Utensils,
   Coins,
   Gift,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 // ── Local shapes (mirror the API responses; no server imports in the client) ──
@@ -60,6 +62,7 @@ interface ResidencyView {
   externalFormLink: string | null;
   externalFormInstructions: string | null;
   applicantCount: number;
+  hidden: boolean;
 }
 interface ApplicantView {
   tokenId: string;
@@ -213,6 +216,35 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
     } finally {
       setBusy(null);
       setProgress(null);
+    }
+  }
+
+  // Off-chain visibility toggle (no transaction / signature). Lets a hub signer
+  // hide a mistaken residency that can no longer be cancelled on-chain.
+  async function toggleVisibility(hidden: boolean) {
+    if (!address) return;
+    setBusy("visibility");
+    setError(null);
+    setNotice(null);
+    setProgress(null);
+    try {
+      const res = await fetch(`/api/residencies/${residencyId}/visibility`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ signer: address, hidden }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to update visibility");
+      await loadResidency();
+      setNotice(
+        hidden
+          ? "Residency hidden from the public Residencies list."
+          : "Residency is visible in the public Residencies list again."
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Action failed");
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -590,14 +622,62 @@ export function ResidencyDetail({ residencyId }: { residencyId: string }) {
             </Card>
           )}
 
-          {/* Hub: cancel (open) */}
-          {isHubSigner && residency.uiStatus === "open" && (
+          {/* Hub: visibility (closed). A Closed residency can't be cancelled
+              on-chain, so if it was posted by mistake the hub can soft-hide it
+              from the public listings (off-chain, reversible, stays on-chain). */}
+          {isHubSigner && residency.uiStatus === "closed" && (
+            <Card className="p-5">
+              <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center gap-2">
+                {residency.hidden ? (
+                  <EyeOff className="w-4 h-4 text-muted" />
+                ) : (
+                  <Eye className="w-4 h-4 text-primary" />
+                )}
+                Visibility
+              </h3>
+              <p className="text-xs text-muted mb-3">
+                {residency.hidden
+                  ? "This residency is hidden from the public Residencies list. It stays on-chain and reachable by direct link. You can restore it anytime."
+                  : "This residency is closed and can no longer be cancelled on-chain. If it was posted by mistake, you can hide it from the public Residencies list (it stays on-chain and reachable by direct link)."}
+              </p>
+              <Button
+                variant="ghost"
+                disabled={busy !== null}
+                onClick={() => toggleVisibility(!residency.hidden)}
+                className="gap-2"
+              >
+                {busy === "visibility" && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                {residency.hidden ? (
+                  <>
+                    <Eye className="w-4 h-4" />
+                    Show in listings
+                  </>
+                ) : (
+                  <>
+                    <EyeOff className="w-4 h-4" />
+                    Hide from listings
+                  </>
+                )}
+              </Button>
+            </Card>
+          )}
+
+          {/* Hub: cancel (open OR applications-closed). The contract allows
+              cancelling any residency whose on-chain status is still Open — i.e.
+              before selection — regardless of whether the application deadline
+              has passed, so a hub can undo a mistaken posting either way. */}
+          {isHubSigner &&
+            (residency.uiStatus === "open" ||
+              residency.uiStatus === "applications_closed") && (
             <Card className="p-5">
               <h3 className="text-sm font-semibold text-foreground mb-1">
                 Danger zone
               </h3>
               <p className="text-xs text-muted mb-3">
-                Cancelling closes this residency permanently.
+                Cancelling closes this residency permanently and removes it from
+                the public Residencies list.
               </p>
               <Button
                 variant="ghost"

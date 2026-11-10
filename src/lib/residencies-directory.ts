@@ -70,6 +70,8 @@ export interface ResidencyView {
   externalFormInstructions: string | null;
   applicantCount: number;
   vouchCount: number;
+  /** Off-chain visibility flag: when true the residency is hidden from the public board. */
+  hidden: boolean;
   metadata: ResidencyMetadata | null;
 }
 
@@ -191,15 +193,17 @@ export async function getResidencyView(
     externalFormInstructions: metadata?.externalFormInstructions ?? null,
     applicantCount: applicants.length,
     vouchCount,
+    hidden: metadata?.hidden ?? false,
     metadata: metadata ?? null,
   };
 }
 
 /**
  * Enumerate all residencies for the public Residencies board (ids
- * 1..totalResidencies). Cancelled residencies are hidden from this list; they
- * remain reachable by direct link (getResidencyView) and visible to their hub
- * in the dashboard (listHubResidencyViews).
+ * 1..totalResidencies). Cancelled residencies — and residencies a hub has
+ * soft-hidden off-chain (`hidden`) — are omitted from this list; both remain
+ * reachable by direct link (getResidencyView) and visible to their hub in the
+ * dashboard (listHubResidencyViews), so the hub can un-hide them.
  */
 export async function listResidencyViews(): Promise<ResidencyView[]> {
   const total = await getTotalResidencies();
@@ -210,6 +214,7 @@ export async function listResidencyViews(): Promise<ResidencyView[]> {
   return views
     .filter((v): v is ResidencyView => v !== null)
     .filter((v) => v.uiStatus !== "cancelled")
+    .filter((v) => !v.hidden)
     .sort(compareResidencyViews);
 }
 

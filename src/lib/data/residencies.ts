@@ -165,3 +165,19 @@ export async function saveResidencyMetadata(meta: ResidencyMetadata): Promise<vo
   }
   await writeLocalOne(meta);
 }
+
+/**
+ * Toggle the off-chain `hidden` visibility flag on a residency's metadata.
+ * Returns false if the metadata file does not exist. Does NOT touch any on-chain
+ * state or the signed `metadataHash` (hidden is excluded from the canonical JSON).
+ */
+export async function setResidencyHidden(
+  hubSafe: string,
+  draftId: string,
+  hidden: boolean
+): Promise<boolean> {
+  const meta = await getResidencyMetadata(hubSafe, draftId);
+  if (!meta) return false;
+  await saveResidencyMetadata({ ...meta, hidden });
+  return true;
+}

@@ -59,6 +59,15 @@ export const residencyMetadataSchema = z.object({
   txHash: z.string().optional(),
   /** Opaque stable id (folder key), set by the server on create. */
   draftId: z.string(),
+  /**
+   * Off-chain, mutable visibility flag set by a hub signer AFTER creation to
+   * remove a residency from the public listings (e.g. a mistaken posting that
+   * can no longer be cancelled on-chain because it is already Closed). Purely
+   * cosmetic: the residency stays on-chain and reachable by direct link. NOT
+   * part of `canonicalResidencyJson`, so toggling it never changes the signed
+   * `metadataHash`.
+   */
+  hidden: z.boolean().optional(),
 });
 
 export type ResidencyMetadata = z.infer<typeof residencyMetadataSchema>;
