@@ -1,0 +1,38 @@
+{
+  "schema": "hubs-network-residency-v1",
+  "chainId": 11155111,
+  "contractAddress": "0xf50Ef5498489e50bdB7E98C0b917e8132C703a0B",
+  "hubSafe": "0x98D6915Dc4c62c2403f7c60832FfdDBb3BF72E79",
+  "hubName": "Traditional Dream Factory",
+  "title": "Mushroom Farm Residency",
+  "description": "This residency is for someone who wants hands-on experience running a small-scale mushroom operation. You will learn sterile technique, take care of daily farm operations, and follow the full process of making medicinal tinctures from harvest to bottle. You’ll live as part of the community and share in its daily rhythm.",
+  "isCalendarBound": false,
+  "applicationDeadline": "2026-11-12T12:16:00.000Z",
+  "milestones": [
+    "Learn the farm’s processes and work confidently in sterile conditions.",
+    "Run daily farm operations independently, from substrate prep to harvest.",
+    "Complete a full tincture making cycle, from harvest to labelled bottle."
+  ],
+  "benefits": {
+    "accommodation": true,
+    "meals": true,
+    "stipend": false
+  },
+  "rewardedSkills": [
+    "coordination",
+    "workshop_facilitation",
+    "business_development",
+    "finance_accounting",
+    "partnerships",
+    "mycology",
+    "harm_reduction",
+    "research",
+    "peer_learning_facilitation",
+    "painting_drawing"
+  ],
+  "externalFormLink": "https://www.traditionaldreamfactory.com/projects",
+  "externalFormInstructions": "Your external application form must include the Pilgrim wallet address and/or the pseudonym displayed on Hubs Network, so that the Hub can match the form response to the on-chain Passport application.",
+  "createdBy": "0x263567fcFD9f0a2d5Cd4b8dD8A57404c66baABa5",
+  "createdAt": "2026-11-11T11:23:10.251Z",
+  "draftId": "2ed1bbd2-c4f4-4b3b-b37f-ff1a58b1aeaa"
+}
